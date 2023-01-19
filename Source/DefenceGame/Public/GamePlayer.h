@@ -44,4 +44,6 @@ private:
 	FVector direction;
 	float hp = 100.f;
 	bool isItemMode;
+
+	class AHandGrenade* handGrenade;
 };
