@@ -9,13 +9,16 @@
 #include "GamePlayerCameraManager.h"
 #include "ItemObstacle.h"
 #include "Item.h"
+#include "HandGrenade.h"
+#include "Engine/SkeletalMeshSocket.h"
+#include "Rifle.h"
 
 
 AGamePlayer::AGamePlayer()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	ConstructorHelpers::FObjectFinder<USkeletalMesh> mesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequin_UE4/Meshes/SK_Mannequin.SK_Mannequin'"));
+	ConstructorHelpers::FObjectFinder<USkeletalMesh> mesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Player/Skeleton/Player.Player'"));
 	if (mesh.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(mesh.Object);
@@ -41,7 +44,17 @@ void AGamePlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
+	animationState = EPlayerAnimationState::MOVE;
+
+	handGrenade = GetWorld()->SpawnActor<AHandGrenade>(GetActorLocation() + GetActorForwardVector() * 300, GetActorRotation());
+
+	rifle = GetWorld()->SpawnActor<ARifle>();
+	rifle->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("RifleSocket"));
+	rifle->SetActorRelativeRotation(FRotator(40, 0, 125));
+	rifle->SetActorRelativeLocation(FVector(0, 0, 5));
+
 	isItemMode = true;
+
 }
 
 void AGamePlayer::Tick(float DeltaTime)
@@ -99,7 +112,7 @@ void AGamePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("TurnRight", this, &AGamePlayer::OnAxisTurnRight);
 	PlayerInputComponent->BindAxis("MoveForward", this, &AGamePlayer::OnAxisMoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AGamePlayer::OnAxisMoveRight);
-	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionJump);
 	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionClick);
 	PlayerInputComponent->BindAction("UseObstacle", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionUseItemMode);
 }
@@ -110,6 +123,18 @@ void AGamePlayer::OnTakeDamage(float damage)
 
 	UE_LOG(LogTemp, Warning, TEXT("%f"), hp);
 	// hp 0 Ã³¸®
+}
+
+void AGamePlayer::SetAnimationState(EPlayerAnimationState state)
+{
+	//if (animationState == state) return;
+
+	animationState = state;
+}
+
+EPlayerAnimationState AGamePlayer::GetAnimationState()
+{
+	return animationState;
 }
 
 void AGamePlayer::OnAxisLookUp(float value)
@@ -168,9 +193,15 @@ void AGamePlayer::OnActionUseItemMode()
 
 	newObstacle = GetWorld()->SpawnActor<AItemObstacle>(GetActorLocation() + GetActorForwardVector() * 300, GetActorRotation());
 	isItemMode = true;
+
+
 }
 
-void AGamePlayer::SetItemPosition()
+void AGamePlayer::OnActionJump()
 {
+	if (animationState == EPlayerAnimationState::JUMP) return;
+	UE_LOG(LogTemp, Warning, TEXT("OnActionJump"));
 
+	SetAnimationState(EPlayerAnimationState::JUMP);
+	Jump();
 }
