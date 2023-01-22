@@ -15,12 +15,11 @@
 #include "Bazooka.h"
 #include "Weapon.h"
 
-
 AGamePlayer::AGamePlayer()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	ConstructorHelpers::FObjectFinder<USkeletalMesh> mesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Player/Skeleton/Player.Player'"));
+	ConstructorHelpers::FObjectFinder<USkeletalMesh> mesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequin_UE4/Meshes/SK_Mannequin.SK_Mannequin'"));
 	if (mesh.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(mesh.Object);
@@ -48,7 +47,6 @@ void AGamePlayer::BeginPlay()
 
 	animationState = EPlayerAnimationState::MOVE;
 
-
 	rifle = GetWorld()->SpawnActor<ARifle>();
 	rifle->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("RifleSocket"));
 	bazooka = GetWorld()->SpawnActor<ABazooka>();
@@ -61,6 +59,7 @@ void AGamePlayer::BeginPlay()
 
 	//isItemMode = true;
 
+	isItemMode = true;
 }
 
 void AGamePlayer::Tick(float DeltaTime)
@@ -128,7 +127,7 @@ void AGamePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("TurnRight", this, &AGamePlayer::OnAxisTurnRight);
 	PlayerInputComponent->BindAxis("MoveForward", this, &AGamePlayer::OnAxisMoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AGamePlayer::OnAxisMoveRight);
-	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionJump);
+	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionClick);
 	PlayerInputComponent->BindAction<FInputSwitchWeapon>("UseRifle", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionSwitchWeapon, 1);
 	PlayerInputComponent->BindAction<FInputSwitchWeapon>("UseBazooka", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionSwitchWeapon, 2);
@@ -141,7 +140,7 @@ void AGamePlayer::OnTakeDamage(float damage)
 	hp -= damage;
 
 	UE_LOG(LogTemp, Warning, TEXT("%f"), hp);
-	// hp 0 Ã³¸®
+	// hp 0 Ã³ï¿½ï¿½
 }
 
 void AGamePlayer::SetAttackAnimation(WeaponType weaponType)
@@ -242,17 +241,6 @@ void AGamePlayer::OnActionUseItemMode()
 
 	newObstacle = GetWorld()->SpawnActor<AItemObstacle>(GetActorLocation() + GetActorForwardVector() * 300, GetActorRotation());
 	isItemMode = true;
-
-
-}
-
-void AGamePlayer::OnActionJump()
-{
-	if (animationState == EPlayerAnimationState::JUMP) return;
-	UE_LOG(LogTemp, Warning, TEXT("OnActionJump"));
-
-	SetAnimationState(EPlayerAnimationState::JUMP);
-	Jump();
 }
 
 void AGamePlayer::OnActionSwitchWeapon(int32 weaponIndex)
