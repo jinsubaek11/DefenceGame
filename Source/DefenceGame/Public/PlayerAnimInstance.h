@@ -9,7 +9,9 @@ enum class EPlayerAnimationState : uint8
 {
 	MOVE,
 	JUMP,
-	ATTACK,
+	SHOOT_RIFLE,
+	SHOOT_BAZOOKA,
+	SHOOT_GRENADE,
 	DEAD
 };
 
@@ -28,7 +30,15 @@ public:
 
 public:	
 	UFUNCTION()
-	void AnimNotify_JumpEnd();	
+	void AnimNotify_JumpEnd();
+	UFUNCTION()
+	void AnimNotify_ShootRifleStart();
+	UFUNCTION()
+	void AnimNotify_ShootRifleEnd();
+	UFUNCTION()
+	void AnimNotify_ShootBazookaEnd();
+	UFUNCTION()
+	void AnimNotify_ShootGrenadeEnd();
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

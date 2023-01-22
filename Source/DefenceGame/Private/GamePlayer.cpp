@@ -12,6 +12,8 @@
 #include "HandGrenade.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Rifle.h"
+#include "Bazooka.h"
+#include "Weapon.h"
 
 
 AGamePlayer::AGamePlayer()
@@ -46,14 +48,18 @@ void AGamePlayer::BeginPlay()
 
 	animationState = EPlayerAnimationState::MOVE;
 
-	handGrenade = GetWorld()->SpawnActor<AHandGrenade>(GetActorLocation() + GetActorForwardVector() * 300, GetActorRotation());
 
 	rifle = GetWorld()->SpawnActor<ARifle>();
 	rifle->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("RifleSocket"));
-	rifle->SetActorRelativeRotation(FRotator(40, 0, 125));
-	rifle->SetActorRelativeLocation(FVector(0, 0, 5));
+	bazooka = GetWorld()->SpawnActor<ABazooka>();
+	bazooka->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("RifleSocket"));
+	handGrenade = GetWorld()->SpawnActor<AHandGrenade>();
+	handGrenade->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("RifleSocket"));
 
-	isItemMode = true;
+	currentWeapon = Cast<AWeapon>(rifle);
+	//GetActorLocation() + GetActorForwardVector() * 300, GetActorRotation()
+
+	//isItemMode = true;
 
 }
 
@@ -96,6 +102,16 @@ void AGamePlayer::Tick(float DeltaTime)
 		return;
 	}
 
+	if (isAttackEnable)
+	{
+		//currentWeapon->
+		//currentWeapon->Shoot();
+		//SetAttackEnable(false);
+	}
+	else
+	{
+	}
+
 	//FMeshBatch meshbat;
 	//FVertexFactory vf;
 
@@ -114,6 +130,9 @@ void AGamePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("MoveRight", this, &AGamePlayer::OnAxisMoveRight);
 	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionJump);
 	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionClick);
+	PlayerInputComponent->BindAction<FInputSwitchWeapon>("UseRifle", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionSwitchWeapon, 1);
+	PlayerInputComponent->BindAction<FInputSwitchWeapon>("UseBazooka", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionSwitchWeapon, 2);
+	PlayerInputComponent->BindAction<FInputSwitchWeapon>("UseHandGrenade", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionSwitchWeapon, 3);
 	PlayerInputComponent->BindAction("UseObstacle", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionUseItemMode);
 }
 
@@ -123,6 +142,29 @@ void AGamePlayer::OnTakeDamage(float damage)
 
 	UE_LOG(LogTemp, Warning, TEXT("%f"), hp);
 	// hp 0 Ã³¸®
+}
+
+void AGamePlayer::SetAttackAnimation(WeaponType weaponType)
+{
+	switch (weaponType)
+	{
+	case WeaponType::RIFLE:
+		rifle->SetActorRelativeRotation(FRotator(0, 270, 95));
+		SetAnimationState(EPlayerAnimationState::SHOOT_RIFLE);
+		break;
+	case WeaponType::BAZOOKA:
+		SetAnimationState(EPlayerAnimationState::SHOOT_BAZOOKA);
+		break;
+	case WeaponType::HAND_GRENADE:
+		SetAnimationState(EPlayerAnimationState::SHOOT_GRENADE);
+		break;
+	}
+
+}
+
+void AGamePlayer::SetAttackEnable(bool value)
+{
+	isAttackEnable = value;
 }
 
 void AGamePlayer::SetAnimationState(EPlayerAnimationState state)
@@ -182,9 +224,16 @@ void AGamePlayer::OnActionClick()
 			newObstacle = nullptr;
 			isItemMode = false;
 		}
+
+		return;
 	}
 
 	//fire
+	//Attack();
+	SetAttackAnimation(currentWeapon->GetWeaponType());
+	//rifle->Shoot();
+	//rifle->SetActorRelativeRotation(FRotator(0, 270, 95));
+	//SetAnimationState(EPlayerAnimationState::SHOOT_RIFLE);
 }
 
 void AGamePlayer::OnActionUseItemMode()
@@ -204,4 +253,29 @@ void AGamePlayer::OnActionJump()
 
 	SetAnimationState(EPlayerAnimationState::JUMP);
 	Jump();
+}
+
+void AGamePlayer::OnActionSwitchWeapon(int32 weaponIndex)
+{
+	currentWeapon->SetActive(false);
+
+	switch ((WeaponType)weaponIndex)
+	{
+	case WeaponType::RIFLE:
+		currentWeapon = Cast<AWeapon>(rifle);
+		break;
+	case WeaponType::BAZOOKA:
+		currentWeapon = Cast<AWeapon>(bazooka);
+		break;
+	case WeaponType::HAND_GRENADE:
+		currentWeapon = Cast<AWeapon>(handGrenade);
+		break;
+	}
+
+	currentWeapon->SetActive(true);
+}
+
+ARifle* AGamePlayer::GetRifle()
+{
+	return rifle;
 }
