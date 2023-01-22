@@ -10,8 +10,15 @@ class DEFENCEGAME_API ADefenceGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
+public:
+	ADefenceGameMode();
+
 protected:
 	void BeginPlay() override;
 
-private:
+public:
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> rifleCrossHair;
+	UPROPERTY()
+	class UUserWidget* rifleCrossHairWidget;
 };

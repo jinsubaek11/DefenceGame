@@ -1,11 +1,17 @@
 #include "DefenceGameMode.h"
 #include "kismet/GameplayStatics.h"
+#include "Blueprint/UserWidget.h"
 
+
+ADefenceGameMode::ADefenceGameMode()
+{
+
+}
 
 void ADefenceGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Warning, TEXT("BeginPlay"));
-
+	rifleCrossHairWidget = CreateWidget(GetWorld(), rifleCrossHair);
+	rifleCrossHairWidget->AddToViewport();
 }
