@@ -2,16 +2,16 @@
 
 #include "CoreMinimal.h"
 #include "Weapon.h"
-#include "HandGrenade.generated.h"
+#include "Bazooka.generated.h"
 
 
 UCLASS()
-class DEFENCEGAME_API AHandGrenade : public AWeapon
+class DEFENCEGAME_API ABazooka : public AWeapon
 {
 	GENERATED_BODY()
-	
+
 public:
-	AHandGrenade();
+	ABazooka();
 
 protected:
 	virtual void BeginPlay() override;
@@ -23,22 +23,20 @@ public:
 	virtual void Shoot() override;
 
 private:
-	void DrawGrenadeOrbit();
+	void DrawBazookaRange();
 
-private:
+public:
 	UPROPERTY(EditAnywhere)
-	class USphereComponent* sphereComponent;
+	class UBoxComponent* boxComponent;
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* meshComponent;
-
-	UPROPERTY(EditAnywhere)
-	class UStaticMesh* staticMesh;
-	UPROPERTY(EditAnywhere)
-	class UMaterialInterface* material;
 	UPROPERTY(EditAnywhere)
 	class UDecalComponent* decalComponent;
-
 	UPROPERTY(EditAnywhere)
-	class USplineComponent* splineComponent;
-	TArray<class USplineMeshComponent*> splineMesh;
+	class UParticleSystem* emitParticle;
+
+private:
+	float attackRange = 1500.f;
+	class AGamePlayer* player;
+	class APlayerRifleBulletPool* rifleBulletPool;
 };

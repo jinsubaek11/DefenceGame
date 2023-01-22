@@ -19,3 +19,19 @@ void AWeapon::Tick(float DeltaTime)
 
 }
 
+void AWeapon::Shoot()
+{
+
+}
+
+void AWeapon::SetActive(bool value)
+{
+	SetActorHiddenInGame(!value);
+	SetActorEnableCollision(value);
+	SetActorTickEnabled(value);
+}
+
+WeaponType AWeapon::GetWeaponType() const
+{
+	return weaponType;
+}
