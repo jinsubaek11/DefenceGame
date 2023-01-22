@@ -3,7 +3,7 @@
 
 AGamePlayerCameraManager::AGamePlayerCameraManager()
 {
-	ViewPitchMax = 25.f;
-	ViewPitchMin = -25.f;
+	ViewPitchMax = 10.f;
+	ViewPitchMin = -15.f;
 }
 

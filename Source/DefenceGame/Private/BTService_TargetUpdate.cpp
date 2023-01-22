@@ -5,6 +5,7 @@
 #include "EnemyAIController.h"
 #include "Tower.h"
 #include "EngineUtils.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 
 UBTService_TargetUpdate::UBTService_TargetUpdate()
@@ -21,13 +22,13 @@ void UBTService_TargetUpdate::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 
 	if (!OwnerComp.GetAIOwner()->LineOfSightTo(player) || playerEnemyDistance >= 700)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Clear PlayerLocation"));
+		//UE_LOG(LogTemp, Warning, TEXT("Clear PlayerLocation"));
 		OwnerComp.GetBlackboardComponent()->ClearValue(TEXT("PlayerLocation"));
 	}
 
 	if (OwnerComp.GetAIOwner()->LineOfSightTo(player) && playerEnemyDistance < 700)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Set PlayerLocation"));
+		//UE_LOG(LogTemp, Warning, TEXT("Set PlayerLocation"));
 		OwnerComp.GetBlackboardComponent()->SetValueAsVector(TEXT("PlayerLocation"), player->GetActorLocation());
 	}
 	

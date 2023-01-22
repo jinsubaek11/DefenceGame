@@ -1,4 +1,5 @@
 #include "PooledCharacter.h"
+#include "Components/CapsuleComponent.h"
 
 
 APooledCharacter::APooledCharacter()

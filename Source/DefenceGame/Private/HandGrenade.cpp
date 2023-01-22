@@ -11,11 +11,20 @@ AHandGrenade::AHandGrenade()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	weaponType = WeaponType::HAND_GRENADE;
+
 	sphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere Component"));
 	SetRootComponent(sphereComponent);
 
 	meshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh Component"));
 	meshComponent->SetupAttachment(RootComponent);
+	ConstructorHelpers::FObjectFinder<UStaticMesh> handGrenadeMesh(TEXT("//Script/Engine.StaticMesh'/Game/Weapons/HandGrenade/HandGrenade.HandGrenade'"));
+	if (handGrenadeMesh.Succeeded())
+	{
+		meshComponent->SetStaticMesh(handGrenadeMesh.Object);
+		//meshComponent->SetRelativeLocation(FVector(20, -10, -10));
+		meshComponent->SetRelativeScale3D(FVector(0.1));
+	}
 
 	splineComponent = CreateDefaultSubobject<USplineComponent>(TEXT("Spline Component"));
 	splineComponent->SetupAttachment(RootComponent);
@@ -29,6 +38,7 @@ AHandGrenade::AHandGrenade()
 		decalComponent->SetDecalMaterial(decal.Object);
 		decalComponent->SetRelativeRotation(FRotator(-90, 0, 0));
 		decalComponent->SetRelativeScale3D(FVector(0.5));
+		decalComponent->SetVisibility(false);
 	}
 
 	ConstructorHelpers::FObjectFinder<UStaticMesh> mesh(TEXT("/Script/Engine.StaticMesh'/Engine/BasicShapes/Cube.Cube'"));
@@ -43,6 +53,9 @@ AHandGrenade::AHandGrenade()
 		material = mat.Object;
 	}
 
+	SetActorHiddenInGame(true);
+	SetActorEnableCollision(false);
+	SetActorTickEnabled(false);
 }
 
 void AHandGrenade::BeginPlay()
@@ -56,6 +69,11 @@ void AHandGrenade::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	DrawGrenadeOrbit();
+}
+
+void AHandGrenade::Shoot()
+{
+
 }
 
 

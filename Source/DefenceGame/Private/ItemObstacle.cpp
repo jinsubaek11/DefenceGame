@@ -1,4 +1,5 @@
 #include "ItemObstacle.h"
+#include "Components/BoxComponent.h"
 
 
 AItemObstacle::AItemObstacle()
@@ -48,9 +49,9 @@ void AItemObstacle::Tick(float DeltaTime)
 
 void AItemObstacle::OnBeginOverlapItem(AActor* OtherActor)
 {
-	AItem* otherItem = Cast<AItem>(OtherActor);
+	//AItem* otherItem = Cast<AItem>(OtherActor);
 
-	if (otherItem && !isSetSucceed)
+	if (OtherActor && !isSetSucceed)
 	{
 		SetMaterialColor(FVector(1.5, 0.4, 0.4));
 		isCollision = true;
@@ -59,9 +60,9 @@ void AItemObstacle::OnBeginOverlapItem(AActor* OtherActor)
 
 void AItemObstacle::OnEndOverlapItem(AActor* OtherActor)
 {
-	AItem* otherItem = Cast<AItem>(OtherActor);
+	//AItem* otherItem = Cast<AItem>(OtherActor);
 
-	if (otherItem && !isSetSucceed)
+	if (OtherActor && !isSetSucceed)
 	{
 		SetMaterialColor(FVector(0.4, 1.5, 0.4));
 		isCollision = false;
