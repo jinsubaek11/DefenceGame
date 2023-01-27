@@ -15,7 +15,7 @@ APooledStrongEnemyBullet::APooledStrongEnemyBullet()
 }
 
 
-void APooledStrongEnemyBullet::OnHitSpecificBullet(AActor* OtherActor)
+void APooledStrongEnemyBullet::OnHitSpecificBullet(AActor* OtherActor, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("APooledStrongEnemyBullet::OnHitSpecificBullet"));
 

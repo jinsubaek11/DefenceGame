@@ -14,7 +14,7 @@ APooledNormalEnemyBullet::APooledNormalEnemyBullet()
 	}
 }
 
-void APooledNormalEnemyBullet::OnHitSpecificBullet(AActor* OtherActor)
+void APooledNormalEnemyBullet::OnHitSpecificBullet(AActor* OtherActor, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("APooledNormalEnemyBullet::OnHitSpecificBullet"));
 

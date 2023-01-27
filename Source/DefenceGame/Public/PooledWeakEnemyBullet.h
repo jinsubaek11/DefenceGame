@@ -14,6 +14,6 @@ public:
 	APooledWeakEnemyBullet();
 
 protected:
-	virtual void OnHitSpecificBullet(AActor* OtherActor) override;
+	virtual void OnHitSpecificBullet(AActor* OtherActor, const FHitResult& SweepResult) override;
 
 };

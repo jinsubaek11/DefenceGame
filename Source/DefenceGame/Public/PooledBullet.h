@@ -17,12 +17,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	float GetDamage() const;
+	int32 GetDamage() const;
 
 protected:
+	UPROPERTY(EditAnywhere)
 	class UBoxComponent* boxComponent;
+	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* meshComponent;
 
 	float speed;
-	float damage;
+	int32 damage;
 };

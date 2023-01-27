@@ -1,6 +1,7 @@
 #include "PooledEnemyBullet.h"
 #include "Components/BoxComponent.h"
 #include "GamePlayer.h"
+#include "Item.h"
 
 
 APooledEnemyBullet::APooledEnemyBullet()
@@ -22,14 +23,22 @@ void APooledEnemyBullet::OnHit(UPrimitiveComponent* OverlappedComponent, AActor*
 	UE_LOG(LogTemp, Warning, TEXT("APooledEnemyBullet::OnHit"));
 
 	AGamePlayer* player = Cast<AGamePlayer>(OtherActor);
-
 	if (IsValid(player))
 	{
-		OnHitSpecificBullet(player);
+		//OnHitSpecificBullet(player, SweepResult);
+		player->OnTakeDamage(GetDamage());
+		SetActive(false);
+	}
+
+	AItem* item = Cast<AItem>(OtherActor);
+	if (IsValid(item))
+	{
+		item->OnTakeDamage(GetDamage());
+		SetActive(false);
 	}
 }
 
-void APooledEnemyBullet::OnHitSpecificBullet(AActor* OtherActor)
+void APooledEnemyBullet::OnHitSpecificBullet(AActor* OtherActor, const FHitResult& SweepResult)
 {
 
 }

@@ -19,7 +19,7 @@ void APooledBullet::Tick(float DeltaTime)
 	SetActorLocation(GetActorLocation() + GetActorForwardVector() * speed * DeltaTime);
 }
 
-float APooledBullet::GetDamage() const
+int32 APooledBullet::GetDamage() const
 {
 	return damage;
 }
