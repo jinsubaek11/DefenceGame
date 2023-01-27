@@ -19,10 +19,12 @@ void ADefenceGameMode::BeginPlay()
 	//UE_LOG(LogTemp, Warning, TEXT("BeginPlay"));
 
 	sbgs = CreateWidget<UScreenBeforeGameStart>(GetWorld(), screenBeforGameStart);
-	
-	sbgs->AddToViewport();
-	sbgs->ShowStartGameText();
-	sbgs->ShowStartTextBackground();
+	if (sbgs)
+	{
+		sbgs->AddToViewport();
+		sbgs->ShowStartGameText();
+		sbgs->ShowStartTextBackground();
+	}
 
 	FTimerHandle titleEndTime;
 	GetWorld()->GetTimerManager().SetTimer(titleEndTime, this, &ADefenceGameMode::HideUI, 1.0f, false, 4.0f);
