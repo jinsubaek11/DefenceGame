@@ -27,5 +27,5 @@ protected:
 
 private:
 	class ANormalEnemyBulletPool* normalEnemyBulletPool;
-	const float HP = 100;
+	const float HP = 30;
 };

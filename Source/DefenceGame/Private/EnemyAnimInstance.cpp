@@ -32,3 +32,9 @@ void UEnemyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		//UE_LOG(LogTemp, Warning, TEXT("%d"), enemy->GetAnimationState());
 	}
 }
+
+void UEnemyAnimInstance::AnimNotify_DeathEnd()
+{
+	UE_LOG(LogTemp, Warning, TEXT("DeathEnd"));
+	OnDeath.Broadcast();
+}

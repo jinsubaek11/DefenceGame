@@ -2,6 +2,7 @@
 #include "PooledStrongEnemyBullet.h"
 #include "StrongEnemyBulletPool.h"
 #include "Components/CapsuleComponent.h"
+#include "EnemyAIController.h"
 
 
 APooledStrongEnemy::APooledStrongEnemy()
@@ -18,6 +19,19 @@ APooledStrongEnemy::APooledStrongEnemy()
 		meshComponent->SetRelativeScale3D(FVector(2));
 	}
 
+	ConstructorHelpers::FClassFinder<AEnemyAIController> bpAIControllerClass(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/EnemyAI/BP_EnemyAIController.BP_EnemyAIController_C'"));
+	if (bpAIControllerClass.Succeeded())
+	{
+		EnemyAIControllerFactory = bpAIControllerClass.Class;
+	}
+
+	ConstructorHelpers::FClassFinder<UEnemyAnimInstance> bpEnemyAnim(TEXT("/Script/Engine.AnimBlueprint'/Game/Enemy/Doosey/Animation/ABP_DooseyAnim.ABP_DooseyAnim_C'"));
+	if (bpEnemyAnim.Succeeded())
+	{
+		EnemyAnimFactory = bpEnemyAnim.Class;
+		GetMesh()->SetAnimInstanceClass(EnemyAnimFactory);
+	}
+
 	SetEnemyState(HP);
 }
 
@@ -31,6 +45,13 @@ void APooledStrongEnemy::BeginPlay()
 	Super::BeginPlay();
 
 	strongEnemyBulletPool = GetWorld()->SpawnActor<AStrongEnemyBulletPool>();
+
+	FActorSpawnParameters params;
+	aiController = GetWorld()->SpawnActor<AEnemyAIController>(EnemyAIControllerFactory, params);
+	if (aiController)
+	{
+		aiController->Possess(this);
+	}
 }
 
 void APooledStrongEnemy::Attack(AActor* target)
@@ -38,14 +59,14 @@ void APooledStrongEnemy::Attack(AActor* target)
 	Super::Attack(target);
 
 	FVector spawnPosition = GetActorLocation() + GetActorForwardVector();
-	FRotator spawnRotator = GetActorRotation();
+	FRotator spawnRotator = (target->GetActorLocation() - GetActorLocation()).Rotation();
 
 	APooledStrongEnemyBullet* strongEnemyBullet = Cast<APooledStrongEnemyBullet>(
 		strongEnemyBulletPool->SpawnPooledObject(spawnPosition, spawnRotator));
 
 	if (IsValid(strongEnemyBullet))
 	{
-		strongEnemyBullet->SetDeactiveTimer(4.f);
+		strongEnemyBullet->SetDeactiveTimer(1.5f);
 	}
 }
 

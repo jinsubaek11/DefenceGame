@@ -4,6 +4,8 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "BrainComponent.h"
+#include "EnemyAnimInstance.h"
 
 
 APooledEnemy::APooledEnemy()
@@ -15,33 +17,25 @@ void APooledEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//ATestTwoAIController* ai = Cast<ATestTwoAIController>(GetController());
-	//ai->Possess(this);
+	UEnemyAnimInstance* enemyAnimInstance = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
+	if (enemyAnimInstance)
+	{
+		enemyAnimInstance->OnDeath.AddDynamic(this, &APooledEnemy::OnDeath);
+	}
 }
 
 void APooledEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//SetActorLocation(GetActorLocation() + GetActorForwardVector() * 300 * DeltaTime);
 }
 
 void APooledEnemy::Attack(AActor* target)
 {
-	//SetAnimationState(EEnemyAnimationState::ATTACK);
 
-	//AGamePlayer* player = Cast<AGamePlayer>(target);
-	// 아이템 추가
-	// 금고 추가
-
-	//if (IsValid(player))
-	//{
-		//player->OnTakeDamage(att);
-		//SetAnimationState(EEnemyAnimationState::ATTACK);
-	//}
 }
 
-void APooledEnemy::OnTakeDamage(float damage)
+void APooledEnemy::OnTakeDamage(int32 damage)
 {
 	hp -= damage;
 
@@ -50,6 +44,10 @@ void APooledEnemy::OnTakeDamage(float damage)
 
 		//Reset();
 		//SetActive(false);
+		if (aiController)
+		{
+			aiController->BrainComponent->StopLogic(TEXT("Dead"));
+		}
 		SetAnimationState(EEnemyAnimationState::DEAD);
 		
 	}
@@ -73,4 +71,10 @@ void APooledEnemy::Reset()
 void APooledEnemy::SetEnemyState(float health)
 {
 	hp = health;
+}
+
+void APooledEnemy::OnDeath()
+{
+	UE_LOG(LogTemp, Warning, TEXT("OnDeath"));
+	SetActive(false);
 }
