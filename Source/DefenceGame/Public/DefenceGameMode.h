@@ -13,5 +13,13 @@ class DEFENCEGAME_API ADefenceGameMode : public AGameModeBase
 protected:
 	void BeginPlay() override;
 
-private:
+public:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "ScreenBeforeGameStartSettings")
+	TSubclassOf<class UScreenBeforeGameStart> screenBeforGameStart;
+
+	class UScreenBeforeGameStart* sbgs;
+
+
+	void HideUI();
 };

@@ -1,6 +1,7 @@
 #include "PooledEnemyBullet.h"
 #include "Components/BoxComponent.h"
 #include "GamePlayer.h"
+#include "HPWidget.h"
 
 
 APooledEnemyBullet::APooledEnemyBullet()
@@ -27,9 +28,18 @@ void APooledEnemyBullet::OnHit(UPrimitiveComponent* OverlappedComponent, AActor*
 	{
 		OnHitSpecificBullet(player);
 	}
+
+	UHPWidget* hpwidget = Cast<UHPWidget>(OtherActor);
+	if (hpwidget != nullptr)
+	{
+		//Bullet을 맞으면 Tower의 hp가 줄어든다
+		hpwidget->GetTowerHP(attackScore);
+	}
+	
 }
 
 void APooledEnemyBullet::OnHitSpecificBullet(AActor* OtherActor)
 {
 
 }
+

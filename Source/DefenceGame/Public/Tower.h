@@ -19,8 +19,17 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class UBoxComponent* boxComponent;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class UStaticMeshComponent* meshComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category = "HPWidgetSettings")
+	class UWidgetComponent* towerHPui;
+	//Pooled Enemy Bullet에 맞으면 체력이 감소한다.
+	
+	UPROPERTY()
+	class UHPWidget* chpWidget;
+
+
 };

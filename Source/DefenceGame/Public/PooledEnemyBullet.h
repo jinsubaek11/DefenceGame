@@ -26,4 +26,10 @@ public:
 
 protected:
 	virtual void OnHitSpecificBullet(AActor* OtherActor);
+
+public:
+
+	//공격 한 개당 공격량 10
+	int32 attackScore = 10;
+
 };
