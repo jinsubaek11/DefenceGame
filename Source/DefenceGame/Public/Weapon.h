@@ -28,9 +28,39 @@ public:
 
 public:
 	virtual void Shoot();
+	virtual void ReLoad();
 	void SetActive(bool value);
+	bool HasRemainBullet() const;
 	WeaponType GetWeaponType() const;
 
 protected:
+	virtual void DrawWeaponRange();
+
+protected:
 	WeaponType weaponType;
+
+	UPROPERTY(EditAnywhere)
+	class UBoxComponent* boxComponent;
+	UPROPERTY(EditAnywhere)
+	class UStaticMeshComponent* meshComponent;
+	UPROPERTY(EditAnywhere)
+	class UParticleSystem* muzzleFlash;
+	UPROPERTY(EditAnywhere)
+	class UParticleSystem* hitFlash;
+	UPROPERTY(EditAnywhere)
+	class UDecalComponent* decalComponent;
+	UPROPERTY(EditAnywhere)
+	class UMaterialInterface* originalMaterial;
+	UPROPERTY(EditAnywhere)
+	class UMaterialInstanceDynamic* dynamicMaterial;
+
+	class AGamePlayer* player;
+
+	int32 maxBulletCounts;
+	int32 bulletCounts;
+	float attackRange;
+	float autoDestroyRange;
+	int32 att;
+
+	FRotator decalRotation;
 };

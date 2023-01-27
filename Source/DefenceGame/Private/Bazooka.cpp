@@ -7,8 +7,8 @@
 #include <Camera/CameraComponent.h>
 #include "Engine/SkeletalMeshSocket.h"
 #include "Particles/ParticleSystem.h"
-#include "PlayerRifleBulletPool.h"
-#include "PooledPlayerRifleBullet.h"
+#include "PlayerBazookaBulletPool.h"
+#include "PooledPlayerBazookaBullet.h"
 
 
 ABazooka::ABazooka()
@@ -16,64 +16,85 @@ ABazooka::ABazooka()
 	PrimaryActorTick.bCanEverTick = true;
 
 	weaponType = WeaponType::BAZOOKA;
+	maxBulletCounts = 5;
+	bulletCounts = maxBulletCounts;
+	attackRange = 2000.f;
+	att = 30;
 
 	boxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Component"));
 	SetRootComponent(boxComponent);
 
-	meshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Skeletal Mesh Component"));
-	ConstructorHelpers::FObjectFinder<UStaticMesh> mesh(TEXT("/Script/Engine.StaticMesh'/Game/Weapons/Bazooka/Bazooka.Bazooka'"));
+	meshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Static Mesh Component"));
+	ConstructorHelpers::FObjectFinder<UStaticMesh> mesh(TEXT("/Script/Engine.StaticMesh'/Game/Weapons/Bazooka/Mesh/Bazooka.Bazooka'"));
 	if (mesh.Succeeded())
 	{
 		meshComponent->SetStaticMesh(mesh.Object);
 		meshComponent->SetupAttachment(RootComponent);
-		meshComponent->SetRelativeLocation(FVector(20, -10, -10));
-		meshComponent->SetRelativeScale3D(FVector(0.1));
+		meshComponent->SetRelativeLocation(FVector(20, -5, -10));
+		meshComponent->SetRelativeScale3D(FVector(0.1, 0.07, 0.1));
 	}
 
 	decalComponent = CreateDefaultSubobject<UDecalComponent>(TEXT("Decal Component"));
-	ConstructorHelpers::FObjectFinder<UMaterialInterface> mat(TEXT("/Script/Engine.Material'/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial'"));
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> mat(TEXT("/Script/Engine.Material'/Game/Weapons/Generic/Materials/M_DistanceChecking.M_DistanceChecking'"));
 	if (mat.Succeeded())
 	{
-		decalComponent->SetDecalMaterial(mat.Object);
+		originalMaterial = mat.Object;
 		decalComponent->SetVisibility(false);
 	}
 
-	emitParticle = CreateDefaultSubobject<UParticleSystem>(TEXT("Emit Particle"));
-	ConstructorHelpers::FObjectFinder<UParticleSystem> particle(TEXT("/Script/Engine.ParticleSystem'/Game/FX/Particles/Abilities/Primary/FX/P_Wraith_Primary_MuzzleFlash.P_Wraith_Primary_MuzzleFlash'"));
-	if (particle.Succeeded())
-	{
-		emitParticle = particle.Object;
-	}
-
-	SetActorHiddenInGame(true);
-	SetActorEnableCollision(false);
-	SetActorTickEnabled(false);
+	SetActive(false);
+	SetActorRotation(FRotator(90, 0, 180));
 }
 
 void ABazooka::BeginPlay()
 {
 	Super::BeginPlay();
 
-	player = Cast<AGamePlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
-	rifleBulletPool = GetWorld()->SpawnActor<APlayerRifleBulletPool>();
+	bazookaBulletPool = GetWorld()->SpawnActor<APlayerBazookaBulletPool>();
+
+	dynamicMaterial = UMaterialInstanceDynamic::Create(originalMaterial, this);
+	decalComponent->SetMaterial(0, dynamicMaterial);
+
+	decalRotation = player->GetActorRotation().Add(0, 3, 0);
 }
 
 void ABazooka::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	DrawBazookaRange();
+	decalRotation = player->GetActorRotation().Add(0, 3, 0);
+	DrawWeaponRange();
 }
 
-void ABazooka::DrawBazookaRange()
+void ABazooka::DrawWeaponRange()
 {
-	if (!player) return;
+	Super::DrawWeaponRange();
 
 }
 
 void ABazooka::Shoot()
 {
-	if (!player) return;
+	Super::Shoot();
 
+	if (bulletCounts < 0)
+	{
+		// no bullet sound;
+		return;
+	}
 
+	FVector start;
+	FRotator rotation;
+	player->GetController()->GetPlayerViewPoint(start, rotation);
+	FVector end = start + rotation.Vector() * attackRange;
+
+	FVector spawnPosition = player->GetActorLocation() - player->GetActorRightVector() * 50;
+	FRotator spawnRotation = (end - spawnPosition).Rotation();
+
+	APooledPlayerBazookaBullet* bullet = Cast<APooledPlayerBazookaBullet>(
+		bazookaBulletPool->SpawnPooledObject(spawnPosition, spawnRotation)
+	);
+
+	bullet->SetDestroyRange(spawnPosition, autoDestroyRange);
 }
+
+

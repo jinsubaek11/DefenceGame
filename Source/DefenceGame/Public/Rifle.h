@@ -23,20 +23,9 @@ public:
 	virtual void Shoot() override;
 
 private:
-	void DrawRifleRange();
-
-public:
-	UPROPERTY(EditAnywhere)
-	class UBoxComponent* boxComponent;
-	UPROPERTY(EditAnywhere)
-	class USkeletalMeshComponent* meshComponent;
-	UPROPERTY(EditAnywhere)
-	class UDecalComponent* decalComponent;
-	UPROPERTY(EditAnywhere)
-	class UParticleSystem* emitParticle;
+	virtual void DrawWeaponRange() override;
 
 private:
-	float attackRange = 1500.f;
-	class AGamePlayer* player;
-	class APlayerRifleBulletPool* rifleBulletPool;
+	UPROPERTY(EditAnywhere)
+	class USkeletalMeshComponent* skeletalMeshComponent;
 };

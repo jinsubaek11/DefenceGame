@@ -22,21 +22,12 @@ public:
 public:
 	virtual void Shoot() override;
 
-private:
-	void DrawBazookaRange();
-
-public:
-	UPROPERTY(EditAnywhere)
-	class UBoxComponent* boxComponent;
-	UPROPERTY(EditAnywhere)
-	class UStaticMeshComponent* meshComponent;
-	UPROPERTY(EditAnywhere)
-	class UDecalComponent* decalComponent;
-	UPROPERTY(EditAnywhere)
-	class UParticleSystem* emitParticle;
+protected:
+	virtual void DrawWeaponRange() override;
 
 private:
-	float attackRange = 1500.f;
-	class AGamePlayer* player;
-	class APlayerRifleBulletPool* rifleBulletPool;
+	UPROPERTY()
+	class APlayerBazookaBulletPool* bazookaBulletPool;
+	UPROPERTY()
+	class UParticleSystem* trailEffect;
 };

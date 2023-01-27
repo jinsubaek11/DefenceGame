@@ -21,24 +21,34 @@ public:
 
 public:
 	virtual void Shoot() override;
+	virtual void ReLoad() override;
+	bool GetIsExploded();
+	bool GetIsShootStart();
 
 private:
+	UFUNCTION()
+	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 	void DrawGrenadeOrbit();
+	void ClearSpline();
 
 private:
 	UPROPERTY(EditAnywhere)
 	class USphereComponent* sphereComponent;
 	UPROPERTY(EditAnywhere)
-	class UStaticMeshComponent* meshComponent;
-
-	UPROPERTY(EditAnywhere)
 	class UStaticMesh* staticMesh;
 	UPROPERTY(EditAnywhere)
 	class UMaterialInterface* material;
 	UPROPERTY(EditAnywhere)
-	class UDecalComponent* decalComponent;
+	class UParticleSystem* explosion;
 
 	UPROPERTY(EditAnywhere)
 	class USplineComponent* splineComponent;
 	TArray<class USplineMeshComponent*> splineMesh;
+
+	FVector launchVelocity;
+	FVector gravity;
+	bool isShootStart;
+	bool isExploded;
+	bool isOverlapped;
 };

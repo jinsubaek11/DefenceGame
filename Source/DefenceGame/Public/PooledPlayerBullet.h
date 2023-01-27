@@ -25,6 +25,6 @@ public:
 		);
 
 protected:
-	virtual void OnHitSpecificBullet(AActor* OtherActor);
+	virtual void OnHitSpecificBullet(AActor* OtherActor, const FHitResult& SweepResult);
 
 };
