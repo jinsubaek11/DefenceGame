@@ -32,13 +32,9 @@ public:
 	UFUNCTION()
 	void AnimNotify_JumpEnd();
 	UFUNCTION()
-	void AnimNotify_ShootRifleStart();
+	void AnimNotify_ShootStart();
 	UFUNCTION()
-	void AnimNotify_ShootRifleEnd();
-	UFUNCTION()
-	void AnimNotify_ShootBazookaEnd();
-	UFUNCTION()
-	void AnimNotify_ShootGrenadeEnd();
+	void AnimNotify_ShootEnd();
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

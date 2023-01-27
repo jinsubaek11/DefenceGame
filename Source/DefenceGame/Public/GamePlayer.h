@@ -7,6 +7,7 @@
 #include "GamePlayer.generated.h"
 
 DECLARE_DELEGATE_OneParam(FInputSwitchWeapon, int32);
+DECLARE_DELEGATE_OneParam(FInputSwitchItem, int32);
 
 UCLASS()
 class DEFENCEGAME_API AGamePlayer : public ACharacter
@@ -27,9 +28,10 @@ public:
 	void OnTakeDamage(float damage);
 	void SetAttackAnimation(WeaponType weaponType);
 	void SetAttackEnable(bool value);
+	void SetAttackMode(bool isAttackMode);
+	void SetIsShoot(bool value);
 	void SetAnimationState(EPlayerAnimationState state);
 	EPlayerAnimationState GetAnimationState();
-	class ARifle* GetRifle();
 
 private:
 	void OnAxisLookUp(float value);
@@ -37,12 +39,16 @@ private:
 	void OnAxisMoveForward(float value);
 	void OnAxisMoveRight(float value);
 	void OnActionClick();
-	void OnActionUseWeapon(int32 value);
-	void OnActionUseItemMode();
+	void OnActionReLoad();
 	void OnActionJump();
 
 	UFUNCTION()
+	void OnActionUseItemMode(int32 itemIndex);
+	UFUNCTION()
 	void OnActionSwitchWeapon(int32 weaponIndex);
+
+	void CheckEnableItemPosition(class AItem& item);
+	void ClearItem();
 
 public:
 	UPROPERTY(EditAnywhere, Category=Camera)
@@ -51,12 +57,17 @@ public:
 	class UCameraComponent* cameraComponent;
 
 private:
-	TArray<class AItem*> obstacles;
-	class AItem* newObstacle;
+	TArray<class AItem*> items;
+	class AItem* newItem;
+	FTimerHandle animationTimer;
 	FVector direction;
 	float hp = 100.f;
-	bool isItemMode;
 	bool isAttackEnable;
+	bool isShoot;
+
+	bool isItemMode;
+	float obstacleRemainingTime;
+	float turretRemainingTime;
 
 	EPlayerAnimationState animationState;
 

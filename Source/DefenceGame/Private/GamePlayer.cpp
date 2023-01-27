@@ -8,6 +8,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GamePlayerCameraManager.h"
 #include "ItemObstacle.h"
+#include "ItemTurret.h"
 #include "Item.h"
 #include "HandGrenade.h"
 #include "Engine/SkeletalMeshSocket.h"
@@ -15,11 +16,12 @@
 #include "Bazooka.h"
 #include "Weapon.h"
 
+
 AGamePlayer::AGamePlayer()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	ConstructorHelpers::FObjectFinder<USkeletalMesh> mesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequin_UE4/Meshes/SK_Mannequin.SK_Mannequin'"));
+	ConstructorHelpers::FObjectFinder<USkeletalMesh> mesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Player/Skeleton/Player.Player'"));
 	if (mesh.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(mesh.Object);
@@ -58,65 +60,50 @@ void AGamePlayer::BeginPlay()
 	//GetActorLocation() + GetActorForwardVector() * 300, GetActorRotation()
 
 	//isItemMode = true;
-
-	isItemMode = true;
 }
 
 void AGamePlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (isItemMode)
+	if (obstacleRemainingTime > 0)
 	{
-		if (newObstacle)
-		{
-			newObstacle->SetActorLocation(GetActorLocation() + GetActorForwardVector() * 400);
-			newObstacle->SetActorRotation(GetActorRotation().Add(0, 90, 0));
-		}
-		//FVector start = GetActorLocation() + GetActorForwardVector() * 100;
-		//FVector end;
+		obstacleRemainingTime -= DeltaTime;
+	}
 
-		//if (.Pitch <= 0)
-		//{
-		//	UE_LOG(LogTemp, Warning, TEXT("dd"));
-		//	end = start + GetControlRotation().Vector() * -GetControlRotation().Pitch * 100;
-		//}
-		//else
-		//{
-		//	end = start + GetControlRotation().Vector() * GetControlRotation().Pitch * 100;
-		//}
-		//
-		//end.Z = 1;
+	if (turretRemainingTime > 0)
+	{
+		turretRemainingTime -= DeltaTime;
+	}
 
-		//FHitResult hitResult;
-		//FVector start = cameraComponent->GetComponentLocation();
-		//FVector end = start + 
+	if (isItemMode && newItem)
+	{
+		CheckEnableItemPosition(*newItem);
+		return;
+	}
 
-		//if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECollisionChannel::ECC_Visibility))
-		//{
-			//DrawDebugLine(GetWorld(), start, end, FColor::Red);
-		
-			//DrawCircle(GetWorld(), end, FVector(1, 0, 0), FVector(0, 1, 0), FColor::Red, 200, 30, 0, 100);
-		//}
+	if (!isShoot) return;
+
+	if (currentWeapon->GetWeaponType() == WeaponType::RIFLE)
+	{
+		currentWeapon->Shoot();
+		isShoot = false;
+
+		FTimerDelegate timerDelegate;
+		timerDelegate.BindLambda([this] {
+			SetAnimationState(EPlayerAnimationState::MOVE);
+			GetWorldTimerManager().ClearTimer(animationTimer);
+		});
+		GetWorldTimerManager().SetTimer(animationTimer, timerDelegate, 0.25f, false);
+
 		return;
 	}
 
 	if (isAttackEnable)
 	{
-		//currentWeapon->
-		//currentWeapon->Shoot();
-		//SetAttackEnable(false);
+		currentWeapon->Shoot();
+		isAttackEnable = false;
 	}
-	else
-	{
-	}
-
-	//FMeshBatch meshbat;
-	//FVertexFactory vf;
-
-	//meshbat.VertexFactory = 
-
-	//DrawRectangleMesh(GetWorld(),  )
 }
 
 void AGamePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -127,12 +114,14 @@ void AGamePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("TurnRight", this, &AGamePlayer::OnAxisTurnRight);
 	PlayerInputComponent->BindAxis("MoveForward", this, &AGamePlayer::OnAxisMoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AGamePlayer::OnAxisMoveRight);
-	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ACharacter::Jump);
+	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionJump);
 	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionClick);
 	PlayerInputComponent->BindAction<FInputSwitchWeapon>("UseRifle", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionSwitchWeapon, 1);
 	PlayerInputComponent->BindAction<FInputSwitchWeapon>("UseBazooka", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionSwitchWeapon, 2);
 	PlayerInputComponent->BindAction<FInputSwitchWeapon>("UseHandGrenade", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionSwitchWeapon, 3);
-	PlayerInputComponent->BindAction("UseObstacle", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionUseItemMode);
+	PlayerInputComponent->BindAction<FInputSwitchItem>("UseObstacle", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionUseItemMode, 1);
+	PlayerInputComponent->BindAction<FInputSwitchItem>("UseTurret", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionUseItemMode, 2);
+	PlayerInputComponent->BindAction("ReLoad", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionReLoad);
 }
 
 void AGamePlayer::OnTakeDamage(float damage)
@@ -140,7 +129,6 @@ void AGamePlayer::OnTakeDamage(float damage)
 	hp -= damage;
 
 	UE_LOG(LogTemp, Warning, TEXT("%f"), hp);
-	// hp 0 ó��
 }
 
 void AGamePlayer::SetAttackAnimation(WeaponType weaponType)
@@ -148,7 +136,6 @@ void AGamePlayer::SetAttackAnimation(WeaponType weaponType)
 	switch (weaponType)
 	{
 	case WeaponType::RIFLE:
-		rifle->SetActorRelativeRotation(FRotator(0, 270, 95));
 		SetAnimationState(EPlayerAnimationState::SHOOT_RIFLE);
 		break;
 	case WeaponType::BAZOOKA:
@@ -159,6 +146,7 @@ void AGamePlayer::SetAttackAnimation(WeaponType weaponType)
 		break;
 	}
 
+	SetIsShoot(true);
 }
 
 void AGamePlayer::SetAttackEnable(bool value)
@@ -166,9 +154,31 @@ void AGamePlayer::SetAttackEnable(bool value)
 	isAttackEnable = value;
 }
 
+void AGamePlayer::SetAttackMode(bool isAttackMode)
+{
+	if (isAttackMode)
+	{
+		ClearItem();
+		isItemMode = false;
+
+		return;
+	}
+
+	isItemMode = true;
+	rifle->SetActive(false);
+	bazooka->SetActive(false);
+	handGrenade->SetActive(false);
+	currentWeapon = nullptr;
+}
+
+void AGamePlayer::SetIsShoot(bool value)
+{
+	isShoot = value;
+}
+
 void AGamePlayer::SetAnimationState(EPlayerAnimationState state)
 {
-	//if (animationState == state) return;
+	if (animationState == state) return;
 
 	animationState = state;
 }
@@ -214,38 +224,94 @@ void AGamePlayer::OnActionClick()
 {
 	if (isItemMode)
 	{
-		if (!newObstacle) return;
+		if (!newItem) return;
+		if (newItem->GetType() == ItemType::OBSTACLE && obstacleRemainingTime > 0) return;
+		if (newItem->GetType() == ItemType::TURRET && turretRemainingTime > 0) return;
 
-		if (!newObstacle->GetIsPositionSucceed() && !newObstacle->GetIsCollision())
-		{
-			newObstacle->SetPositionSucceed(true);
-			obstacles.Emplace(newObstacle);
-			newObstacle = nullptr;
+		if (!newItem->GetIsPositionSucceed() && !newItem->GetIsCollision())
+		{			
+			if (newItem->GetType() == ItemType::OBSTACLE)
+			{
+				obstacleRemainingTime = newItem->GetCoolTime();
+			}
+			else
+			{
+				turretRemainingTime = newItem->GetCoolTime();
+			}
+
+			newItem->SetPositionSucceed(true);
+			items.Add(newItem);
+			newItem = nullptr;
 			isItemMode = false;
 		}
 
 		return;
 	}
 
-	//fire
-	//Attack();
-	SetAttackAnimation(currentWeapon->GetWeaponType());
-	//rifle->Shoot();
-	//rifle->SetActorRelativeRotation(FRotator(0, 270, 95));
-	//SetAnimationState(EPlayerAnimationState::SHOOT_RIFLE);
+	if (currentWeapon && currentWeapon->HasRemainBullet())
+	{
+		SetAttackAnimation(currentWeapon->GetWeaponType());
+	}
 }
 
-void AGamePlayer::OnActionUseItemMode()
+void AGamePlayer::OnActionUseItemMode(int32 itemIndex)
 {
-	if (newObstacle) return;
+	ClearItem();
 
-	newObstacle = GetWorld()->SpawnActor<AItemObstacle>(GetActorLocation() + GetActorForwardVector() * 300, GetActorRotation());
-	isItemMode = true;
+	//newObstacle = GetWorld()->SpawnActor<AItemObstacle>(GetActorLocation() + GetActorForwardVector() * 300, GetActorRotation());
+	//currentWeapon->SetActive(false);
+	SetAttackMode(false);
+
+	FVector itemLocation = GetActorLocation() + GetActorForwardVector() * 300;
+	FRotator itemRotation = GetActorRotation();
+	
+	switch ((ItemType)itemIndex)
+	{
+	case ItemType::OBSTACLE:
+		newItem = GetWorld()->SpawnActor<AItemObstacle>(itemLocation, itemRotation);
+		break;
+	case ItemType::TURRET:
+		itemLocation.Z = 55;
+		newItem = GetWorld()->SpawnActor<AItemTurret>(itemLocation, itemRotation);
+		break;
+	}
 }
+
+void AGamePlayer::OnActionJump()
+{
+	if (animationState == EPlayerAnimationState::JUMP) return;
+
+	SetAnimationState(EPlayerAnimationState::JUMP);
+	Jump();
+}
+
 
 void AGamePlayer::OnActionSwitchWeapon(int32 weaponIndex)
 {
-	currentWeapon->SetActive(false);
+	if (isShoot) return;
+	UE_LOG(LogTemp, Warning, TEXT("OnActionSwitchWeapon"));
+	
+	if (currentWeapon)
+	{
+		if (currentWeapon->GetWeaponType() == (WeaponType)weaponIndex) return;
+
+		if (currentWeapon->GetWeaponType() == WeaponType::HAND_GRENADE)
+		{
+			AHandGrenade* castCurrentWeapon = Cast<AHandGrenade>(currentWeapon);
+			if (castCurrentWeapon->GetIsExploded() || !castCurrentWeapon->GetIsShootStart())
+			{
+				currentWeapon->SetActive(false);
+			}
+
+			castCurrentWeapon = nullptr;
+		}
+		else
+		{
+			currentWeapon->SetActive(false);
+
+		}
+	}
+	SetAttackMode(true);
 
 	switch ((WeaponType)weaponIndex)
 	{
@@ -260,10 +326,44 @@ void AGamePlayer::OnActionSwitchWeapon(int32 weaponIndex)
 		break;
 	}
 
+	if (currentWeapon->GetWeaponType() == WeaponType::HAND_GRENADE)
+	{
+		AHandGrenade* castCurrentWeapon = Cast<AHandGrenade>(currentWeapon);
+		if (castCurrentWeapon->GetIsExploded()) return;
+	}
+	
 	currentWeapon->SetActive(true);
 }
 
-ARifle* AGamePlayer::GetRifle()
+void AGamePlayer::OnActionReLoad()
 {
-	return rifle;
+	if (isItemMode) return;
+
+	currentWeapon->ReLoad();
+}
+
+void AGamePlayer::CheckEnableItemPosition(AItem& item)
+{
+	newItem->SetActorRotation(GetActorRotation());
+	FVector location = GetActorLocation() + GetActorForwardVector() * 400;
+
+	switch (item.GetType())
+	{
+	case ItemType::OBSTACLE:
+		newItem->SetActorLocation(location);
+		break;
+	case ItemType::TURRET:
+		location.Z = 55;
+		newItem->SetActorLocation(location);
+		break;
+	}
+}
+
+void AGamePlayer::ClearItem()
+{
+	if (newItem)
+	{
+		newItem->Destroy();
+		newItem = nullptr;
+	};
 }
