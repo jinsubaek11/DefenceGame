@@ -5,5 +5,5 @@
 AWeakEnemyBulletPool::AWeakEnemyBulletPool()
 {
 	classType = APooledWeakEnemyBullet::StaticClass();
-	poolSize = 5;
+	poolSize = 3;
 }

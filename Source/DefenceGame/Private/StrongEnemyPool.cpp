@@ -5,5 +5,5 @@
 AStrongEnemyPool::AStrongEnemyPool()
 {
 	classType = APooledStrongEnemy::StaticClass();
-	poolSize = 20;
+	poolSize = 2;
 }

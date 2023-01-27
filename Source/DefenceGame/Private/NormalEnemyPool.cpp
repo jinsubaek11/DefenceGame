@@ -4,5 +4,5 @@
 ANormalEnemyPool::ANormalEnemyPool()
 {
 	classType = APooledNormalEnemy::StaticClass();
-	poolSize = 30;
+	poolSize = 5;
 }

@@ -5,5 +5,5 @@
 AStrongEnemyBulletPool::AStrongEnemyBulletPool()
 {
 	classType = APooledStrongEnemyBullet::StaticClass();
-	poolSize = 5;
+	poolSize = 3;
 }

@@ -1,16 +1,26 @@
 #include "EnemySpawner.h"
+#include "Components/BoxComponent.h"
+#include "Components/ArrowComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "StrongEnemyPool.h"
 #include "NormalEnemyPool.h"
 #include "WeakEnemyPool.h"
-#include "Components/StaticMeshComponent.h"
+#include "PooledEnemy.h"
+#include "EnemyAIController.h"
 
 
 AEnemySpawner::AEnemySpawner()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	meshComponent = CreateDefaultSubobject<UStaticMeshComponent>("MeshComponent");
-	SetRootComponent(meshComponent);
+	boxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Component"));
+	SetRootComponent(boxComponent);
+
+	arrowComponent = CreateDefaultSubobject<UArrowComponent>(TEXT("Arrow Component"));
+	arrowComponent->SetupAttachment(RootComponent);
+
+	meshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh Component"));
+	meshComponent->SetupAttachment(RootComponent);
 }
 
 void AEnemySpawner::BeginPlay()

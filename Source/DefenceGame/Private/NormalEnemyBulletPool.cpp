@@ -5,5 +5,5 @@
 ANormalEnemyBulletPool::ANormalEnemyBulletPool()
 {
 	classType = APooledNormalEnemyBullet::StaticClass();
-	poolSize = 5;
+	poolSize = 3;
 }

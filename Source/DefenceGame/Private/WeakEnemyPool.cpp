@@ -5,5 +5,5 @@
 AWeakEnemyPool::AWeakEnemyPool()
 {
 	classType = APooledWeakEnemy::StaticClass();
-	poolSize = 50;
+	poolSize = 5;
 }

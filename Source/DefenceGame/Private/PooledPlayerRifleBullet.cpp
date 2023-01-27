@@ -14,7 +14,7 @@ APooledPlayerRifleBullet::APooledPlayerRifleBullet()
 	}
 }
 
-void APooledPlayerRifleBullet::OnHitSpecificBullet(AActor* OtherActor)
+void APooledPlayerRifleBullet::OnHitSpecificBullet(AActor* OtherActor, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("APooledPlayerRifleBullet::OnHitSpecificBullet"));
 
