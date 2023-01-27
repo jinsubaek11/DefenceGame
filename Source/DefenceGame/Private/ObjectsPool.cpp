@@ -53,6 +53,7 @@ APooledObject* AObjectsPool::SpawnPooledObject(FVector spawnPosition, FRotator s
 	return nullptr;
 }
 
+
 int32 AObjectsPool::GetPoolSize()
 {
 	return objectPool.Num();

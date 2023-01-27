@@ -20,18 +20,28 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere)
+	class UBoxComponent* boxComponent;
+	UPROPERTY(EditAnywhere)
+	class UArrowComponent* arrowComponent;
+	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* meshComponent;
 
 private:
+	UPROPERTY()
 	class AStrongEnemyPool* strongEnemyPool;
+	UPROPERTY()
 	class ANormalEnemyPool* normalEnemyPool;
+	UPROPERTY()
 	class AWeakEnemyPool* weakEnemyPool;
 
 	float strongEnemySpawnTime;
 	float normalEnemySpawnTime;
 	float weakEnemySpawnTime;
 
-	float strongEnemyCoolTime = 1.5f;
-	float normalEnemyCoolTime = 0.8f;
-	float weakEnemyCoolTime = 0.5f;
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess="true"))
+	float strongEnemyCoolTime = 20.f;
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
+	float normalEnemyCoolTime = 12.f;
+	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
+	float weakEnemyCoolTime = 5.f;
 };
