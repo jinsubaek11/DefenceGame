@@ -21,15 +21,15 @@ void APooledPlayerBullet::OnHit(UPrimitiveComponent* OverlappedComponent, AActor
 {
 	UE_LOG(LogTemp, Warning, TEXT("APooledPlayerBullet::OnHit"));
 
-	APooledEnemy* enemy = Cast<APooledEnemy>(OtherActor);
+	//APooledEnemy* enemy = Cast<APooledEnemy>(OtherActor);
 
-	if (IsValid(enemy))
-	{
-		OnHitSpecificBullet(enemy);
-	}
+	//if (IsValid(enemy))
+	//{
+		OnHitSpecificBullet(OtherActor, SweepResult);
+	//}
 }
 
-void APooledPlayerBullet::OnHitSpecificBullet(AActor* OtherActor)
+void APooledPlayerBullet::OnHitSpecificBullet(AActor* OtherActor, const FHitResult& SweepResult)
 {
 
 }
