@@ -41,6 +41,8 @@ AGamePlayer::AGamePlayer()
 
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
+
+
 }
 
 void AGamePlayer::BeginPlay()

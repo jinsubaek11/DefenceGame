@@ -53,8 +53,10 @@ private:
 public:
 	UPROPERTY(EditAnywhere, Category=Camera)
 	class USpringArmComponent* springArmComponent;
+
 	UPROPERTY(EditAnywhere, Category = Camera)
 	class UCameraComponent* cameraComponent;
+
 
 private:
 	TArray<class AItem*> items;

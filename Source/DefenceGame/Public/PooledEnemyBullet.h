@@ -26,4 +26,9 @@ public:
 
 protected:
 	virtual void OnHitSpecificBullet(AActor* OtherActor, const FHitResult& SweepResult);
+
+public:
+
+	//���� �� ���� ���ݷ� 10
+	int32 attackScore = 10;
 };
