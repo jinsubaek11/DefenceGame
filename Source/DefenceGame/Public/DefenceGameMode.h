@@ -21,4 +21,12 @@ public:
 	TSubclassOf<UUserWidget> rifleCrossHair;
 	UPROPERTY()
 	class UUserWidget* rifleCrossHairWidget;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "ScreenBeforeGameStartSettings")
+	TSubclassOf<class UScreenBeforeGameStart> screenBeforGameStart;
+
+	class UScreenBeforeGameStart* sbgs;
+
+
+	void HideUI();
 };

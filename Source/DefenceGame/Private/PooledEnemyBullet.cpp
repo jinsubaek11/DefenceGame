@@ -2,6 +2,7 @@
 #include "Components/BoxComponent.h"
 #include "GamePlayer.h"
 #include "Item.h"
+#include "HPWidget.h"
 
 
 APooledEnemyBullet::APooledEnemyBullet()
@@ -36,9 +37,18 @@ void APooledEnemyBullet::OnHit(UPrimitiveComponent* OverlappedComponent, AActor*
 		item->OnTakeDamage(GetDamage());
 		SetActive(false);
 	}
+
+	UHPWidget* hpwidget = Cast<UHPWidget>(OtherActor);
+	if (hpwidget != nullptr)
+	{
+		//Bullet�� ������ Tower�� hp�� �پ���
+		hpwidget->GetTowerHP(attackScore);
+	}
+	
 }
 
 void APooledEnemyBullet::OnHitSpecificBullet(AActor* OtherActor, const FHitResult& SweepResult)
 {
 
 }
+
