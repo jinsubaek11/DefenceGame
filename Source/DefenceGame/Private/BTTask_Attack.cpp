@@ -1,6 +1,8 @@
 #include "BTTask_Attack.h"
 #include "GamePlayer.h"
 #include "PooledEnemy.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "EnemyAIController.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -24,4 +26,13 @@ EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 
 	enemy->SetAnimationState(EEnemyAnimationState::WALK);
 	return EBTNodeResult::Failed;
+
+	//FVector playerLocation = OwnerComp.GetBlackboardComponent()->GetValueAsVector(TEXT("PlayerLocation"));
+	//FVector itemLocation = OwnerComp.GetBlackboardComponent()->GetValueAsVector(TEXT("ItemLocation"));
+	//FVector towerLocation = OwnerComp.GetBlackboardComponent()->GetValueAsVector(TEXT("TowerLocation"));
+	//
+	//if (playerLocation)
+	//{
+
+	//}
 }
