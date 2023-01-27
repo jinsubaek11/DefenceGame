@@ -16,10 +16,14 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-public:
-	virtual void Tick(float DeltaTime) override;
-
 protected:
-	virtual void OnBeginOverlapItem(AActor* OtherActor) override;
-	virtual void OnEndOverlapItem(AActor* OtherActor) override;
+	virtual void SetPositionSucceed(bool value) override;
+	//virtual void OnBeginOverlapItem(AActor* actor) override;
+	//virtual void OnEndOverlapItem(AActor* actor) override;
+
+private:
+	UPROPERTY(EditAnywhere)
+	class UStaticMeshComponent* meshComponent;
+	UPROPERTY()
+	TArray<class UMaterialInterface*> originalMaterial;
 };

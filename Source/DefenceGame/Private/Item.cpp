@@ -2,10 +2,11 @@
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 
+
 AItem::AItem()
 {
-	PrimaryActorTick.bCanEverTick = true;
-
+	boxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Component"));
+	SetRootComponent(boxComponent);
 }
 
 void AItem::BeginPlay()
@@ -16,49 +17,71 @@ void AItem::BeginPlay()
 	boxComponent->OnComponentEndOverlap.AddDynamic(this, &AItem::OnEndOverlap);
 }
 
-void AItem::Tick(float DeltaTime)
+float AItem::GetCoolTime() const
 {
-	Super::Tick(DeltaTime);
-
+	return coolTime;
 }
 
 void AItem::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	OnBeginOverlapItem(OtherActor);
+	//OnBeginOverlapItem(OtherActor);
+
+	if (OtherActor && !isSetSucceed)
+	{
+		SetMaterialColor(FVector(1.5, 0.4, 0.4));
+		isCollision = true;
+	}
 }
 
 void AItem::OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	OnEndOverlapItem(OtherActor);
+	//OnEndOverlapItem(OtherActor);
+
+	if (OtherActor && !isSetSucceed)
+	{
+		SetMaterialColor(FVector(0.4, 1.5, 0.4));
+		isCollision = false;
+	}
 }
 
-void AItem::OnBeginOverlapItem(AActor* OtherActor)
+ItemType AItem::GetType() const
 {
-
+	return type;
 }
 
-void AItem::OnEndOverlapItem(AActor* OtherActor)
-{
-
-}
-
-bool AItem::GetIsPositionSucceed()
+bool AItem::GetIsPositionSucceed() const
 {
 	return isSetSucceed;
 }
 
-bool AItem::GetIsCollision()
+bool AItem::GetIsCollision() const
 {
 	return isCollision;
 }
 
 void AItem::SetPositionSucceed(bool value)
 {
-	isSetSucceed = value;
-	for (int i = 0; i < originalMaterial.Num(); i++)
+
+}
+
+void AItem::OnTakeDamage(int32 damage)
+{
+	hp -= damage;
+
+	if (hp <= 0)
 	{
-		meshComponent->SetMaterial(i, originalMaterial[i]);
+		Destroy();
 	}
+}
+
+void AItem::OnBeginOverlapItem(AActor* actor)
+{
+
+}
+
+void  AItem::OnEndOverlapItem(AActor* actor)
+{
+
 }
 
 void AItem::SetMaterialColor(FVector color)

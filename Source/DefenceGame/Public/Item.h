@@ -4,6 +4,13 @@
 #include "GameFramework/Actor.h"
 #include "Item.generated.h"
 
+UENUM()
+enum class ItemType
+{
+	OBSTACLE = 1,
+	TURRET
+};
+
 UCLASS()
 class DEFENCEGAME_API AItem : public AActor
 {
@@ -16,16 +23,16 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	virtual void Tick(float DeltaTime) override;
-
-public:
-	bool GetIsPositionSucceed();
-	bool GetIsCollision();
-	void SetPositionSucceed(bool value);
+	ItemType GetType() const;
+	float GetCoolTime() const;
+	bool GetIsPositionSucceed() const;
+	bool GetIsCollision() const;
+	virtual void SetPositionSucceed(bool value);
+	void OnTakeDamage(int32 damage);
 
 protected:
-	virtual void OnBeginOverlapItem(AActor* OtherActor);
-	virtual void OnEndOverlapItem(AActor* OtherActor);
+	virtual void OnBeginOverlapItem(AActor* actor);
+	virtual void OnEndOverlapItem(AActor* actor);
 	void SetMaterialColor(FVector color);
 
 private:
@@ -33,14 +40,11 @@ private:
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()
 	void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	
 
 protected:
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* boxComponent;
-	UPROPERTY(EditAnywhere)
-	class UStaticMeshComponent* meshComponent;
-	UPROPERTY()
-	TArray<class UMaterialInterface*> originalMaterial;
 	UPROPERTY()
 	class UMaterialInterface* transparentMaterial;
 	UPROPERTY()
@@ -50,4 +54,8 @@ protected:
 	bool isSetSucceed;
 	UPROPERTY(EditAnywhere)
 	bool isCollision;
+
+	ItemType type;
+	int32 hp;
+	float coolTime;
 };
