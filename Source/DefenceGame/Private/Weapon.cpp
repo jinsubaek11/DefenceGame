@@ -81,7 +81,7 @@ void AWeapon::DrawWeaponRange()
 	if (isHit)
 	{
 		dynamicMaterial->SetVectorParameterValue(TEXT("DistCheckParam"), FVector(0.1, 1, 0.1));
-		DrawDebugLine(GetWorld(), start, end, FColor::Red);
+		//DrawDebugLine(GetWorld(), start, end, FColor::Red);
 	}
 	else
 	{

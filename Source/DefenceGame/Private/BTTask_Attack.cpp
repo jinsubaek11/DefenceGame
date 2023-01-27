@@ -4,6 +4,9 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "EnemyAIController.h"
 #include "Kismet/GameplayStatics.h"
+#include "EngineUtils.h"
+#include "Item.h"
+#include "Tower.h"
 
 
 UBTTask_Attack::UBTTask_Attack()
@@ -13,26 +16,62 @@ UBTTask_Attack::UBTTask_Attack()
 
 EBTNodeResult::Type UBTTask_Attack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
+	ATower* tower = nullptr;
+	for (TActorIterator<ATower> it(GetWorld()); it; ++it)
+	{
+		if (it)
+		{
+			tower = *it;
+		}
+	}
+
+	AActor* target = nullptr;
 	AGamePlayer* player = Cast<AGamePlayer>(UGameplayStatics::GetPlayerPawn(GetWorld(), 0));
 	APooledEnemy* enemy = Cast<APooledEnemy>(OwnerComp.GetAIOwner()->GetPawn());
+	AItem* item = nullptr;
+	float itemToEnemyDistance = 98765421.f;
 
-	if (IsValid(player) && IsValid(enemy))
+	for (TActorIterator<AItem> itemIter(GetWorld()); itemIter; ++itemIter)
 	{
-		enemy->Attack(player);
+		float distance = enemy->GetDistanceTo(*itemIter);
+		if (itemToEnemyDistance > distance)
+		{
+			itemToEnemyDistance = distance;
+			item = *itemIter;
+		}
+	}
+
+	if (OwnerComp.GetBlackboardComponent()->IsVectorValueSet(TEXT("TowerLocation")))
+	{
+		if (IsValid(tower))
+		{
+			target = tower;
+		}
+	}
+
+	if (OwnerComp.GetBlackboardComponent()->IsVectorValueSet(TEXT("ItemLocation")))
+	{
+		if (IsValid(item))
+		{
+			target = item;
+		}
+	}
+
+	if (OwnerComp.GetBlackboardComponent()->IsVectorValueSet(TEXT("PlayerLocation")))
+	{
+		if (IsValid(player))
+		{
+			target = player;
+		}
+	}
+
+	if (target)
+	{
+		enemy->Attack(target);
 		enemy->SetAnimationState(EEnemyAnimationState::ATTACK);
 
 		return EBTNodeResult::Succeeded;
 	}
 
-	enemy->SetAnimationState(EEnemyAnimationState::WALK);
 	return EBTNodeResult::Failed;
-
-	//FVector playerLocation = OwnerComp.GetBlackboardComponent()->GetValueAsVector(TEXT("PlayerLocation"));
-	//FVector itemLocation = OwnerComp.GetBlackboardComponent()->GetValueAsVector(TEXT("ItemLocation"));
-	//FVector towerLocation = OwnerComp.GetBlackboardComponent()->GetValueAsVector(TEXT("TowerLocation"));
-	//
-	//if (playerLocation)
-	//{
-
-	//}
 }

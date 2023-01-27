@@ -3,6 +3,7 @@
 #include "GamePlayer.h"
 #include "Item.h"
 #include "HPWidget.h"
+#include "Tower.h"
 
 
 APooledEnemyBullet::APooledEnemyBullet()
@@ -38,11 +39,13 @@ void APooledEnemyBullet::OnHit(UPrimitiveComponent* OverlappedComponent, AActor*
 		SetActive(false);
 	}
 
-	UHPWidget* hpwidget = Cast<UHPWidget>(OtherActor);
-	if (hpwidget != nullptr)
+
+	// 총알이 타워에 맞았다면?
+	ATower* tower = Cast<ATower>(OtherActor);
+	if (tower != nullptr)
 	{
 		//Bullet�� ������ Tower�� hp�� �پ���
-		hpwidget->GetTowerHP(attackScore);
+		tower->chpWidget->GetTowerHP(attackScore);
 	}
 	
 }

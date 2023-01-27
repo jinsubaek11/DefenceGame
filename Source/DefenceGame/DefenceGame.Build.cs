@@ -10,7 +10,7 @@ public class DefenceGame : ModuleRules
 	
 		PublicDependencyModuleNames.AddRange(new string[] { 
 			"Core", "CoreUObject", "Engine", "InputCore",
-			"AIModule", "NavigationSystem", "GameplayTasks", "AnimGraphRuntime", "UMG"
+			"AIModule", "NavigationSystem", "GameplayTasks", "AnimGraphRuntime", "UMG", "Slate", "SlateCore"
 		});
 
 /*		PrivateDependencyModuleNames.AddRange(new string[] {  });
