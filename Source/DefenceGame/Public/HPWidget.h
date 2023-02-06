@@ -36,6 +36,6 @@ public:
 
 	void GetTowerHP(float attackTowerScore);
 	void ShowHealthBar(float hp);
-
+	void SetTowerHP(float hp);
 	
 };
