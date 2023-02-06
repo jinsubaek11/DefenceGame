@@ -12,4 +12,6 @@ class DEFENCEGAME_API AWeakEnemyBulletPool : public AObjectsPool
 	
 public:
 	AWeakEnemyBulletPool();
+	
+
 };

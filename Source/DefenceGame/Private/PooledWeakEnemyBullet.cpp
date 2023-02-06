@@ -12,6 +12,7 @@ APooledWeakEnemyBullet::APooledWeakEnemyBullet()
 		meshComponent->SetStaticMesh(mesh.Object);
 		meshComponent->SetRelativeScale3D(FVector(0.2));
 	}
+
 }
 
 

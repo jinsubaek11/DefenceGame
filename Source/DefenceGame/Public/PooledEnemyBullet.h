@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "PooledBullet.h"
@@ -29,6 +29,6 @@ protected:
 
 public:
 
-	//���� �� ���� ���ݷ� 10
+	//공격 한번의 점수 10
 	int32 attackScore = 10;
 };

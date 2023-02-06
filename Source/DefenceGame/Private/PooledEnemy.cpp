@@ -22,6 +22,8 @@ void APooledEnemy::BeginPlay()
 	{
 		enemyAnimInstance->OnDeath.AddDynamic(this, &APooledEnemy::OnDeath);
 	}
+
+	SetAnimationState((EEnemyAnimationState::WALK));
 }
 
 void APooledEnemy::Tick(float DeltaTime)

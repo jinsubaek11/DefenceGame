@@ -13,6 +13,7 @@ class DEFENCEGAME_API APooledWeakEnemyBullet : public APooledEnemyBullet
 public:
 	APooledWeakEnemyBullet();
 
+
 protected:
 	virtual void OnHitSpecificBullet(AActor* OtherActor, const FHitResult& SweepResult) override;
 

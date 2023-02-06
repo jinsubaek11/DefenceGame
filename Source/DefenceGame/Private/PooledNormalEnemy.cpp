@@ -3,6 +3,7 @@
 #include "normalEnemyBulletPool.h"
 #include "PooledNormalEnemyBullet.h"
 #include "EnemyAIController.h"
+#include "EnemyToyGun.h"
 
 
 APooledNormalEnemy::APooledNormalEnemy()
@@ -18,6 +19,7 @@ APooledNormalEnemy::APooledNormalEnemy()
 		meshComponent->SetRelativeLocationAndRotation(FVector(0, 0, -120), FRotator(0, -90, 0));
 		meshComponent->SetRelativeScale3D(FVector(2));
 	}
+	
 
 	ConstructorHelpers::FClassFinder<AEnemyAIController> bpAIControllerClass(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/EnemyAI/BP_EnemyAIController.BP_EnemyAIController_C'"));
 	if (bpAIControllerClass.Succeeded())
@@ -33,6 +35,7 @@ APooledNormalEnemy::APooledNormalEnemy()
 	}
 
 	SetEnemyState(HP);
+
 }
 
 void APooledNormalEnemy::BeginPlay()
@@ -47,27 +50,26 @@ void APooledNormalEnemy::BeginPlay()
 	{
 		aiController->Possess(this);
 	}
+
+	toyGun = GetWorld()->SpawnActor<AEnemyToyGun>();
+	toyGun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("RightHandSocket"));
+	
+
 }
 
 void APooledNormalEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	toyGun->Shoot();
 }
 
 void APooledNormalEnemy::Attack(AActor* target)
 {
 	Super::Attack(target);
 
-	FVector spawnPosition = GetActorLocation() + GetActorForwardVector();
-	FRotator spawnRotator = (target->GetActorLocation() - GetActorLocation()).Rotation();
+	
 
-	APooledNormalEnemyBullet* normalEnemyBullet = Cast<APooledNormalEnemyBullet>(
-		normalEnemyBulletPool->SpawnPooledObject(spawnPosition, spawnRotator));
-
-	if (IsValid(normalEnemyBullet))
-	{
-		normalEnemyBullet->SetDeactiveTimer(1.5f);
-	}
 }
 
 void APooledNormalEnemy::Reset()

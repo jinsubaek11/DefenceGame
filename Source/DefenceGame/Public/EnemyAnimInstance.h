@@ -9,6 +9,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
 UENUM(BlueprintType)
 enum class EEnemyAnimationState : uint8
 {
+	IDLE,
 	WALK,
 	ATTACK,
 	DEAD
@@ -31,9 +32,16 @@ public:
 	UFUNCTION()
 	void AnimNotify_DeathEnd();
 
+	UFUNCTION()
+	void AnimNotify_dAttackEnd();
+
 public:
 	FOnDeath OnDeath;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EEnemyAnimationState animationState;
+
+	UPROPERTY()
+	bool bdDeath;
+
 };

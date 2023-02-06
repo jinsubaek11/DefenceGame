@@ -14,6 +14,7 @@ class DEFENCEGAME_API UHPWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
+
 public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HPWidgetSettings", meta = (BindWidget))
@@ -23,10 +24,11 @@ public:
 	class UTextBlock* towerHPNum;
 
 
-	//Tower hp
-	float towerMaxHP = 800.0f;
-	//Tower 공격받은 후hp
-	float towerCurrentHP;
+	//Tower의 최초 hp는 1000 
+	float towerMaxHP = 1000.0f;
+
+	//공격받은 후hp값을 받을 것
+	float towerCurrentHP = 1000.f;
 
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HPWidgetSettings", meta = (BindWidget))
 	//TSubclassOf<class ATower> cTower;
@@ -34,8 +36,8 @@ public:
 
 public:
 
-	void GetTowerHP(float attackTowerScore);
+	void SetTowerHP(float hp);
 	void ShowHealthBar(float hp);
-
+	void OnTakeDamage(int32 attackTowerScore);
 	
 };

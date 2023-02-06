@@ -1,8 +1,9 @@
 #include "PooledWeakEnemy.h"
 #include "WeakEnemyBulletPool.h"
-#include "PooledWeakEnemyBullet.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/BoxComponent.h"
 #include "EnemyAIController.h"
+#include "FatalTeeth.h"
 
 
 APooledWeakEnemy::APooledWeakEnemy()
@@ -16,8 +17,13 @@ APooledWeakEnemy::APooledWeakEnemy()
 		USkeletalMeshComponent* meshComponent = GetMesh();
 		meshComponent->SetSkeletalMesh(mesh.Object);
 		meshComponent->SetRelativeLocationAndRotation(FVector(0, 0, -70), FRotator(0, -90, 0));
-		meshComponent->SetRelativeScale3D(FVector(1.5));
+		meshComponent->SetRelativeScale3D(FVector(1));
 	}
+
+	teethBox = CreateDefaultSubobject<UBoxComponent>(TEXT("teethBox"));
+	teethBox->SetupAttachment(GetMesh(), TEXT("TeethSocket"));
+	teethBox->SetRelativeLocation(FVector(0, 52, 156));
+	
 
 	ConstructorHelpers::FClassFinder<AEnemyAIController> bpAIControllerClass(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/EnemyAI/BP_EnemyAIController.BP_EnemyAIController_C'"));
 	if (bpAIControllerClass.Succeeded())
@@ -53,22 +59,19 @@ void APooledWeakEnemy::BeginPlay()
 	{
 		aiController->Possess(this);
 	}
+
+	teeth = GetWorld()->SpawnActor<AFatalTeeth>();
+	teeth->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("TeethSocket"));
+
 }
 
 void APooledWeakEnemy::Attack(AActor* target)
 {
 	Super::Attack(target);
 
-	FVector spawnPosition = GetActorLocation() + GetActorForwardVector();
-	FRotator spawnRotator = (target->GetActorLocation() - GetActorLocation()).Rotation();
+	//목을 무는 것이 공격
+	teeth->Shoot();
 
-	APooledWeakEnemyBullet* weakEnemyBullet = Cast<APooledWeakEnemyBullet>(
-		weakEnemyBulletPool->SpawnPooledObject(spawnPosition, spawnRotator));
-
-	if (IsValid(weakEnemyBullet))
-	{
-		weakEnemyBullet->SetDeactiveTimer(1.5f);
-	}
 }
 
 void APooledWeakEnemy::Reset()

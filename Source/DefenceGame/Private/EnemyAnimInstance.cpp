@@ -38,3 +38,9 @@ void UEnemyAnimInstance::AnimNotify_DeathEnd()
 	UE_LOG(LogTemp, Warning, TEXT("DeathEnd"));
 	OnDeath.Broadcast();
 }
+
+void UEnemyAnimInstance::AnimNotify_dAttackEnd()
+{
+	UE_LOG(LogTemp, Warning, TEXT("dAttackEnd"));
+
+}

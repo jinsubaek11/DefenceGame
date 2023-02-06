@@ -1,4 +1,4 @@
-#include "PooledEnemyBullet.h"
+﻿#include "PooledEnemyBullet.h"
 #include "Components/BoxComponent.h"
 #include "GamePlayer.h"
 #include "Item.h"
@@ -44,8 +44,10 @@ void APooledEnemyBullet::OnHit(UPrimitiveComponent* OverlappedComponent, AActor*
 	ATower* tower = Cast<ATower>(OtherActor);
 	if (tower != nullptr)
 	{
-		//Bullet�� ������ Tower�� hp�� �پ���
-		tower->chpWidget->GetTowerHP(attackScore);
+		//Bullet Tower hp
+		UE_LOG(LogTemp, Warning, TEXT("tower get bullet"));
+
+		tower->chpWidget->OnTakeDamage(GetDamage());
 	}
 	
 }

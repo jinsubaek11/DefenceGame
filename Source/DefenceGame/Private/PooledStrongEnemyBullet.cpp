@@ -3,7 +3,7 @@
 
 APooledStrongEnemyBullet::APooledStrongEnemyBullet()
 {
-	speed = 500;
+	/*speed = 500;
 	damage = 15;
 
 	ConstructorHelpers::FObjectFinder<UStaticMesh> mesh(TEXT("/Script/Engine.StaticMesh'/Engine/BasicShapes/Sphere.Sphere'"));
@@ -11,7 +11,7 @@ APooledStrongEnemyBullet::APooledStrongEnemyBullet()
 	{
 		meshComponent->SetStaticMesh(mesh.Object);
 		meshComponent->SetRelativeScale3D(FVector(0.2));
-	}
+	}*/
 }
 
 

@@ -7,3 +7,4 @@ AWeakEnemyBulletPool::AWeakEnemyBulletPool()
 	classType = APooledWeakEnemyBullet::StaticClass();
 	poolSize = 3;
 }
+

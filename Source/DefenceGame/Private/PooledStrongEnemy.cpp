@@ -1,9 +1,11 @@
 #include "PooledStrongEnemy.h"
-#include "PooledStrongEnemyBullet.h"
 #include "StrongEnemyBulletPool.h"
 #include "Components/CapsuleComponent.h"
 #include "EnemyAIController.h"
-
+#include "EnemyAxe.h"
+#include "characterHPWidget.h"
+#include "PooledStrongEnemyBullet.h"
+#include "Components/BoxComponent.h"
 
 APooledStrongEnemy::APooledStrongEnemy()
 {
@@ -18,6 +20,7 @@ APooledStrongEnemy::APooledStrongEnemy()
 		meshComponent->SetRelativeLocationAndRotation(FVector(0, 0, -120), FRotator(0, -90, 0));
 		meshComponent->SetRelativeScale3D(FVector(2));
 	}
+	
 
 	ConstructorHelpers::FClassFinder<AEnemyAIController> bpAIControllerClass(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/EnemyAI/BP_EnemyAIController.BP_EnemyAIController_C'"));
 	if (bpAIControllerClass.Succeeded())
@@ -33,18 +36,19 @@ APooledStrongEnemy::APooledStrongEnemy()
 	}
 
 	SetEnemyState(HP);
+	
 }
 
 void APooledStrongEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
+	
 
 void APooledStrongEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	strongEnemyBulletPool = GetWorld()->SpawnActor<AStrongEnemyBulletPool>();
 
 	FActorSpawnParameters params;
 	aiController = GetWorld()->SpawnActor<AEnemyAIController>(EnemyAIControllerFactory, params);
@@ -52,25 +56,33 @@ void APooledStrongEnemy::BeginPlay()
 	{
 		aiController->Possess(this);
 	}
+
+	axe = GetWorld()->SpawnActor<AEnemyAxe>();
+	axe->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("RightHandaxeSocket"));
+
+	if(!shpWidget) return;
+	shpWidget->ShowHPBar(HP);
 }
 
 void APooledStrongEnemy::Attack(AActor* target)
 {
 	Super::Attack(target);
+	//axe가 player/tower에 닿으면 체력이 감소함
+	axe->Shoot();
 
-	FVector spawnPosition = GetActorLocation() + GetActorForwardVector();
-	FRotator spawnRotator = (target->GetActorLocation() - GetActorLocation()).Rotation();
-
-	APooledStrongEnemyBullet* strongEnemyBullet = Cast<APooledStrongEnemyBullet>(
-		strongEnemyBulletPool->SpawnPooledObject(spawnPosition, spawnRotator));
-
-	if (IsValid(strongEnemyBullet))
-	{
-		strongEnemyBullet->SetDeactiveTimer(1.5f);
-	}
 }
 
 void APooledStrongEnemy::Reset()
 {
 	SetEnemyState(HP);
+}
+
+void APooledStrongEnemy::OnTakeSEnemyDamage(float attack)
+{
+	if (!shpWidget) return;
+
+	HP -= attack;
+	UE_LOG(LogTemp, Warning, TEXT("APooledStrongEnemy_____________Damage %f"), HP)
+
+	shpWidget->SetcharacterHP(HP);
 }

@@ -25,7 +25,14 @@ public:
 protected:
 	virtual void Reset() override;
 
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class UBoxComponent* teethBox;
+
+
 private:
 	class AWeakEnemyBulletPool* weakEnemyBulletPool;
 	const float HP = 20;
+
+	class AFatalTeeth* teeth;
 };

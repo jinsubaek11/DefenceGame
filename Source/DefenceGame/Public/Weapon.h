@@ -55,6 +55,8 @@ protected:
 	class UMaterialInstanceDynamic* dynamicMaterial;
 
 	class AGamePlayer* player;
+	class APooledNormalEnemy* pNormalEnemy;
+	class APooledStrongEnemy* pStrongEnemy;
 
 	int32 maxBulletCounts;
 	int32 bulletCounts;

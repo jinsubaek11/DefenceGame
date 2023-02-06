@@ -25,7 +25,22 @@ public:
 protected:
 	virtual void Reset() override;
 
+
+public:
+	class AEnemyAxe* axe;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class USkeletalMeshComponent* axeMesh;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	class UBoxComponent* axeBox;
+
+	UPROPERTY()
+	class UcharacterHPWidget* shpWidget;
+
+	void OnTakeSEnemyDamage(float attack);
+
 private:
-	class AStrongEnemyBulletPool* strongEnemyBulletPool;
-	const float HP = 50;
+
+	float HP = 50;
 };
