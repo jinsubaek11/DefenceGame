@@ -17,12 +17,15 @@ protected:
 	void BeginPlay() override;
 
 public:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<UUserWidget> rifleCrossHair;
 	UPROPERTY()
 	class UUserWidget* rifleCrossHairWidget;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "ScreenBeforeGameStartSettings")
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<UUserWidget> miniMap;
+	UPROPERTY()
+	class UUserWidget* miniMapWidget;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<class UScreenBeforeGameStart> screenBeforGameStart;
 
 	class UScreenBeforeGameStart* sbgs;

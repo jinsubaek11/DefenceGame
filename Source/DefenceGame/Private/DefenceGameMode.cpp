@@ -15,7 +15,16 @@ void ADefenceGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	rifleCrossHairWidget = CreateWidget(GetWorld(), rifleCrossHair);
-	rifleCrossHairWidget->AddToViewport();
+	if (rifleCrossHairWidget)
+	{
+		rifleCrossHairWidget->AddToViewport();
+	}
+
+	miniMapWidget = CreateWidget(GetWorld(), miniMap);
+	if (miniMapWidget)
+	{
+		miniMapWidget->AddToViewport();
+	}
 	//UE_LOG(LogTemp, Warning, TEXT("BeginPlay"));
 
 	sbgs = CreateWidget<UScreenBeforeGameStart>(GetWorld(), screenBeforGameStart);
