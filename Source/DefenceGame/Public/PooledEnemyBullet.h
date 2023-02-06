@@ -25,6 +25,7 @@ public:
 	);
 
 protected:
+	virtual void SpawnEffect(FVector location);
 	virtual void OnHitSpecificBullet(AActor* OtherActor, const FHitResult& SweepResult);
 
 public:
