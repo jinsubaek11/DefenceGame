@@ -11,7 +11,8 @@ enum class EEnemyAnimationState : uint8
 {
 	WALK,
 	ATTACK,
-	DEAD
+	DEAD,
+	IDLE,
 };
 
 UCLASS()

@@ -30,5 +30,10 @@ void UHPWidget::GetTowerHP(float attackTowerScore)
 		ShowHealthBar(towerCurrentHP);
 		
 	}
+}
+
+void UHPWidget::SetTowerHP(float hp)
+{
+	ShowHealthBar(hp);
 
 }
