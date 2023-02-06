@@ -28,5 +28,7 @@ void UBTService_FindTarget::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 	if (tower)
 	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsVector(TEXT("TowerLocation"), tower->GetActorLocation() + FVector(150, 0, 0));
+		OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("Tower"), tower);
+
 	}
 }
