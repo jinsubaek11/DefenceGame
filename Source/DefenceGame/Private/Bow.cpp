@@ -42,7 +42,7 @@ void ABow::Shoot()
 	if (!boss) return;
 
 	int8 randIndex = FMath::RandRange(0, 1);
-	randIndex = 0;
+	//randIndex = 0;
 
 	switch ((EBowAttackType)randIndex)
 	{
