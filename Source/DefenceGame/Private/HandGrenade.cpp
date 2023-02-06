@@ -172,7 +172,7 @@ void AHandGrenade::DrawGrenadeOrbit()
 	FPredictProjectilePathResult result;
 
 	bool isHit = UGameplayStatics::PredictProjectilePath(GetWorld(), params, result);
-
+	//UE_LOG(LogTemp, Warning, TEXT("%d"), result.PathData.Num());
 	if (result.PathData.Num() > 0)
 	{
 		for (int i = 0; i < result.PathData.Num(); i++)

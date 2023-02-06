@@ -44,7 +44,7 @@ void APooledStrongEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	strongEnemyBulletPool = GetWorld()->SpawnActor<AStrongEnemyBulletPool>();
+	//strongEnemyBulletPool = GetWorld()->SpawnActor<AStrongEnemyBulletPool>();
 
 	FActorSpawnParameters params;
 	aiController = GetWorld()->SpawnActor<AEnemyAIController>(EnemyAIControllerFactory, params);
@@ -58,16 +58,16 @@ void APooledStrongEnemy::Attack(AActor* target)
 {
 	Super::Attack(target);
 
-	FVector spawnPosition = GetActorLocation() + GetActorForwardVector();
-	FRotator spawnRotator = (target->GetActorLocation() - GetActorLocation()).Rotation();
+	//FVector spawnPosition = GetActorLocation() + GetActorForwardVector();
+	//FRotator spawnRotator = (target->GetActorLocation() - GetActorLocation()).Rotation();
 
-	APooledStrongEnemyBullet* strongEnemyBullet = Cast<APooledStrongEnemyBullet>(
-		strongEnemyBulletPool->SpawnPooledObject(spawnPosition, spawnRotator));
+	//APooledStrongEnemyBullet* strongEnemyBullet = Cast<APooledStrongEnemyBullet>(
+	//	strongEnemyBulletPool->SpawnPooledObject(spawnPosition, spawnRotator));
 
-	if (IsValid(strongEnemyBullet))
-	{
-		strongEnemyBullet->SetDeactiveTimer(1.5f);
-	}
+	//if (IsValid(strongEnemyBullet))
+	//{
+	//	strongEnemyBullet->SetDeactiveTimer(1.5f);
+	//}
 }
 
 void APooledStrongEnemy::Reset()

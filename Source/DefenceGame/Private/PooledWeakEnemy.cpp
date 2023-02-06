@@ -45,7 +45,7 @@ void APooledWeakEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	weakEnemyBulletPool = GetWorld()->SpawnActor<AWeakEnemyBulletPool>();
+	//weakEnemyBulletPool = GetWorld()->SpawnActor<AWeakEnemyBulletPool>();
 
 	FActorSpawnParameters params;
 	aiController = GetWorld()->SpawnActor<AEnemyAIController>(EnemyAIControllerFactory, params);
@@ -59,16 +59,16 @@ void APooledWeakEnemy::Attack(AActor* target)
 {
 	Super::Attack(target);
 
-	FVector spawnPosition = GetActorLocation() + GetActorForwardVector();
-	FRotator spawnRotator = (target->GetActorLocation() - GetActorLocation()).Rotation();
+	//FVector spawnPosition = GetActorLocation() + GetActorForwardVector();
+	//FRotator spawnRotator = (target->GetActorLocation() - GetActorLocation()).Rotation();
 
-	APooledWeakEnemyBullet* weakEnemyBullet = Cast<APooledWeakEnemyBullet>(
-		weakEnemyBulletPool->SpawnPooledObject(spawnPosition, spawnRotator));
+	//APooledWeakEnemyBullet* weakEnemyBullet = Cast<APooledWeakEnemyBullet>(
+	//	weakEnemyBulletPool->SpawnPooledObject(spawnPosition, spawnRotator));
 
-	if (IsValid(weakEnemyBullet))
-	{
-		weakEnemyBullet->SetDeactiveTimer(1.5f);
-	}
+	//if (IsValid(weakEnemyBullet))
+	//{
+	//	weakEnemyBullet->SetDeactiveTimer(1.5f);
+	//}
 }
 
 void APooledWeakEnemy::Reset()

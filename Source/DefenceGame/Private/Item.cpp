@@ -1,4 +1,5 @@
 #include "Item.h"
+#include "PooledBullet.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 
@@ -25,6 +26,9 @@ float AItem::GetCoolTime() const
 void AItem::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	//OnBeginOverlapItem(OtherActor);
+
+	APooledBullet* bullet = Cast<APooledBullet>(OtherActor);
+	if (bullet) return;
 
 	if (OtherActor && !isSetSucceed)
 	{

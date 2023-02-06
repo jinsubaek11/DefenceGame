@@ -44,23 +44,23 @@ void AEnemySpawner::Tick(float DeltaTime)
 
 	if (strongEnemySpawnTime >= strongEnemyCoolTime)
 	{
-		strongEnemyPool->SpawnPooledCharacter(GetActorLocation());
+		//strongEnemyPool->SpawnPooledCharacter(GetActorLocation());
 		strongEnemySpawnTime = 0;
-		UE_LOG(LogTemp, Warning, TEXT("strong enemy spawned"));
+		//UE_LOG(LogTemp, Warning, TEXT("strong enemy spawned"));
 	}
 
 	if (normalEnemySpawnTime >= normalEnemyCoolTime)
 	{
-		normalEnemyPool->SpawnPooledCharacter(GetActorLocation());
+		//normalEnemyPool->SpawnPooledCharacter(GetActorLocation());
 		normalEnemySpawnTime = 0;
-		UE_LOG(LogTemp, Warning, TEXT("normal enemy spawned"));
+		//UE_LOG(LogTemp, Warning, TEXT("normal enemy spawned"));
 	}
 
 	if (weakEnemySpawnTime >= weakEnemyCoolTime)
 	{
-		weakEnemyPool->SpawnPooledCharacter(GetActorLocation());
+		//weakEnemyPool->SpawnPooledCharacter(GetActorLocation());
 		weakEnemySpawnTime = 0;
-		UE_LOG(LogTemp, Warning, TEXT("weak enemy spawned"));
+		//UE_LOG(LogTemp, Warning, TEXT("weak enemy spawned"));
 	}
 }
 
