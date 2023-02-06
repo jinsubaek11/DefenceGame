@@ -6,6 +6,7 @@
 #include "NormalEnemyPool.h"
 #include "PooledCharacter.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "GamePlayerCameraManager.h"
 #include "ItemObstacle.h"
 #include "ItemTurret.h"
@@ -26,23 +27,36 @@ AGamePlayer::AGamePlayer()
 	{
 		GetMesh()->SetSkeletalMesh(mesh.Object);
 		GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -90), FRotator(0, -90, 0));
+		GetMesh()->bReceivesDecals = false;
 	}
 
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerPreset"));
 
-	springArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
+	springArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
 	springArmComponent->SetupAttachment(RootComponent);
 	springArmComponent->SetRelativeLocation(FVector(0, 70, 90));
 	springArmComponent->TargetArmLength = 400;
 	springArmComponent->bUsePawnControlRotation = true;
 	
-	cameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
+	cameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	cameraComponent->SetupAttachment(springArmComponent);
 
-
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-
-
+	planeComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Plane Component"));
+	ConstructorHelpers::FObjectFinder<UStaticMesh> iconMesh(TEXT("/Script/Engine.StaticMesh'/Engine/BasicShapes/Plane.Plane'"));
+	if (iconMesh.Succeeded())
+	{
+		planeComponent->SetStaticMesh(iconMesh.Object);
+		planeComponent->SetRelativeLocationAndRotation(FVector(0, 0, 3000), FRotator(0, 0, 0));
+		planeComponent->SetRelativeScale3D(FVector(10, 10, 2));
+		planeComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> iconMat(TEXT("/Script/Engine.Material'/Game/UI/Image/M_Player_Icon.M_Player_Icon'"));
+	if (iconMat.Succeeded())
+	{
+		planeComponent->SetMaterial(0, iconMat.Object);
+		planeComponent->CastShadow = false;
+	}
+	planeComponent->SetupAttachment(RootComponent);
 }
 
 void AGamePlayer::BeginPlay()
@@ -85,6 +99,7 @@ void AGamePlayer::Tick(float DeltaTime)
 	}
 
 	if (!isShoot) return;
+	if (!currentWeapon) return;
 
 	if (currentWeapon->GetWeaponType() == WeaponType::RIFLE)
 	{
@@ -130,7 +145,7 @@ void AGamePlayer::OnTakeDamage(float damage)
 {
 	hp -= damage;
 
-	UE_LOG(LogTemp, Warning, TEXT("%f"), hp);
+	//UE_LOG(LogTemp, Warning, TEXT("%f"), hp);
 }
 
 void AGamePlayer::SetAttackAnimation(WeaponType weaponType)

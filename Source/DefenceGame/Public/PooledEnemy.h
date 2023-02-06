@@ -38,6 +38,8 @@ public:
 	TSubclassOf<class AController> EnemyAIControllerFactory;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UAnimInstance> EnemyAnimFactory;
+	UPROPERTY(EditAnywhere)
+	class UStaticMeshComponent* planeComponent;
 
 protected:
 	UPROPERTY(EditAnywhere, Category = MonsterProperty)

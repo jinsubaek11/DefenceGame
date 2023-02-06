@@ -53,9 +53,10 @@ private:
 public:
 	UPROPERTY(EditAnywhere, Category=Camera)
 	class USpringArmComponent* springArmComponent;
-
-	UPROPERTY(EditAnywhere, Category = Camera)
+	UPROPERTY(EditAnywhere, Category=Camera)
 	class UCameraComponent* cameraComponent;
+	UPROPERTY(EditAnywhere, Category = Icon)
+	class UStaticMeshComponent* planeComponent;
 
 
 private:
