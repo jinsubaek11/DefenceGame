@@ -9,7 +9,9 @@ enum class WeaponType: uint8
 {
 	RIFLE = 1,
 	BAZOOKA,
-	HAND_GRENADE
+	HAND_GRENADE,
+	SWORD,
+	BOW
 };
 
 UCLASS()
