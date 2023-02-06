@@ -3,6 +3,7 @@
 #include "normalEnemyBulletPool.h"
 #include "PooledNormalEnemyBullet.h"
 #include "EnemyAIController.h"
+#include "EnemyToyGun.h"
 
 
 APooledNormalEnemy::APooledNormalEnemy()
@@ -19,7 +20,7 @@ APooledNormalEnemy::APooledNormalEnemy()
 		meshComponent->SetRelativeScale3D(FVector(2));
 	}
 
-	ConstructorHelpers::FClassFinder<AEnemyAIController> bpAIControllerClass(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/EnemyAI/BP_EnemyAIController.BP_EnemyAIController_C'"));
+	ConstructorHelpers::FClassFinder<AEnemyAIController> bpAIControllerClass(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/EnemyAI/BP_NormalEnemyAIController.BP_NormalEnemyAIController_C'"));
 	if (bpAIControllerClass.Succeeded())
 	{
 		EnemyAIControllerFactory = bpAIControllerClass.Class;
@@ -39,7 +40,11 @@ void APooledNormalEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
+
 	normalEnemyBulletPool = GetWorld()->SpawnActor<ANormalEnemyBulletPool>();
+
+	gun = GetWorld()->SpawnActor<AEnemyToyGun>();
+	gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("RightHandSocket"));
 
 	FActorSpawnParameters params;
 	aiController = GetWorld()->SpawnActor<AEnemyAIController>(EnemyAIControllerFactory, params);

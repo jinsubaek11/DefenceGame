@@ -45,7 +45,7 @@ void APooledEnemyBullet::OnHit(UPrimitiveComponent* OverlappedComponent, AActor*
 	ATower* tower = Cast<ATower>(OtherActor);
 	if (IsValid(tower))
 	{
-		//tower->OnTakeDamage(GetDamage());
+		tower->OnTakeTowerDamage(GetDamage());
 		OnHitSpecificBullet(tower, SweepResult);
 
 		SetActive(false);

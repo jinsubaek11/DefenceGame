@@ -17,15 +17,15 @@ APooledWeakEnemy::APooledWeakEnemy()
 	{
 		USkeletalMeshComponent* meshComponent = GetMesh();
 		meshComponent->SetSkeletalMesh(mesh.Object);
-		meshComponent->SetRelativeLocationAndRotation(FVector(0, 0, -70), FRotator(0, -90, 0));
-		meshComponent->SetRelativeScale3D(FVector(1.5));
+		meshComponent->SetRelativeLocationAndRotation(FVector(0, 0, -120), FRotator(0, -90, 0));
+		meshComponent->SetRelativeScale3D(FVector(1.5, 1.5, 1.3));
 	}
 
 	teethBox = CreateDefaultSubobject<UBoxComponent>(TEXT("teethBox"));
 	teethBox->SetupAttachment(GetMesh(), TEXT("TeethSocket"));
 	teethBox->SetRelativeLocation(FVector(0, 52, 156));
 
-	ConstructorHelpers::FClassFinder<AEnemyAIController> bpAIControllerClass(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/EnemyAI/BP_EnemyAIController.BP_EnemyAIController_C'"));
+	ConstructorHelpers::FClassFinder<AEnemyAIController> bpAIControllerClass(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/EnemyAI/BP_WeakEnemyAIController.BP_WeakEnemyAIController_C'"));
 	if (bpAIControllerClass.Succeeded())
 	{
 		EnemyAIControllerFactory = bpAIControllerClass.Class;
@@ -68,7 +68,9 @@ void APooledWeakEnemy::Attack(AActor* target)
 {
 	Super::Attack(target);
 
-	teeth->Shoot();
+	SetAnimationState(EEnemyAnimationState::ATTACK);
+
+	//teeth->Shoot();
 
 	//FVector spawnPosition = GetActorLocation() + GetActorForwardVector();
 	//FRotator spawnRotator = (target->GetActorLocation() - GetActorLocation()).Rotation();

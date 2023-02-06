@@ -43,11 +43,11 @@ void AEnemyAxe::Shoot()
 {
 	//애니메이션 휘두르면 공격이 발생
 		
-	psEnemy = Cast<APooledStrongEnemy>(GetOwner());
-	if(!psEnemy) return;
-	psEnemy->SetAnimationState(EEnemyAnimationState::ATTACK);
+	//psEnemy = Cast<APooledStrongEnemy>(GetOwner());
+	//if(!psEnemy) return;
+	//psEnemy->SetAnimationState(EEnemyAnimationState::ATTACK);
 
-	psEnemy->OnTakeDamage(axeAttackScore);
+	//psEnemy->OnTakeDamage(axeAttackScore);
 }
 
 void AEnemyAxe::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,

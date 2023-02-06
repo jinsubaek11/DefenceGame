@@ -260,6 +260,7 @@ void AGamePlayer::OnActionClick()
 			items.Add(newItem);
 			newItem = nullptr;
 			isItemMode = false;
+			currentWeapon = rifle;
 		}
 
 		return;

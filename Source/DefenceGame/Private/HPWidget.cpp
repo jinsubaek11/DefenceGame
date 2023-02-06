@@ -11,7 +11,7 @@ void UHPWidget::ShowHealthBar(float hp)
 	//체력바 보여주는 함수
 	towerHPBar->SetFillColorAndOpacity(FLinearColor(255, 0, 0, 255));
 
-	towerHPBar->SetPercent(hp);
+	towerHPBar->SetPercent(hp / towerMaxHP);
 
 	towerHPNum->SetText(FText::AsNumber(hp));
 	
@@ -35,5 +35,4 @@ void UHPWidget::GetTowerHP(float attackTowerScore)
 void UHPWidget::SetTowerHP(float hp)
 {
 	ShowHealthBar(hp);
-
 }

@@ -28,4 +28,6 @@ protected:
 private:
 	class ANormalEnemyBulletPool* normalEnemyBulletPool;
 	const float HP = 30;
+
+	class AEnemyToyGun* gun;
 };

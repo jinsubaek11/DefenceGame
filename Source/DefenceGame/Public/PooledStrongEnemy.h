@@ -28,4 +28,6 @@ protected:
 private:
 	class AStrongEnemyBulletPool* strongEnemyBulletPool;
 	const float HP = 50;
+
+	class AEnemyAxe* axe;
 };
