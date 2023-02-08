@@ -67,6 +67,7 @@ private:
 	FVector direction;
 	float hp = 100.f;
 	float maxHp = 100.f;
+
 	bool isAttackEnable;
 	bool isShoot;
 

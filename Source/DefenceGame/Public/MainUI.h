@@ -24,7 +24,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySetting", meta = (BindWidget))
 	class UTextBlock* MaxCountText;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySetting", meta = (BindWidget))
-	class UCircularProgressBar* HealthBar;
+	class UCircularProgressBar* HealthProgressBar;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySetting", meta = (BindWidget))
 	class UImage* IconImage;
 

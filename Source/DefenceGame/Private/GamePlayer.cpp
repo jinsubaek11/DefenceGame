@@ -129,6 +129,7 @@ void AGamePlayer::Tick(float DeltaTime)
 		return;
 	}
 
+	if (isItemMode) return;
 	if (!isShoot) return;
 	if (!currentWeapon) return;
 
@@ -188,15 +189,21 @@ void AGamePlayer::OnTakeDamage(float damage)
 {
 	hp -= damage;
 
-	gameMode->mainUIWidget->HealthBar->PrintCurrentHealth((int)hp, (int)maxHp);
+	gameMode->mainUIWidget->HealthProgressBar->PrintCurrentHealth((int)hp, (int)maxHp);
 
 	if (hp <= 0)
 	{
 		hp = 0;
-		gameMode->mainUIWidget->HealthBar->PrintCurrentHealth((int)hp, (int)maxHp);
+		gameMode->mainUIWidget->HealthProgressBar->PrintCurrentHealth((int)hp, (int)maxHp);
 
 		playerUI->SetAnimationState(EPlayerUIAnimationState::DEAD);
 		SetAnimationState(EPlayerAnimationState::DEAD);
+
+		APlayerController* playerController = GetWorld()->GetFirstPlayerController();
+		if (playerController)
+		{
+			DisableInput(playerController);
+		}
 
 		FTimerHandle timer;
 		FTimerDelegate timerDelegate;
