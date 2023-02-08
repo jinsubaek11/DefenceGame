@@ -1,11 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "EnemyToyGun.h"
 #include "PooledNormalEnemy.h"
 #include "PooledNormalEnemyBullet.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "normalEnemyBulletPool.h"
+#include "PooledNormalEnemyBullet.h"
+
 
 AEnemyToyGun::AEnemyToyGun()
 {
@@ -35,35 +35,23 @@ void AEnemyToyGun::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AEnemyToyGun::Shoot()
+void AEnemyToyGun::BeginPlay()
 {
-	Super::Shoot();
+	Super::BeginPlay();
 
-	if (bulletCounts <= 0)
-	{		
-		return;
-	}
+	normalEnemyBulletPool = GetWorld()->SpawnActor<ANormalEnemyBulletPool>();
+}
 
-	FVector start;
-	FRotator rotation;
-	pNormalEnemy->GetController()->GetPlayerViewPoint(start, rotation);
-	FVector end = start + rotation.Vector() * attackRange;
-
-
+void AEnemyToyGun::Shoot(AActor* target)
+{
 	FVector spawnPosition = GetActorLocation() + GetActorForwardVector();
-	FRotator spawnRotator = (pNormalEnemy->GetActorLocation() - GetActorLocation()).Rotation();
-	FTransform mFireposition = skeletalMeshComponent->GetSocketTransform(TEXT("RetroGun_01FirePosition"));
+	FRotator spawnRotator = (target->GetActorLocation() - GetActorLocation()).Rotation();
 
-
-	APooledNormalEnemyBullet* normalEnemyBullet = GetWorld()->SpawnActor<APooledNormalEnemyBullet>(nEnemyBulletPool, mFireposition.GetLocation(), spawnRotator);
+	APooledNormalEnemyBullet* normalEnemyBullet = Cast<APooledNormalEnemyBullet>(
+		normalEnemyBulletPool->SpawnPooledObject(spawnPosition, spawnRotator));
 
 	if (IsValid(normalEnemyBullet))
 	{
 		normalEnemyBullet->SetDeactiveTimer(1.5f);
 	}
-
-	//emmiter 위치 조정?
-	UGameplayStatics::SpawnEmitterAttached(muzzleFlash, skeletalMeshComponent, TEXT("RetroGun_01FirePosition"));
-
-
 }

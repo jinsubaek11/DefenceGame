@@ -26,8 +26,9 @@ protected:
 	virtual void Reset() override;
 
 private:
-	class ANormalEnemyBulletPool* normalEnemyBulletPool;
 	const float HP = 30;
-
+	UPROPERTY()
 	class AEnemyToyGun* gun;
+	UPROPERTY()
+	class UEnemyAnimInstance* enemyAnim;
 };

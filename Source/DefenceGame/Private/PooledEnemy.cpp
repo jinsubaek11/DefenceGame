@@ -59,15 +59,18 @@ void APooledEnemy::OnTakeDamage(int32 damage)
 
 	if (hp < 0)
 	{
-
-		//Reset();
-		//SetActive(false);
 		if (aiController)
 		{
 			aiController->BrainComponent->StopLogic(TEXT("Dead"));
 		}
 		SetAnimationState(EEnemyAnimationState::DEAD);
 		
+		FTimerHandle timer;
+		FTimerDelegate timerDelegate;
+		timerDelegate.BindLambda([this] {
+			SetActive(false);
+		});
+		GetWorldTimerManager().SetTimer(timer, timerDelegate, 2.f, false);
 	}
 }
 

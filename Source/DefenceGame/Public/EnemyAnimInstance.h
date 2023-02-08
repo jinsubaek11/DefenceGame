@@ -31,10 +31,13 @@ public:
 public:
 	UFUNCTION()
 	void AnimNotify_DeathEnd();
+	void PlayShootMontage();
 
 public:
 	FOnDeath OnDeath;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EEnemyAnimationState animationState;
+	UPROPERTY()
+	class UAnimMontage* shootMontage;
 };

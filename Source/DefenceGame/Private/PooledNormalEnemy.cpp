@@ -1,9 +1,8 @@
 #include "PooledNormalEnemy.h"
 #include "Components/CapsuleComponent.h"
-#include "normalEnemyBulletPool.h"
-#include "PooledNormalEnemyBullet.h"
 #include "EnemyAIController.h"
 #include "EnemyToyGun.h"
+#include "EnemyAnimInstance.h"
 
 
 APooledNormalEnemy::APooledNormalEnemy()
@@ -40,9 +39,6 @@ void APooledNormalEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-
-	normalEnemyBulletPool = GetWorld()->SpawnActor<ANormalEnemyBulletPool>();
-
 	gun = GetWorld()->SpawnActor<AEnemyToyGun>();
 	gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("RightHandSocket"));
 
@@ -52,6 +48,8 @@ void APooledNormalEnemy::BeginPlay()
 	{
 		aiController->Possess(this);
 	}
+
+	enemyAnim = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
 }
 
 void APooledNormalEnemy::Tick(float DeltaTime)
@@ -63,16 +61,8 @@ void APooledNormalEnemy::Attack(AActor* target)
 {
 	Super::Attack(target);
 
-	FVector spawnPosition = GetActorLocation() + GetActorForwardVector();
-	FRotator spawnRotator = (target->GetActorLocation() - GetActorLocation()).Rotation();
-
-	APooledNormalEnemyBullet* normalEnemyBullet = Cast<APooledNormalEnemyBullet>(
-		normalEnemyBulletPool->SpawnPooledObject(spawnPosition, spawnRotator));
-
-	if (IsValid(normalEnemyBullet))
-	{
-		normalEnemyBullet->SetDeactiveTimer(1.5f);
-	}
+	gun->Shoot(target);
+	enemyAnim->PlayShootMontage();
 }
 
 void APooledNormalEnemy::Reset()
