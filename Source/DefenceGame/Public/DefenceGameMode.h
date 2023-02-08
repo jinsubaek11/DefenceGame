@@ -17,19 +17,43 @@ protected:
 	void BeginPlay() override;
 
 public:
+	void HideUI();
+	void ShowGameOverScreen();
+	void ShowWarningBossScreen();
+
+public:
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<UUserWidget> mainUI;
+	UPROPERTY()
+	class UMainUI* mainUIWidget;
+
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<UUserWidget> warningBossUI;
+	UPROPERTY()
+	class UWarningBossWidget* warningBossWidget;
+
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<UUserWidget> gameOverUI;
+	UPROPERTY()
+	class UGameOverWidget* gameOverWidget;
+
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<UUserWidget> rifleCrossHair;
 	UPROPERTY()
 	class UUserWidget* rifleCrossHairWidget;
+
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<UUserWidget> miniMap;
 	UPROPERTY()
 	class UUserWidget* miniMapWidget;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
 	TSubclassOf<class UScreenBeforeGameStart> screenBeforGameStart;
-
+	UPROPERTY()
 	class UScreenBeforeGameStart* sbgs;
 
+	TMap<FString, UMaterialInterface*> iconMats;
+	TArray<FString> stageTexts;
 
-	void HideUI();
+	FTimerHandle bossAppearTimer;
 };

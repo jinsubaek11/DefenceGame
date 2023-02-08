@@ -44,8 +44,6 @@ void UBTService_TargetUpdate::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 		if ((itemToEnemyDistance < playerToEnemyDistance && itemToEnemyDistance < 700) ||
 			itemToEnemyDistance < towerToEnemyDistance)
 		{
-			//OwnerComp.GetBlackboardComponent()->ClearValue(TEXT("Player"));
-			//OwnerComp.GetBlackboardComponent()->ClearValue(TEXT("PlayerLocation"));
 			OwnerComp.GetBlackboardComponent()->SetValueAsVector(TEXT("ItemLocation"), item->GetActorLocation());
 			OwnerComp.GetBlackboardComponent()->SetValueAsObject(TEXT("Item"), item);
 		}
@@ -56,17 +54,11 @@ void UBTService_TargetUpdate::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 	OwnerComp.GetBlackboardComponent()->ClearValue(TEXT("ItemLocation"));
 	OwnerComp.GetBlackboardComponent()->ClearValue(TEXT("Item"));
 
-	//if (!OwnerComp.GetAIOwner()->LineOfSightTo(player) || 
-	//	playerToEnemyDistance >= 700)
-
 	if (playerToEnemyDistance < 700)
 	{	
 		OwnerComp.GetBlackboardComponent()->ClearValue(TEXT("PlayerLocation"));
 		OwnerComp.GetBlackboardComponent()->ClearValue(TEXT("Player"));
 	}
-
-	//if (OwnerComp.GetAIOwner()->LineOfSightTo(player) && 
-	//	playerToEnemyDistance < 700)
 
 	if (playerToEnemyDistance < 700)
 	{

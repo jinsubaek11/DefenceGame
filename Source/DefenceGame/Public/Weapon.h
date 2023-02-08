@@ -32,6 +32,8 @@ public:
 	virtual void Shoot();
 	virtual void ReLoad();
 	void SetActive(bool value);
+	int32 GetBulletCounts() const;
+	int32 GetMaxBulletCounts() const;
 	bool HasRemainBullet() const;
 	WeaponType GetWeaponType() const;
 

@@ -13,7 +13,7 @@ AItemTurret::AItemTurret()
 
 	type = ItemType::TURRET;
 	hp = 50.f;
-	coolTime = 0.5f;
+	coolTime = 10.f;
 
 	boxComponent->SetBoxExtent(FVector(30, 30, 55));
 	boxComponent->SetCollisionProfileName(TEXT("ItemPreset"));

@@ -43,6 +43,16 @@ void AWeapon::SetActive(bool value)
 	SetActorTickEnabled(value);
 }
 
+int32 AWeapon::GetBulletCounts() const
+{
+	return bulletCounts;
+}
+
+int32 AWeapon::GetMaxBulletCounts() const
+{
+	return maxBulletCounts;
+}
+
 bool AWeapon::HasRemainBullet() const
 {
 	return bulletCounts > 0;

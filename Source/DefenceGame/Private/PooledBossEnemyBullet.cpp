@@ -30,7 +30,7 @@ APooledBossEnemyBullet::APooledBossEnemyBullet()
 
 	decalComponent = CreateDefaultSubobject<UDecalComponent>(TEXT("Decal Component"));
 
-	ConstructorHelpers::FObjectFinder<UMaterialInterface> decal(TEXT("/Script/Engine.Material'/Game/Material/M_ExplodeDecal.M_ExplodeDecal'"));
+	ConstructorHelpers::FObjectFinder<UMaterialInterface> decal(TEXT("/Script/Engine.Material'/Game/Material/M_Explode.M_Explode'"));
 	if (decal.Succeeded())
 	{
 		decalComponent->SetDecalMaterial(decal.Object);
