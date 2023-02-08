@@ -16,6 +16,11 @@
 #include "Rifle.h"
 #include "Bazooka.h"
 #include "Weapon.h"
+#include "GamePlayerUI.h"
+#include "Kismet/GameplayStatics.h"
+#include "DefenceGameMode.h"
+#include "MainUI.h"
+#include "CircularProgressBar.h"
 
 
 AGamePlayer::AGamePlayer()
@@ -63,6 +68,12 @@ void AGamePlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
+	playerUI = Cast<AGamePlayerUI>(UGameplayStatics::GetActorOfClass(GetWorld(), AGamePlayerUI::StaticClass()));
+	if (playerUI)
+	{
+		playerUI->SetAnimationState(EPlayerUIAnimationState::IDLE);
+	}
+
 	animationState = EPlayerAnimationState::MOVE;
 
 	rifle = GetWorld()->SpawnActor<ARifle>();
@@ -73,9 +84,8 @@ void AGamePlayer::BeginPlay()
 	handGrenade->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("RifleSocket"));
 
 	currentWeapon = Cast<AWeapon>(rifle);
-	//GetActorLocation() + GetActorForwardVector() * 300, GetActorRotation()
-
-	//isItemMode = true;
+	
+	gameMode = Cast<ADefenceGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 }
 
 void AGamePlayer::Tick(float DeltaTime)
@@ -84,13 +94,34 @@ void AGamePlayer::Tick(float DeltaTime)
 
 	if (obstacleRemainingTime > 0)
 	{
+		second += DeltaTime;
 		obstacleRemainingTime -= DeltaTime;
+
+		if (second >= 1.f && currentItemType == ItemType::OBSTACLE)
+		{
+			gameMode->mainUIWidget->PrintItemRemainingTime(
+				obstacleRemainingTime, itemCoolTime
+			);
+
+			second = 0.f;
+		}
 	}
 
 	if (turretRemainingTime > 0)
 	{
+		second += DeltaTime;
 		turretRemainingTime -= DeltaTime;
+
+		if (second >= 1.f && currentItemType == ItemType::TURRET)
+		{
+			gameMode->mainUIWidget->PrintItemRemainingTime(
+				turretRemainingTime, itemCoolTime
+			);
+
+			second = 0.f;
+		}
 	}
+
 
 	if (isItemMode && newItem)
 	{
@@ -104,6 +135,12 @@ void AGamePlayer::Tick(float DeltaTime)
 	if (currentWeapon->GetWeaponType() == WeaponType::RIFLE)
 	{
 		currentWeapon->Shoot();
+		if (gameMode->mainUIWidget)
+		{
+			gameMode->mainUIWidget->PrintBulletCount(
+				currentWeapon->GetBulletCounts(), currentWeapon->GetMaxBulletCounts()
+			);
+		}
 		isShoot = false;
 
 		FTimerDelegate timerDelegate;
@@ -119,6 +156,12 @@ void AGamePlayer::Tick(float DeltaTime)
 	if (isAttackEnable)
 	{
 		currentWeapon->Shoot();
+		if (gameMode->mainUIWidget)
+		{
+			gameMode->mainUIWidget->PrintBulletCount(
+				currentWeapon->GetBulletCounts(), currentWeapon->GetMaxBulletCounts()
+			);
+		}
 		isAttackEnable = false;
 	}
 }
@@ -145,7 +188,35 @@ void AGamePlayer::OnTakeDamage(float damage)
 {
 	hp -= damage;
 
-	//UE_LOG(LogTemp, Warning, TEXT("%f"), hp);
+	gameMode->mainUIWidget->HealthBar->PrintCurrentHealth((int)hp, (int)maxHp);
+
+	if (hp <= 0)
+	{
+		hp = 0;
+		gameMode->mainUIWidget->HealthBar->PrintCurrentHealth((int)hp, (int)maxHp);
+
+		playerUI->SetAnimationState(EPlayerUIAnimationState::DEAD);
+		SetAnimationState(EPlayerAnimationState::DEAD);
+
+		FTimerHandle timer;
+		FTimerDelegate timerDelegate;
+		timerDelegate.BindLambda([this] {
+			gameMode->ShowGameOverScreen();
+		});
+
+		GetWorldTimerManager().SetTimer(timer, timerDelegate, 2.f, false);
+
+		return;
+	}
+
+	playerUI->SetAnimationState(EPlayerUIAnimationState::HIT);
+	UPlayerUIAnim* playerUIAnim = Cast<UPlayerUIAnim>(playerUI->GetMesh()->GetAnimInstance());
+	if (playerUIAnim)
+	{
+		int rand = FMath::RandRange(1, 2);
+		FName sectionName = FName(FString("Hit") + FString::FormatAsNumber(rand));
+		playerUIAnim->PlayHitAnimation(sectionName);
+	}
 }
 
 void AGamePlayer::SetAttackAnimation(WeaponType weaponType)
@@ -250,10 +321,12 @@ void AGamePlayer::OnActionClick()
 			if (newItem->GetType() == ItemType::OBSTACLE)
 			{
 				obstacleRemainingTime = newItem->GetCoolTime();
+				itemCoolTime = obstacleRemainingTime;
 			}
 			else
 			{
 				turretRemainingTime = newItem->GetCoolTime();
+				itemCoolTime = turretRemainingTime;
 			}
 
 			newItem->SetPositionSucceed(true);
@@ -292,6 +365,19 @@ void AGamePlayer::OnActionUseItemMode(int32 itemIndex)
 		itemLocation.Z = 55;
 		newItem = GetWorld()->SpawnActor<AItemTurret>(itemLocation, itemRotation);
 		break;
+	}
+
+	currentItemType = newItem->GetType();
+
+	if (gameMode->mainUIWidget)
+	{
+		gameMode->mainUIWidget->SetCurrentItemImage(gameMode, currentItemType);
+
+		//if (obstacleRemainingTime > 0 || turretRemainingTime > 0) return;
+
+		gameMode->mainUIWidget->PrintItemRemainingTime(
+			newItem->GetCoolTime(), newItem->GetCoolTime()
+		);
 	}
 }
 
@@ -344,6 +430,15 @@ void AGamePlayer::OnActionSwitchWeapon(int32 weaponIndex)
 		break;
 	}
 
+	if (gameMode->mainUIWidget)
+	{
+		gameMode->mainUIWidget->SetCurrentWeaponImage(gameMode, currentWeapon->GetWeaponType());
+
+		gameMode->mainUIWidget->PrintBulletCount(
+			currentWeapon->GetBulletCounts(), currentWeapon->GetMaxBulletCounts()
+		);
+	}
+
 	if (currentWeapon->GetWeaponType() == WeaponType::HAND_GRENADE)
 	{
 		AHandGrenade* castCurrentWeapon = Cast<AHandGrenade>(currentWeapon);
@@ -351,6 +446,8 @@ void AGamePlayer::OnActionSwitchWeapon(int32 weaponIndex)
 	}
 	
 	currentWeapon->SetActive(true);
+
+
 }
 
 void AGamePlayer::OnActionReLoad()
@@ -358,6 +455,13 @@ void AGamePlayer::OnActionReLoad()
 	if (isItemMode) return;
 
 	currentWeapon->ReLoad();
+
+	if (gameMode->mainUIWidget)
+	{
+		gameMode->mainUIWidget->PrintBulletCount(
+			currentWeapon->GetBulletCounts(), currentWeapon->GetMaxBulletCounts()
+		);
+	}
 }
 
 void AGamePlayer::CheckEnableItemPosition(AItem& item)

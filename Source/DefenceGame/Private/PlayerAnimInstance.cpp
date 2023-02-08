@@ -18,11 +18,15 @@ void UPlayerAnimInstance::NativeInitializeAnimation()
 
 void UPlayerAnimInstance::NativeBeginPlay()
 {
+	Super::NativeBeginPlay();
+
 	player = Cast<AGamePlayer>(TryGetPawnOwner());
 }
 
 void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
-{	
+{
+	Super::NativeUpdateAnimation(DeltaSeconds);
+
 	if (!player) return;
 
 	FRotator rotation = player->GetActorRotation();

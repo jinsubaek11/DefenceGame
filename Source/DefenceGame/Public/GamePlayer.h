@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Weapon.h"
+#include "Item.h"
 #include "PlayerAnimInstance.h"
 #include "GameFramework/Character.h"
 #include "GamePlayer.generated.h"
@@ -65,13 +66,18 @@ private:
 	FTimerHandle animationTimer;
 	FVector direction;
 	float hp = 100.f;
+	float maxHp = 100.f;
 	bool isAttackEnable;
 	bool isShoot;
 
 	bool isItemMode;
+	ItemType currentItemType;
+	float itemCoolTime;
 	float obstacleRemainingTime;
 	float turretRemainingTime;
+	float second = 1.f;
 
+	class AGamePlayerUI* playerUI;
 	EPlayerAnimationState animationState;
 
 	class AWeapon* currentWeapon;
@@ -79,4 +85,6 @@ private:
 	class ARifle* rifle;
 	class ABazooka* bazooka;
 	class AHandGrenade* handGrenade;
+
+	class ADefenceGameMode* gameMode;
 };
