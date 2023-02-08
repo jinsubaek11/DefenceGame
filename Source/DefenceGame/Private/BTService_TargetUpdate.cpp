@@ -54,7 +54,7 @@ void UBTService_TargetUpdate::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 	OwnerComp.GetBlackboardComponent()->ClearValue(TEXT("ItemLocation"));
 	OwnerComp.GetBlackboardComponent()->ClearValue(TEXT("Item"));
 
-	if (playerToEnemyDistance < 700)
+	if (playerToEnemyDistance > 700)
 	{	
 		OwnerComp.GetBlackboardComponent()->ClearValue(TEXT("PlayerLocation"));
 		OwnerComp.GetBlackboardComponent()->ClearValue(TEXT("Player"));
