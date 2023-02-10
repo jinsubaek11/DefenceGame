@@ -33,5 +33,9 @@ private:
 	FVector currentPosition;
 
 	float autoDestroyRange;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect Sound")
+	class USoundBase* bazookaFireSound;
 	
 };

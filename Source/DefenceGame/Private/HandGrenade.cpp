@@ -69,6 +69,14 @@ AHandGrenade::AHandGrenade()
 
 	gravity = FVector(0, 0, -9.8);
 
+	/*Effect Sound*/
+	handGrenadeSound = CreateDefaultSubobject<USoundBase>(TEXT("handGrenade Sound"));
+	ConstructorHelpers::FObjectFinder<USoundBase> explosionSound(TEXT("/Script/Engine.SoundWave'/Game/Sound/Bomb4.Bomb4'"));
+	if (explosionSound.Succeeded())
+	{
+		handGrenadeSound = (explosionSound.Object);
+	}
+
 	SetActive(false);
 }
 
@@ -106,6 +114,7 @@ void AHandGrenade::Shoot()
 	Super::Shoot();
 
 	isShootStart = true;
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), handGrenadeSound, GetActorLocation(), GetActorRotation(), 1, 1.5f, 2);
 	isExploded = false;
 }
 

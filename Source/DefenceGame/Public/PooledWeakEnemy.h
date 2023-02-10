@@ -29,9 +29,20 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class UBoxComponent* teethBox;
 
+	UPROPERTY(EditDefaultsOnly, Category = "HPWidgetSettings")
+	class UcharacterHPWidget* weakEnemyHPBar;
+
+	UPROPERTY(EditDefaultsOnly, Category = "HPWidgetSettings")
+	class UWidgetComponent* wEnemyHPui;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect Sound")
+	class USoundBase* teethAttackSound;
+
+	void OnTakeWEnemyDamage(int32 damage);
+
 private:
 	class AWeakEnemyBulletPool* weakEnemyBulletPool;
-	const float HP = 20;
+	float HP = 20;
 
 	class AFatalTeeth* teeth;
 };

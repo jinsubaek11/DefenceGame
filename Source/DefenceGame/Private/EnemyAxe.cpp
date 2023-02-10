@@ -6,6 +6,7 @@
 #include "GamePlayer.h"
 #include "PooledStrongEnemy.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 AEnemyAxe::AEnemyAxe()
@@ -20,6 +21,12 @@ AEnemyAxe::AEnemyAxe()
 
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> aMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Weapons/VikingAxe/Hammer_skel.Hammer_skel'"));
 
+	if (aMesh.Succeeded())
+	{
+		axeMeshComp->SetSkeletalMesh(aMesh.Object);
+		axeMeshComp->SetRelativeLocationAndRotation(FVector(-72, 98, -39), FRotator(-24, 79, 0));
+		axeMeshComp->SetRelativeScale3D(FVector(0.7));
+	}
 	if(aMesh.Succeeded())
 	{
 		axeMeshComp->SetSkeletalMesh(aMesh.Object);
@@ -34,7 +41,7 @@ void AEnemyAxe::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//collision¿¡ ºÙÀÎ´Ù
+	//collisionï¿½ï¿½ ï¿½ï¿½ï¿½Î´ï¿½
 	boxComponent->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAxe::OnOverlap);
 
 
@@ -42,33 +49,34 @@ void AEnemyAxe::BeginPlay()
 
 void AEnemyAxe::Shoot()
 {
-	//¾Ö´Ï¸ÞÀÌ¼Ç ÈÖµÎ¸£¸é °ø°ÝÀÌ ¹ß»ý
-		
-	//psEnemy = Cast<APooledStrongEnemy>(GetOwner());
-	//if(!psEnemy) return;
-	//psEnemy->SetAnimationState(EEnemyAnimationState::ATTACK);
+	psEnemy = Cast<APooledStrongEnemy>(GetOwner());
+	if (!psEnemy) return;
+	psEnemy->SetAnimationState(EEnemyAnimationState::ATTACK);
 
-	//psEnemy->OnTakeDamage(axeAttackScore);
+	psEnemy->OnTakeDamage(axeAttackScore);
+
+	
 }
 
 void AEnemyAxe::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	//ºÎµúÈù ´ë»óÀÌ ÇÃ·¹ÀÌ¾î¶ó¸é
+	UE_LOG(LogTemp, Warning, TEXT("AEnemyAxe::OnOverlap : %s"), *OtherActor->GetName());
+	//ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½
 	AGamePlayer* gPlayer = Cast<AGamePlayer>(OtherActor);
 
 	if(gPlayer != nullptr)
 	{
-		//ÇÃ·¹ÀÌ¾îÀÇ Ã¼·ÂÀ» °¨¼Ò½ÃÅ²´Ù
+		//ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ Ã¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ò½ï¿½Å²ï¿½ï¿½
 		gPlayer->OnTakeDamage(axeAttackScore);
 	}
 
-	//ºÎµúÈù ´ë»óÀÌ ±Ý°í¶ó¸é
+	//ï¿½Îµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ý°ï¿½ï¿½ï¿½ï¿½
 	ATower* aTower = Cast<ATower>(OtherActor);
 
 	if( aTower != nullptr)
 	{
-		//±Ý°íÀÇ Ã¼·ÂÀ» °¨¼Ò½ÃÅ²´Ù
+		//ï¿½Ý°ï¿½ï¿½ï¿½ Ã¼ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ò½ï¿½Å²ï¿½ï¿½
 		aTower->OnTakeTowerDamage(axeAttackScore);
 	}
 

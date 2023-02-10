@@ -17,7 +17,7 @@ ATower::ATower()
 	PrimaryActorTick.bCanEverTick = true;
 
 	boxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Component"));
-	boxComponent->SetBoxExtent(FVector(40, 40, 100));
+	boxComponent->SetBoxExtent(FVector(165, 180, 190));
 	boxComponent->SetCollisionProfileName(TEXT("TowerPreset"));
 	SetRootComponent(boxComponent);
 
@@ -26,14 +26,14 @@ ATower::ATower()
 	if (mesh.Succeeded())
 	{
 		meshComponent->SetStaticMesh(mesh.Object);
-		meshComponent->SetRelativeScale3D(FVector(0.1));
-		meshComponent->SetRelativeLocation(FVector(0, 0, -110));
+		meshComponent->SetRelativeScale3D(FVector(14));
+		meshComponent->SetRelativeLocation(FVector(0, -16, 40));
 		meshComponent->SetupAttachment(RootComponent);
 	}
 
 	towerHPui = CreateDefaultSubobject<UWidgetComponent>(TEXT("towerHPui"));
 	towerHPui->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	towerHPui->SetRelativeRotation(FRotator(0, -180, 0));
+	towerHPui->SetRelativeLocationAndRotation(FVector(-4, -4, 238), FRotator(0, 90, 0));
 	towerHPui->SetWidgetSpace(EWidgetSpace::Screen);
 	//towerHPui->SetWidgetClass(widgetFactory);
 
@@ -49,19 +49,17 @@ ATower::ATower()
 void ATower::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	boxComponent->OnComponentBeginOverlap.AddDynamic(this, &ATower::OnOverlap);
 
 	chpWidget = Cast<UHPWidget>(towerHPui->GetWidget());
 
-	if(chpWidget)
+	if (chpWidget)
 	{
 		chpWidget->SetTowerHP(chpWidget->towerMaxHP);
 		//UE_LOG(LogTemp,Warning, TEXT("beginPlay %f"), chpWidget->towerMaxHP)
 	}
-
 	
-
 }
 
 void ATower::Tick(float DeltaTime)
@@ -75,10 +73,10 @@ void ATower::Tick(float DeltaTime)
 
 	//float dist = gPlayer->GetDistance(cm->GetCameraLocation());
 
-	
+
 	FRotator newRotation = UKismetMathLibrary::MakeRotFromXZ(
-	cm->GetCameraLocation() - GetActorLocation(),
-	GetActorUpVector());
+		cm->GetCameraLocation() - GetActorLocation(),
+		GetActorUpVector());
 
 	towerHPui->SetWorldRotation(newRotation);
 }
@@ -93,7 +91,7 @@ void ATower::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherAc
 	//AFatalTeeth* fteeth = Cast<AFatalTeeth>(OtherActor);
 	//if (!fteeth) return;
 	//체력이 떨어진다 tower의 hp - teeth의attack score
-	
+
 }
 
 void ATower::OnTakeTowerDamage(float attack)
@@ -101,6 +99,6 @@ void ATower::OnTakeTowerDamage(float attack)
 	towerHP -= attack;
 	UE_LOG(LogTemp, Warning, TEXT("ATower::OnTakeTowerDamage %f"), towerHP)
 
-	chpWidget->SetTowerHP(towerHP);
+		chpWidget->SetTowerHP(towerHP);
 }
 

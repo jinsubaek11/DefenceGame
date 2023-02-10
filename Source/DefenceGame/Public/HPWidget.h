@@ -24,9 +24,9 @@ public:
 
 
 	//Tower hp
-	float towerMaxHP = 800.0f;
+	float towerMaxHP = 1000.0f;
 	//Tower 공격받은 후hp
-	float towerCurrentHP;
+	float towerCurrentHP = 1000.f;
 
 	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HPWidgetSettings", meta = (BindWidget))
 	//TSubclassOf<class ATower> cTower;
@@ -34,7 +34,7 @@ public:
 
 public:
 
-	void GetTowerHP(float attackTowerScore);
+	void OnTakeDamage(int32 attackTowerScore);
 	void ShowHealthBar(float hp);
 	void SetTowerHP(float hp);
 	

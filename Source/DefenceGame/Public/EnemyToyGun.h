@@ -22,6 +22,8 @@ protected:
 public:
 	void Shoot(AActor* target);
 
+
+
 private:
 	UPROPERTY(EditAnywhere)
 	class USkeletalMeshComponent* skeletalMeshComponent;

@@ -62,6 +62,36 @@ AGamePlayer::AGamePlayer()
 		planeComponent->CastShadow = false;
 	}
 	planeComponent->SetupAttachment(RootComponent);
+
+	/*Effect Sound*/
+	stepSound = CreateDefaultSubobject<USoundBase>(TEXT("turret Fire Sound"));
+	ConstructorHelpers::FObjectFinder<USoundBase> walkingSound(TEXT("/Script/Engine.SoundWave'/Game/Sound/FootStep1_run.FootStep1_run'"));
+	if (walkingSound.Succeeded())
+	{
+		stepSound = (walkingSound.Object);
+	}
+
+	
+	reloadSound = CreateDefaultSubobject<USoundBase>(TEXT("turret Fire Sound"));
+	ConstructorHelpers::FObjectFinder<USoundBase> reloadingSound(TEXT("/ Script / Engine.SoundWave'/Game/Sound/Reload1.Reload1'"));
+	if (reloadingSound.Succeeded())
+	{
+		reloadSound = (reloadingSound.Object);
+	}
+
+	gethurtungSound = CreateDefaultSubobject<USoundBase>(TEXT("get hurtung Sound"));
+	ConstructorHelpers::FObjectFinder<USoundBase> getHurtSound(TEXT("/ Script / Engine.SoundWave'/Game/Sound/Dying2_1.Dying2_1'"));
+	if (getHurtSound.Succeeded())
+	{
+		gethurtungSound = (getHurtSound.Object);
+	}
+
+	deadSound = CreateDefaultSubobject<USoundBase>(TEXT("get hurtung Sound"));
+	ConstructorHelpers::FObjectFinder<USoundBase> deadingSound(TEXT("/Script/Engine.SoundWave'/Game/Sound/Dying.Dying'"));
+	if (deadingSound.Succeeded())
+	{
+		deadSound = (deadingSound.Object);
+	}
 }
 
 void AGamePlayer::BeginPlay()
@@ -182,7 +212,7 @@ void AGamePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 void AGamePlayer::OnTakeDamage(float damage)
 {
 	hp -= damage;
-
+		
 	gameMode->mainUIWidget->HealthProgressBar->PrintCurrentHealth((int)hp, (int)maxHp);
 
 	if (hp <= 0)
@@ -192,6 +222,9 @@ void AGamePlayer::OnTakeDamage(float damage)
 
 		playerUI->SetAnimationState(EPlayerUIAnimationState::DEAD);
 		SetAnimationState(EPlayerAnimationState::DEAD);
+
+		/*Dead Sound*/
+		UGameplayStatics::PlaySoundAtLocation(this, deadSound, GetActorLocation(), GetActorRotation());
 
 		APlayerController* playerController = GetWorld()->GetFirstPlayerController();
 		if (playerController)
@@ -209,6 +242,9 @@ void AGamePlayer::OnTakeDamage(float damage)
 
 		return;
 	}
+
+	/*Hurt Sound*/
+	UGameplayStatics::PlaySoundAtLocation(this, gethurtungSound, GetActorLocation(), GetActorRotation());
 
 	playerUI->SetAnimationState(EPlayerUIAnimationState::HIT);
 	UPlayerUIAnim* playerUIAnim = Cast<UPlayerUIAnim>(playerUI->GetMesh()->GetAnimInstance());
@@ -293,20 +329,28 @@ void AGamePlayer::OnAxisTurnRight(float value)
 
 void AGamePlayer::OnAxisMoveForward(float value)
 {
+
 	FVector axisX = FVector(value, 0, 0).RotateAngleAxis(
 		GetControlRotation().Yaw, FVector(0, 0, 1)
 	);
 
 	AddMovementInput(axisX);
+
+	/*Walk Sound*/
+	//UGameplayStatics::PlaySoundAtLocation(this, stepSound, GetActorLocation(), GetActorRotation());
 }
 
 void AGamePlayer::OnAxisMoveRight(float value)
 {
+
 	FVector axisY = FVector(0, value, 0).RotateAngleAxis(
 		GetControlRotation().Yaw, FVector(0, 0, 1)
 	);
 
 	AddMovementInput(axisY);
+
+	/*Walk Sound*/
+	//UGameplayStatics::PlaySoundAtLocation(this, stepSound, GetActorLocation(), GetActorRotation());
 }
 
 void AGamePlayer::OnActionClick()
@@ -456,6 +500,9 @@ void AGamePlayer::OnActionReLoad()
 	if (isItemMode) return;
 
 	currentWeapon->ReLoad();
+
+	/*Reload Sound*/
+	UGameplayStatics::PlaySoundAtLocation(this, reloadSound, GetActorLocation(), GetActorRotation());
 
 	if (gameMode->mainUIWidget)
 	{

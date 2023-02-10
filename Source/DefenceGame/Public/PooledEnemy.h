@@ -29,6 +29,10 @@ public:
 	UFUNCTION()
 	void OnDeath();
 
+	//player의 공격당했을 때
+	/*UFUNCTION()
+	void OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);*/
+
 protected:
 	virtual void Reset();
 	void SetEnemyState(float health);

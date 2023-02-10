@@ -7,6 +7,7 @@
 #include "PooledWeakEnemy.h"
 #include "Tower.h"
 #include "GamePlayer.h"
+#include "Kismet/GameplayStatics.h"
 
 
 AFatalTeeth::AFatalTeeth()
@@ -14,7 +15,11 @@ AFatalTeeth::AFatalTeeth()
 	boxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("boxComp"));
 	SetRootComponent(boxComp);
 	boxComp->SetCollisionProfileName(TEXT("EnemyBulletPreset"));
-	
+
+	if (!pwEnemy) return;
+	boxComp->SetupAttachment(pwEnemy->teethBox);
+
+
 }
 
 void AFatalTeeth::BeginPlay()
@@ -28,6 +33,13 @@ void AFatalTeeth::BeginPlay()
 
 void AFatalTeeth::Shoot()
 {
+	pwEnemy = Cast<APooledWeakEnemy>(GetOwner());
+	//체력 감소시킬 이빨 공격 하는 타이밍
+	if (!pwEnemy) return;
+	pwEnemy->SetAnimationState(EEnemyAnimationState::ATTACK);
+
+	pwEnemy->OnTakeDamage(teethAttackScore);
+
 
 }
 
