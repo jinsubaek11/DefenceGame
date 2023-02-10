@@ -2,7 +2,21 @@
 #include "Components/TextBlock.h"
 #include "Components/Image.h"
 #include "DefenceGameMode.h"
+#include "Components/VerticalBox.h"
+#include "Components/Overlay.h"
 
+
+void UMainUI::NativeConstruct()
+{
+	backgroundMat = Cast<UMaterialInterface>(BoxBG->Brush.GetResourceObject());
+	if (backgroundMat)
+	{
+		dynamicBackgroundMat = UMaterialInstanceDynamic::Create(backgroundMat, this);
+		BoxBG->SetBrushFromMaterial(dynamicBackgroundMat);
+	}
+
+	ItemBox->SetVisibility(ESlateVisibility::Hidden);
+}
 
 void UMainUI::PrintBulletCount(int32 bulletCount, int32 maxBulletCount)
 {
@@ -10,14 +24,18 @@ void UMainUI::PrintBulletCount(int32 bulletCount, int32 maxBulletCount)
 	MaxCountText->SetText(FText::AsNumber(maxBulletCount));
 }
 
-void UMainUI::PrintItemRemainingTime(int32 remainingTime, int32 coolTime)
+void UMainUI::PrintItemRemainingTime(float remainingTime, float coolTime)
 {
-	CountText->SetText(FText::AsNumber(remainingTime));
-	MaxCountText->SetText(FText::AsNumber(coolTime));
+	//dynamicBackgroundMat->SetMat
+	dynamicBackgroundMat->SetScalarParameterValue(TEXT("Percent"), remainingTime / coolTime);
+	RemainingTime->SetText(FText::AsNumber((int)remainingTime));
 }
 
 void UMainUI::SetCurrentWeaponImage(ADefenceGameMode* gameMode, WeaponType type)
 {
+	WeaponBox->SetVisibility(ESlateVisibility::Visible);
+	ItemBox->SetVisibility(ESlateVisibility::Hidden);
+
 	switch (type)
 	{
 	case WeaponType::RIFLE:
@@ -34,13 +52,17 @@ void UMainUI::SetCurrentWeaponImage(ADefenceGameMode* gameMode, WeaponType type)
 
 void UMainUI::SetCurrentItemImage(ADefenceGameMode* gameMode, ItemType type)
 {
+	ItemBox->SetVisibility(ESlateVisibility::Visible);
+	WeaponBox->SetVisibility(ESlateVisibility::Hidden);
+
 	switch (type)
 	{
 	case ItemType::OBSTACLE:
-		IconImage->SetBrushFromMaterial(gameMode->iconMats["obstacle"]);
+		ItemImage->SetBrushFromMaterial(gameMode->iconMats["obstacle"]);
 		break;
 	case ItemType::TURRET:
-		IconImage->SetBrushFromMaterial(gameMode->iconMats["turret"]);
+		ItemImage->SetBrushFromMaterial(gameMode->iconMats["turret"]);
 		break;
 	}
 }
+

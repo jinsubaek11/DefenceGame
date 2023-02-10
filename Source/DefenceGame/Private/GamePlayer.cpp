@@ -124,31 +124,25 @@ void AGamePlayer::Tick(float DeltaTime)
 
 	if (obstacleRemainingTime > 0)
 	{
-		second += DeltaTime;
 		obstacleRemainingTime -= DeltaTime;
 
-		if (second >= 1.f && currentItemType == ItemType::OBSTACLE)
+		if (currentItemType == ItemType::OBSTACLE)
 		{
 			gameMode->mainUIWidget->PrintItemRemainingTime(
 				obstacleRemainingTime, itemCoolTime
 			);
-
-			second = 0.f;
 		}
 	}
 
 	if (turretRemainingTime > 0)
 	{
-		second += DeltaTime;
 		turretRemainingTime -= DeltaTime;
 
-		if (second >= 1.f && currentItemType == ItemType::TURRET)
+		if (currentItemType == ItemType::TURRET)
 		{
 			gameMode->mainUIWidget->PrintItemRemainingTime(
 				turretRemainingTime, itemCoolTime
 			);
-
-			second = 0.f;
 		}
 	}
 
