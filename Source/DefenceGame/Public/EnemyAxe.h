@@ -29,8 +29,6 @@ public:
 
 	class APooledStrongEnemy* psEnemy;
 
-
-
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class APooledStrongEnemyBullet> sEnemyBulletPool;
 

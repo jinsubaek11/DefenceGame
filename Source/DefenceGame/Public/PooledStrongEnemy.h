@@ -32,10 +32,6 @@ private:
 	class AEnemyAxe* axe;
 
 public:
-	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-		class USkeletalMeshComponent* axeMesh;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 		class UBoxComponent* axeBox;
 

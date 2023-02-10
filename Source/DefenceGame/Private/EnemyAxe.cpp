@@ -16,8 +16,17 @@ AEnemyAxe::AEnemyAxe()
 	SetRootComponent(boxComponent);
 	boxComponent->SetCollisionProfileName(TEXT("EnemyBulletPreset"));
 
+	//axeMesh
+	axeMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("axeMeshComp"));
 
+	ConstructorHelpers::FObjectFinder<USkeletalMesh> aMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Weapons/VikingAxe/Hammer_skel.Hammer_skel'"));
 
+	if (aMesh.Succeeded())
+	{
+		axeMeshComp->SetSkeletalMesh(aMesh.Object);
+		axeMeshComp->SetRelativeLocationAndRotation(FVector(-72, 98, -39), FRotator(-24, 79, 0));
+		axeMeshComp->SetRelativeScale3D(FVector(0.7));
+	}
 	if(aMesh.Succeeded())
 	{
 		axeMeshComp->SetSkeletalMesh(aMesh.Object);

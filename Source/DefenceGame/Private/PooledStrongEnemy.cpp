@@ -25,19 +25,6 @@ APooledStrongEnemy::APooledStrongEnemy()
 		meshComponent->SetRelativeScale3D(FVector(2));
 	}
 
-	//axeMesh
-	axeMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("axeMeshComp"));
-
-	ConstructorHelpers::FObjectFinder<USkeletalMesh> aMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Weapons/VikingAxe/Hammer_skel.Hammer_skel'"));
-
-	if (aMesh.Succeeded())
-	{
-		axeMesh->SetSkeletalMesh(aMesh.Object);
-		axeMesh->SetupAttachment(GetMesh(),TEXT("RightHandaxeSocket"));
-		axeMesh->SetRelativeLocationAndRotation(FVector(-72, 98, -39), FRotator(-24, 79, 0));
-		axeMesh->SetRelativeScale3D(FVector(0.7));
-	}
-
 	/*HP widget*/
 	strongEnemyHPui = CreateDefaultSubobject<UWidgetComponent>(TEXT("strongEnemyHPui"));
 	strongEnemyHPui->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
