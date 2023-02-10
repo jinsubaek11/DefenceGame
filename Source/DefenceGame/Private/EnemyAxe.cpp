@@ -6,6 +6,7 @@
 #include "GamePlayer.h"
 #include "PooledStrongEnemy.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 AEnemyAxe::AEnemyAxe()
@@ -15,18 +16,10 @@ AEnemyAxe::AEnemyAxe()
 	SetRootComponent(boxComponent);
 	boxComponent->SetCollisionProfileName(TEXT("EnemyBulletPreset"));
 
-	//axeMesh
-	axeMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("axeMeshComp"));
 
-	ConstructorHelpers::FObjectFinder<USkeletalMesh> aMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Weapons/VikingAxe/Hammer_skel.Hammer_skel'"));
+	
 
-	if(aMesh.Succeeded())
-	{
-		axeMeshComp->SetSkeletalMesh(aMesh.Object);
-		axeMeshComp->SetupAttachment(RootComponent);
-		axeMeshComp->SetRelativeLocationAndRotation(FVector(-72, 98, -39), FRotator(-24, 79, 0));
-		axeMeshComp->SetRelativeScale3D(FVector(0.7));
-	}
+	
 }
 
 void AEnemyAxe::BeginPlay()
@@ -41,18 +34,19 @@ void AEnemyAxe::BeginPlay()
 
 void AEnemyAxe::Shoot()
 {
-	//애니메이션 휘두르면 공격이 발생
-		
-	//psEnemy = Cast<APooledStrongEnemy>(GetOwner());
-	//if(!psEnemy) return;
-	//psEnemy->SetAnimationState(EEnemyAnimationState::ATTACK);
+	psEnemy = Cast<APooledStrongEnemy>(GetOwner());
+	if (!psEnemy) return;
+	psEnemy->SetAnimationState(EEnemyAnimationState::ATTACK);
 
-	//psEnemy->OnTakeDamage(axeAttackScore);
+	psEnemy->OnTakeDamage(axeAttackScore);
+
+	
 }
 
 void AEnemyAxe::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	UE_LOG(LogTemp, Warning, TEXT("AEnemyAxe::OnOverlap : %s"), *OtherActor->GetName());
 	//부딪힌 대상이 플레이어라면
 	AGamePlayer* gPlayer = Cast<AGamePlayer>(OtherActor);
 

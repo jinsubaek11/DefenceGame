@@ -45,6 +45,21 @@ AItemTurret::AItemTurret()
 		originalTowerBaseMaterial = towerBaseComponent->GetMaterials();
 		transparentMaterial = mat.Object;
 	}
+
+	/*Effect Sound*/
+	turretFireSound = CreateDefaultSubobject<USoundBase>(TEXT("turret Fire Sound"));
+	ConstructorHelpers::FObjectFinder<USoundBase> turretSound(TEXT("/Script/Engine.SoundWave'/Game/Sound/Shoot4.Shoot4'"));
+	if (turretSound.Succeeded())
+	{
+		turretFireSound = (turretSound.Object);
+	}
+
+	turretinstallSound = CreateDefaultSubobject<USoundBase>(TEXT("turret Fire Sound"));
+	ConstructorHelpers::FObjectFinder<USoundBase> turretinstalledSound(TEXT("/Script/Engine.SoundWave'/Game/Sound/InstallTurret.InstallTurret'"));
+	if (turretinstalledSound.Succeeded())
+	{
+		turretinstallSound = (turretinstalledSound.Object);
+	}
 }
 
 void AItemTurret::Tick(float DeltaTime)
@@ -137,11 +152,15 @@ void AItemTurret::Shoot(APooledEnemy* target)
 	);
 
 	bullet->SetDeactiveTimer(1.5f);
+
+	UGameplayStatics::PlaySoundAtLocation(this, turretFireSound, GetActorLocation(), GetActorRotation());
 }
 
 void AItemTurret::SetPositionSucceed(bool value)
 {
 	isSetSucceed = value;
+
+	UGameplayStatics::PlaySoundAtLocation(this, turretinstallSound, GetActorLocation(), GetActorRotation());
 
 	for (int i = 0; i < originalTowerTurretMaterial.Num(); i++)
 	{
@@ -152,6 +171,7 @@ void AItemTurret::SetPositionSucceed(bool value)
 	{
 		towerBaseComponent->SetMaterial(i, originalTowerBaseMaterial[i]);
 	}
+
 }
 
 //void AItemTurret::OnBeginOverlapItem(AActor* actor)

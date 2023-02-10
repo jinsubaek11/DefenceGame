@@ -51,12 +51,14 @@ void APooledEnemyBullet::OnHit(UPrimitiveComponent* OverlappedComponent, AActor*
 		SetActive(false);
 	}
 
-	//UHPWidget* hpwidget = Cast<UHPWidget>(OtherActor);
-	//if (hpwidget != nullptr)
-	//{
-	//	//Bullet�� ������ Tower�� hp�� �پ���
-	//	hpwidget->GetTowerHP(attackScore);
-	//}
+	if (tower != nullptr)
+	{
+		//Bullet Tower hp
+		UE_LOG(LogTemp, Warning, TEXT("tower get bullet"));
+
+		tower->chpWidget->OnTakeDamage(GetDamage());
+	}
+	
 	
 }
 

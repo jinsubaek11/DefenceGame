@@ -26,6 +26,14 @@ APooledPlayerBazookaBullet::APooledPlayerBazookaBullet()
 		explosion = particle.Object;
 		//explosion->
 	}
+
+	/*Effect Sound*/
+	bazookaFireSound = CreateDefaultSubobject<USoundBase>(TEXT("bazookaFireSound"));
+	ConstructorHelpers::FObjectFinder<USoundBase> bazookaSound(TEXT("/Script/Engine.SoundWave'/Game/Sound/Rocekt1.Rocekt1'"));
+	if (bazookaSound.Succeeded())
+	{
+		bazookaFireSound = (bazookaSound.Object);
+	}
 }
 
 void APooledPlayerBazookaBullet::Tick(float DeltaTime)
@@ -72,6 +80,8 @@ void APooledPlayerBazookaBullet::OnHitSpecificBullet(AActor* OtherActor, const F
 
 	bool isHit = GetWorld()->SweepMultiByObjectType(hitResults, sweepStart, sweepEnd, FQuat::Identity, objectQueryParams, sphereCollision);
 	
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), bazookaFireSound, GetActorLocation(), GetActorRotation());
+
 	if (isHit)
 	{
 		for (auto hitResult : hitResults)

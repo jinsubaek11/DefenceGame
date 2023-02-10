@@ -26,4 +26,8 @@ private:
 	class UStaticMeshComponent* meshComponent;
 	UPROPERTY()
 	TArray<class UMaterialInterface*> originalMaterial;
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect Sound")
+	class USoundBase* setObstacle;
 };

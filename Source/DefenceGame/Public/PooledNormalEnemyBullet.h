@@ -16,4 +16,8 @@ public:
 protected:
 	virtual void OnHitSpecificBullet(AActor* OtherActor, const FHitResult& SweepResult) override;
 
+public:
+	//UPROPERTY()
+	//class UParticleSystem* eExplosion;
+
 };

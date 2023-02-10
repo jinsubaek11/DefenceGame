@@ -59,6 +59,18 @@ public:
 	UPROPERTY(EditAnywhere, Category = Icon)
 	class UStaticMeshComponent* planeComponent;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect Sound")
+	class USoundBase* stepSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect Sound")
+	class USoundBase* reloadSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect Sound")
+	class USoundBase* gethurtungSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect Sound")
+	class USoundBase* deadSound;
+
 
 private:
 	TArray<class AItem*> items;

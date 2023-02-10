@@ -22,6 +22,9 @@ public:
 public:
 	virtual void Shoot() override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effect Sound")
+	class USoundBase* rifleFireSound;
+
 private:
 	virtual void DrawWeaponRange() override;
 
