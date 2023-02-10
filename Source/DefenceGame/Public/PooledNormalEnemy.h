@@ -26,9 +26,27 @@ protected:
 	virtual void Reset() override;
 
 private:
-	const float HP = 30;
+	float HP = 30;
+
 	UPROPERTY()
 	class AEnemyToyGun* gun;
+
 	UPROPERTY()
 	class UEnemyAnimInstance* enemyAnim;
+
+	class ANormalEnemyBulletPool* normalEnemyBulletPool;
+	
+
+public:
+	UPROPERTY(EditDefaultsOnly, Category = "HPWidgetSettings")
+	class UWidgetComponent* nEnemyHPui;
+
+	UPROPERTY(EditDefaultsOnly, Category = "HPWidgetSettings")
+	class UcharacterHPWidget* normalEnemyHPBar;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect Sound")
+	class USoundBase* nEnemyFireSound;
+
+	void OnTakeNEnemyDamage(int32 damage);
+
 };

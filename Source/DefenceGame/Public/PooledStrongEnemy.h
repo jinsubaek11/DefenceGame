@@ -27,7 +27,26 @@ protected:
 
 private:
 	class AStrongEnemyBulletPool* strongEnemyBulletPool;
-	const float HP = 50;
+	float HP = 50;
 
 	class AEnemyAxe* axe;
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+		class UBoxComponent* axeBox;
+
+	UPROPERTY()
+		class UcharacterHPWidget* shpWidget;
+
+	UPROPERTY(EditDefaultsOnly, Category = "HPWidgetSettings")
+		class UWidgetComponent* strongEnemyHPui;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect Sound")
+	class USoundBase* axeHitSound;
+
+	//금고에 공격
+	void OnTakeSEnemyDamage(float attack);
+
+	//플레이어의 공격
+	//void OnTakeSEnemyDamagePlayer(int32 damage);
 };

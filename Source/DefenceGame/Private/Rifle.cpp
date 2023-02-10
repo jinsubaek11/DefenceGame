@@ -56,6 +56,14 @@ ARifle::ARifle()
 
 	SetActorRelativeRotation(FRotator(40, -20, 125));
 	SetActorRelativeLocation(FVector(0, 0, 5));
+
+	/*Effect Sound*/
+	rifleFireSound = CreateDefaultSubobject<USoundBase>(TEXT("rifle Fire Sound"));
+	ConstructorHelpers::FObjectFinder<USoundBase> rifleSound(TEXT("/Script/Engine.SoundWave'/Game/Sound/Shoot2.Shoot2'"));
+	if (rifleSound.Succeeded())
+	{
+		rifleFireSound = (rifleSound.Object);
+	}
 }
 
 void ARifle::BeginPlay()
@@ -118,4 +126,6 @@ void ARifle::Shoot()
 			enemy->OnTakeDamage(att);
 		}
 	}
+
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), rifleFireSound, GetActorLocation(), GetActorRotation());
 }

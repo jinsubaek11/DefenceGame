@@ -1,5 +1,6 @@
 #include "ItemObstacle.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 AItemObstacle::AItemObstacle()
@@ -28,6 +29,15 @@ AItemObstacle::AItemObstacle()
 		originalMaterial = meshComponent->GetMaterials();
 		transparentMaterial = mat.Object;
 	}
+
+	/*Effect Sound*/
+	setObstacle = CreateDefaultSubobject<USoundBase>(TEXT("obstacle Sound"));
+	ConstructorHelpers::FObjectFinder<USoundBase> obstacleSound(TEXT("/Script/Engine.SoundWave'/Game/Sound/Wood1.Wood1'"));
+	if (obstacleSound.Succeeded())
+	{
+		setObstacle = (obstacleSound.Object);
+	}
+
 }
 
 void AItemObstacle::BeginPlay()
@@ -48,6 +58,8 @@ void AItemObstacle::SetPositionSucceed(bool value)
 	{
 		meshComponent->SetMaterial(i, originalMaterial[i]);
 	}
+
+	UGameplayStatics::PlaySoundAtLocation(this, setObstacle, GetActorLocation(), 2);
 }
 
 //void AItemObstacle::OnBeginOverlapItem(AActor* actor)

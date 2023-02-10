@@ -40,4 +40,11 @@ private:
 	TArray<class UMaterialInterface*> originalTowerBaseMaterial;
 
 	float currentTime;
+
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect Sound")
+	class USoundBase* turretFireSound;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect Sound")
+	class USoundBase* turretinstallSound;
 };

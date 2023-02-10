@@ -1,10 +1,14 @@
 #include "PooledWeakEnemy.h"
+
+#include "characterHPWidget.h"
 #include "WeakEnemyBulletPool.h"
 #include "PooledWeakEnemyBullet.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/BoxComponent.h"
 #include "EnemyAIController.h"
 #include "FatalTeeth.h"
+#include "Components/WidgetComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 APooledWeakEnemy::APooledWeakEnemy()
@@ -25,6 +29,22 @@ APooledWeakEnemy::APooledWeakEnemy()
 	teethBox->SetupAttachment(GetMesh(), TEXT("TeethSocket"));
 	teethBox->SetRelativeLocation(FVector(0, 52, 156));
 
+	/*HP widget*/
+	wEnemyHPui = CreateDefaultSubobject<UWidgetComponent>(TEXT("weakEnemyHPui"));
+	wEnemyHPui->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	wEnemyHPui->SetRelativeLocationAndRotation(FVector(0, 0, 110), FRotator(0, 0, 0));
+	wEnemyHPui->SetWidgetSpace(EWidgetSpace::World);
+
+	ConstructorHelpers::FClassFinder<UUserWidget> weakEnemyhpwidget(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprint/WBP_characterHPWidget.WBP_characterHPWidget_C'"));
+
+	if (weakEnemyhpwidget.Succeeded())
+	{
+		wEnemyHPui->SetWidgetClass(weakEnemyhpwidget.Class);
+		wEnemyHPui->SetRelativeLocation(FVector(0, 0, 100));
+		wEnemyHPui->SetRelativeScale3D(FVector(0.3f));
+		wEnemyHPui->SetDrawSize(FVector2D(600, 500));
+	}
+
 	ConstructorHelpers::FClassFinder<AEnemyAIController> bpAIControllerClass(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/EnemyAI/BP_WeakEnemyAIController.BP_WeakEnemyAIController_C'"));
 	if (bpAIControllerClass.Succeeded())
 	{
@@ -39,6 +59,15 @@ APooledWeakEnemy::APooledWeakEnemy()
 	}
 
 	SetEnemyState(HP);
+
+	/*Effect Sound*/
+	teethAttackSound = CreateDefaultSubobject<USoundBase>(TEXT("rifle Fire Sound"));
+	ConstructorHelpers::FObjectFinder<USoundBase> teethSound(TEXT("/Script/Engine.SoundWave'/Game/Sound/Teeth_Sound1.Teeth_Sound1'"));
+	if (teethSound.Succeeded())
+	{
+		teethAttackSound = (teethSound.Object);
+	}
+
 }
 
 void APooledWeakEnemy::Tick(float DeltaTime)
@@ -70,18 +99,16 @@ void APooledWeakEnemy::Attack(AActor* target)
 
 	SetAnimationState(EEnemyAnimationState::ATTACK);
 
-	//teeth->Shoot();
+	teeth->Shoot();
+	UGameplayStatics::PlaySoundAtLocation(this, teethAttackSound, GetActorLocation(), GetActorRotation(), 2);
+	
+}
 
-	//FVector spawnPosition = GetActorLocation() + GetActorForwardVector();
-	//FRotator spawnRotator = (target->GetActorLocation() - GetActorLocation()).Rotation();
-
-	//APooledWeakEnemyBullet* weakEnemyBullet = Cast<APooledWeakEnemyBullet>(
-	//	weakEnemyBulletPool->SpawnPooledObject(spawnPosition, spawnRotator));
-
-	//if (IsValid(weakEnemyBullet))
-	//{
-	//	weakEnemyBullet->SetDeactiveTimer(1.5f);
-	//}
+void APooledWeakEnemy::OnTakeWEnemyDamage(int32 damage)
+{
+	HP -= damage;
+	weakEnemyHPBar->SetcharacterHP(HP);
+	UE_LOG(LogTemp, Error, TEXT("Normal Enemy On Take Damage %f"), HP)
 }
 
 void APooledWeakEnemy::Reset()
