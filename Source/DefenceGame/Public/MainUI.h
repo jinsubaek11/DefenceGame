@@ -13,8 +13,11 @@ class DEFENCEGAME_API UMainUI : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	virtual void NativeConstruct() override;
+
+public:
 	void PrintBulletCount(int32 bulletCount, int32 maxBulletCount);
-	void PrintItemRemainingTime(int32 remainingTime, int32 coolTime);
+	void PrintItemRemainingTime(float remainingTime, float coolTime);
 	void SetCurrentWeaponImage(class ADefenceGameMode* gameMode, WeaponType type);
 	void SetCurrentItemImage(class ADefenceGameMode* gameMode, ItemType type);
 
@@ -27,7 +30,17 @@ public:
 	class UCircularProgressBar* HealthProgressBar;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySetting", meta = (BindWidget))
 	class UImage* IconImage;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySetting", meta = (BindWidget))
+	class UImage* ItemImage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySetting", meta = (BindWidget))
+	class UImage* BoxBG;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySetting", meta = (BindWidget))
+	class UVerticalBox* WeaponBox;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySetting", meta = (BindWidget))
+	class UOverlay* ItemBox;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySetting", meta = (BindWidget))
+	class UTextBlock* RemainingTime;
+	
 	UPROPERTY()
 	class UMaterialInterface* rifleMat;
 	UPROPERTY()
@@ -39,6 +52,10 @@ public:
 	UPROPERTY()
 	class UMaterialInterface* turretMat;
 
+	UPROPERTY()
+	class UMaterialInterface* backgroundMat;
+	UPROPERTY()
+	class UMaterialInstanceDynamic* dynamicBackgroundMat;
 
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySetting", meta = (BindWidget))

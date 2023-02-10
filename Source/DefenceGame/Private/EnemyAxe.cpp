@@ -24,7 +24,8 @@ AEnemyAxe::AEnemyAxe()
 	{
 		axeMeshComp->SetSkeletalMesh(aMesh.Object);
 		axeMeshComp->SetupAttachment(RootComponent);
-		axeMeshComp->SetRelativeLocationAndRotation(FVector(-72, 98, -39), FRotator(-24, 79, 0));
+		//axeMeshComp->SetRelativeLocationAndRotation(FVector(-72, 98, -39), FRotator(-24, 79, 0));
+		axeMeshComp->SetRelativeLocationAndRotation(FVector(-160, 112, -53), FRotator(-24, 79, 0));
 		axeMeshComp->SetRelativeScale3D(FVector(0.7));
 	}
 }
