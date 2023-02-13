@@ -17,9 +17,18 @@ protected:
 	void BeginPlay() override;
 
 public:
-	void HideUI();
+	void HideScreenBeforGameStart();
+	void ShowStageScreen(FString stageText);
+	void ShowVictoryScreen();
 	void ShowGameOverScreen();
-	void ShowWarningBossScreen();
+	void ShowWarningBossScreen(FString stageText, FString methodText = "");
+	void PrintStageRemainingTime();
+
+	bool HasHandicap() const;
+
+private:
+	void UpgradeStage();
+	void SetBossSpawnerLocation();
 
 public:
 	UPROPERTY(EditAnywhere, Category = "UI")
@@ -31,6 +40,16 @@ public:
 	TSubclassOf<UUserWidget> warningBossUI;
 	UPROPERTY()
 	class UWarningBossWidget* warningBossWidget;
+
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<UUserWidget> victoryUI;
+	UPROPERTY()
+	class UVictoryWidget* victoryWidget;
+
+	UPROPERTY(EditAnywhere, Category = "UI")
+	TSubclassOf<UUserWidget> stageUI;
+	UPROPERTY()
+	class UStageWidget* stageWidget;
 
 	UPROPERTY(EditAnywhere, Category = "UI")
 	TSubclassOf<UUserWidget> gameOverUI;
@@ -48,12 +67,25 @@ public:
 	class UUserWidget* miniMapWidget;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
-	TSubclassOf<class UScreenBeforeGameStart> screenBeforGameStart;
+	TSubclassOf<class UUserWidget> screenBeforGameStartUI;
 	UPROPERTY()
-	class UScreenBeforeGameStart* sbgs;
+	class UScreenBeforeGameStart* screenBeforGameStart;
 
 	TMap<FString, UMaterialInterface*> iconMats;
 	TArray<FString> stageTexts;
+	TArray<FString> stageMethodTexts;
+	int32 stage = 1;
+	int32 maxStage = 3;
+
+	bool bossHandicap;
 
 	FTimerHandle bossAppearTimer;
+	FTimerHandle stageTimer;
+	int32 remainingTime = 60;
+	//int32 remainingTime = 5;
+
+private:
+	TArray<class AEnemySpawner*> enemySpawners;
+	class ABossSpawner* bossSpawner;
 };
+

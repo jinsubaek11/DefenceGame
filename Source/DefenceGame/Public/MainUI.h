@@ -18,6 +18,7 @@ public:
 public:
 	void PrintBulletCount(int32 bulletCount, int32 maxBulletCount);
 	void PrintItemRemainingTime(float remainingTime, float coolTime);
+	void ClearItemRemainingTime();
 	void SetCurrentWeaponImage(class ADefenceGameMode* gameMode, WeaponType type);
 	void SetCurrentItemImage(class ADefenceGameMode* gameMode, ItemType type);
 
@@ -40,7 +41,11 @@ public:
 	class UOverlay* ItemBox;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySetting", meta = (BindWidget))
 	class UTextBlock* RemainingTime;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySetting", meta = (BindWidget))
+	class UTimerWidget* Timer;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "MySetting", meta = (BindWidget))
+	class UHPWidget* BoxHP;
+
 	UPROPERTY()
 	class UMaterialInterface* rifleMat;
 	UPROPERTY()
