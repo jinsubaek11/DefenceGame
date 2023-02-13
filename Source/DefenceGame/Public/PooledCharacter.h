@@ -21,11 +21,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
+	virtual void ResetState() {};
+
 	void SetActive(bool value);
 	void SetIndex(int32 index);
 	int32 GetIndex() const;
 	bool IsActive() const;
 
+public:
 	FOnPooledCharacterDespawn OnPooledCharacterDespawn;
 
 private:
