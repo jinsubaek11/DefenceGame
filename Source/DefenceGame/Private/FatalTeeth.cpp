@@ -8,6 +8,7 @@
 #include "Tower.h"
 #include "GamePlayer.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet\KismetSystemLibrary.h"
 
 
 AFatalTeeth::AFatalTeeth()
@@ -41,10 +42,39 @@ void AFatalTeeth::Shoot()
 	pwEnemy->OnTakeDamage(teethAttackScore);
 
 
+	//TArray<TEnumAsByte<EObjectTypeQuery>> traceObjectTypes;
+	//traceObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_GameTraceChannel5));
+
+	//TArray<AActor*> ignoreActors;
+	//ignoreActors.Init(this, 1);
+
+	//TArray<AActor*> outActors;
+
+	//float radius = 50;
+
+	//
+	//FVector mouthLocation = pwEnemy->GetMesh()->GetSocketTransform(TEXT("Head")).GetLocation();// 입 소켓의 위치
+	//UClass* seekClass = ATower::StaticClass(); // NULL;
+	//UKismetSystemLibrary::SphereOverlapActors(GetWorld(), mouthLocation, radius, traceObjectTypes, seekClass, ignoreActors, outActors);
+
+
+	//for (AActor* overlappedActor : outActors) {
+	//	//UE_LOG(LogTemp, Log, TEXT("OverlappedActor: %s"), *overlappedActor->GetName());
+	//	
+	//	ATower* aTower = Cast<ATower>(overlappedActor);
+
+	//	if (aTower != nullptr)
+	//	{
+	//		//금고의 체력을 감소시킨다
+	//		aTower->OnTakeTowerDamage(teethAttackScore);
+	//	}
+	//}
+
+
 }
 
 void AFatalTeeth::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	//부딪힌 대상이 플레이어라면
 	AGamePlayer* gPlayer = Cast<AGamePlayer>(OtherActor);
@@ -63,7 +93,5 @@ void AFatalTeeth::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 		//금고의 체력을 감소시킨다
 		aTower->OnTakeTowerDamage(teethAttackScore);
 	}
-
-	UE_LOG(LogTemp, Error, TEXT("AFatalTeeth::OnOverlap"));
 
 }

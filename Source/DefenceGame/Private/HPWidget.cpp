@@ -8,9 +8,9 @@
 
 void UHPWidget::ShowHealthBar(float hp)
 {
-	
-	towerHPBar->SetPercent(hp / towerMaxHP);
+	if(!towerHPBar) return;
 
+	towerHPBar->SetPercent(hp / towerMaxHP);
 	towerHPNum->SetText(FText::AsNumber(hp));
 	
 }

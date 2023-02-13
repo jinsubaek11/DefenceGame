@@ -46,6 +46,8 @@ AItemTurret::AItemTurret()
 		transparentMaterial = mat.Object;
 	}
 
+	
+
 	/*Effect Sound*/
 	turretFireSound = CreateDefaultSubobject<USoundBase>(TEXT("turret Fire Sound"));
 	ConstructorHelpers::FObjectFinder<USoundBase> turretSound(TEXT("/Script/Engine.SoundWave'/Game/Sound/Shoot4.Shoot4'"));
@@ -54,7 +56,7 @@ AItemTurret::AItemTurret()
 		turretFireSound = (turretSound.Object);
 	}
 
-	turretinstallSound = CreateDefaultSubobject<USoundBase>(TEXT("turret Fire Sound"));
+	turretinstallSound = CreateDefaultSubobject<USoundBase>(TEXT("turret install Sound"));
 	ConstructorHelpers::FObjectFinder<USoundBase> turretinstalledSound(TEXT("/Script/Engine.SoundWave'/Game/Sound/InstallTurret.InstallTurret'"));
 	if (turretinstalledSound.Succeeded())
 	{
@@ -152,6 +154,8 @@ void AItemTurret::Shoot(APooledEnemy* target)
 	);
 
 	bullet->SetDeactiveTimer(1.5f);
+
+
 
 	UGameplayStatics::PlaySoundAtLocation(this, turretFireSound, GetActorLocation(), GetActorRotation());
 }

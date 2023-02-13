@@ -7,6 +7,8 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "BrainComponent.h"
 #include "EnemyAnimInstance.h"
+#include "characterHPWidget.h"
+#include "Components/WidgetComponent.h"
 
 
 APooledEnemy::APooledEnemy()
@@ -22,6 +24,20 @@ APooledEnemy::APooledEnemy()
 		planeComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		//planeComponent->bOnlyOwnerSee = true;
 	}
+
+	/*enemyHPui = CreateDefaultSubobject<UWidgetComponent>(TEXT("enemyHPui"));
+	enemyHPui->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);	
+	enemyHPui->SetWidgetSpace(EWidgetSpace::Screen);
+	
+	ConstructorHelpers::FClassFinder<UUserWidget> ehpwidget(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprint/WBP_characterHPWidget.WBP_characterHPWidget'"));
+
+	if (ehpwidget.Succeeded())
+	{
+		enemyHPui->SetWidgetClass(ehpwidget.Class);
+		enemyHPui->SetRelativeScale3D(FVector(0.3f));
+		enemyHPui->SetDrawSize(FVector2D(600, 500));
+	}*/
+
 	ConstructorHelpers::FObjectFinder<UMaterialInterface> iconMat(TEXT("/Script/Engine.Material'/Game/UI/Image/M_Enemy_Icon.M_Enemy_Icon'"));
 	if (iconMat.Succeeded())
 	{
@@ -29,6 +45,14 @@ APooledEnemy::APooledEnemy()
 		planeComponent->CastShadow = false;
 	}
 	planeComponent->SetupAttachment(RootComponent);
+
+	/*3d Sound*/
+	soundDistance = CreateDefaultSubobject<USoundAttenuation>(TEXT("soundDistance"));
+	ConstructorHelpers::FObjectFinder<USoundAttenuation> soundDist(TEXT("/Script/Engine.SoundAttenuation'/Game/Sound/SoundEffects/WeakEnemy_attenuation.WeakEnemy_attenuation'"));
+	if (soundDist.Succeeded())
+	{
+		soundDistance = (soundDist.Object);
+	}
 }
 
 void APooledEnemy::BeginPlay()
@@ -40,6 +64,9 @@ void APooledEnemy::BeginPlay()
 	{
 		enemyAnimInstance->OnDeath.AddDynamic(this, &APooledEnemy::OnDeath);
 	}
+	/*if (!enemyHPwidget) return;
+	enemyHPwidget = Cast<UcharacterHPWidget>(enemyHPui->GetWidget());
+	enemyHPwidget->SetcharacterHP(enemyHPwidget->charMaxHP);*/
 }
 
 void APooledEnemy::Tick(float DeltaTime)
@@ -72,6 +99,7 @@ void APooledEnemy::OnTakeDamage(int32 damage)
 		});
 		GetWorldTimerManager().SetTimer(timer, timerDelegate, 2.f, false);
 	}
+	//enemyHPwidget->SetcharacterHP(hp);
 }
 
 void APooledEnemy::SetAnimationState(EEnemyAnimationState animState)

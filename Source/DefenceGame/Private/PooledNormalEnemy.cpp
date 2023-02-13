@@ -64,25 +64,6 @@ APooledNormalEnemy::APooledNormalEnemy()
 	}
 }
 
-void APooledNormalEnemy::BeginPlay()
-{
-	Super::BeginPlay();
-
-	normalEnemyBulletPool = GetWorld()->SpawnActor<ANormalEnemyBulletPool>();
-	
-	FActorSpawnParameters params;
-	aiController = GetWorld()->SpawnActor<AEnemyAIController>(EnemyAIControllerFactory, params);
-	if (aiController)
-	{
-		aiController->Possess(this);
-	}	
-
-	enemyAnim = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
-
-	gun = GetWorld()->SpawnActor<AEnemyToyGun>();
-	gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("RightHandSocket"));
-}
-
 void APooledNormalEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -97,6 +78,31 @@ void APooledNormalEnemy::Tick(float DeltaTime)
 	nEnemyHPui->SetWorldRotation(newRotation);
 }
 
+void APooledNormalEnemy::BeginPlay()
+{
+	Super::BeginPlay();
+
+	normalEnemyBulletPool = GetWorld()->SpawnActor<ANormalEnemyBulletPool>();
+	
+	
+	FActorSpawnParameters params;
+	aiController = GetWorld()->SpawnActor<AEnemyAIController>(EnemyAIControllerFactory, params);
+	if (aiController)
+	{
+		aiController->Possess(this);
+	}	
+
+
+	enemyAnim = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
+
+	gun = GetWorld()->SpawnActor<AEnemyToyGun>();
+	gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("RightHandSocket"));
+	
+	if (!nhpWidget) return;
+	nhpWidget->SetcharacterHP(nhpWidget->charMaxHP);
+}
+
+
 void APooledNormalEnemy::Attack(AActor* target)
 {
 	Super::Attack(target);
@@ -105,7 +111,7 @@ void APooledNormalEnemy::Attack(AActor* target)
 	enemyAnim->PlayShootMontage();
 
 	/*ToyGun Fire Sound*/
-	UGameplayStatics::PlaySoundAtLocation(this, nEnemyFireSound, GetActorLocation());
+	UGameplayStatics::PlaySoundAtLocation(this, nEnemyFireSound, GetActorLocation(), 0.7f, 1, 0, soundDistance);
 }
 
 void APooledNormalEnemy::OnTakeNEnemyDamage(int32 damage)

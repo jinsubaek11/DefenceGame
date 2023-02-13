@@ -82,9 +82,10 @@ void APooledStrongEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//strongEnemyBulletPool = GetWorld()->SpawnActor<AStrongEnemyBulletPool>();
-
 	FActorSpawnParameters params;
+	//strongEnemyBulletPool = GetWorld()->SpawnActor<AStrongEnemyBulletPool>();
+	
+
 	aiController = GetWorld()->SpawnActor<AEnemyAIController>(EnemyAIControllerFactory, params);
 	if (aiController)
 	{
@@ -95,7 +96,7 @@ void APooledStrongEnemy::BeginPlay()
 	axe->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("RightHandaxeSocket"));
 
 	if (!shpWidget) return;
-	shpWidget->ShowHPBar(HP);
+	shpWidget->SetcharacterHP(shpWidget->charMaxHP);
 }
 
 void APooledStrongEnemy::Attack(AActor* target)
@@ -104,7 +105,7 @@ void APooledStrongEnemy::Attack(AActor* target)
 
 	SetAnimationState(EEnemyAnimationState::ATTACK);
 	axe->Shoot();
-	UGameplayStatics::PlaySoundAtLocation(this, axeHitSound, GetActorLocation());
+	UGameplayStatics::PlaySoundAtLocation(this, axeHitSound, GetActorLocation(), 0.7f, 1, 0, soundDistance);
 }
 
 void APooledStrongEnemy::Reset()
@@ -119,7 +120,7 @@ void APooledStrongEnemy::OnTakeSEnemyDamage(float attack)
 	HP -= attack;
 	UE_LOG(LogTemp, Warning, TEXT("APooledStrongEnemy_____________Damage %f"), HP)
 
-		shpWidget->SetcharacterHP(HP);
+	shpWidget->SetcharacterHP(HP);
 }
 
 //void APooledStrongEnemy::OnTakeSEnemyDamagePlayer(int32 damage)

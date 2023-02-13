@@ -72,6 +72,7 @@ public:
 	class USoundBase* deadSound;
 
 
+
 private:
 	TArray<class AItem*> items;
 	class AItem* newItem;

@@ -33,6 +33,11 @@ private:
 	class UStaticMeshComponent* towerTurretComponent;
 	UPROPERTY(EditAnywhere)
 	class UStaticMeshComponent* towerBaseComponent;
+	UPROPERTY(EditAnywhere)
+	class UParticleSystem* turretFlash;
+
+	UPROPERTY(EditAnywhere)
+	class APooledPlayerBullet* turretBullet;
 
 	UPROPERTY()
 	TArray<class UMaterialInterface*> originalTowerTurretMaterial;

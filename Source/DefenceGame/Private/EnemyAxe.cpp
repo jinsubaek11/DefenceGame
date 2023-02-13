@@ -21,18 +21,12 @@ AEnemyAxe::AEnemyAxe()
 
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> aMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Weapons/VikingAxe/Hammer_skel.Hammer_skel'"));
 
-	if (aMesh.Succeeded())
-	{
-		axeMeshComp->SetSkeletalMesh(aMesh.Object);
-		axeMeshComp->SetRelativeLocationAndRotation(FVector(-72, 98, -39), FRotator(-24, 79, 0));
-		axeMeshComp->SetRelativeScale3D(FVector(0.7));
-	}
+	
 	if(aMesh.Succeeded())
 	{
 		axeMeshComp->SetSkeletalMesh(aMesh.Object);
 		axeMeshComp->SetupAttachment(RootComponent);
-		//axeMeshComp->SetRelativeLocationAndRotation(FVector(-72, 98, -39), FRotator(-24, 79, 0));
-		axeMeshComp->SetRelativeLocationAndRotation(FVector(-160, 112, -53), FRotator(-24, 79, 0));
+		axeMeshComp->SetRelativeLocationAndRotation(FVector(-72, 98, -39), FRotator(-24, 79, 0));
 		axeMeshComp->SetRelativeScale3D(FVector(0.7));
 	}
 }
@@ -41,7 +35,7 @@ void AEnemyAxe::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//collision�� ���δ�
+	//collision
 	boxComponent->OnComponentBeginOverlap.AddDynamic(this, &AEnemyAxe::OnOverlap);
 
 
@@ -58,25 +52,25 @@ void AEnemyAxe::Shoot()
 	
 }
 
-void AEnemyAxe::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AEnemyAxe::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("AEnemyAxe::OnOverlap : %s"), *OtherActor->GetName());
-	//�ε��� ����� �÷��̾���
+	//부딪힌 대상이 플레이어라면
 	AGamePlayer* gPlayer = Cast<AGamePlayer>(OtherActor);
 
 	if(gPlayer != nullptr)
 	{
-		//�÷��̾��� ü���� ���ҽ�Ų��
+		//플레이어의 체력을 감소시킨다
 		gPlayer->OnTakeDamage(axeAttackScore);
 	}
 
-	//�ε��� ����� �ݰ����
+	//부딪힌 대상이 금고라면
 	ATower* aTower = Cast<ATower>(OtherActor);
 
 	if( aTower != nullptr)
 	{
-		//�ݰ��� ü���� ���ҽ�Ų��
+		//금고의 체력을 감소시킨다
 		aTower->OnTakeTowerDamage(axeAttackScore);
 	}
 

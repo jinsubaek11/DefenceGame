@@ -41,6 +41,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "HPWidgetSettings")
 	class UWidgetComponent* nEnemyHPui;
 
+	UPROPERTY()
+	class UcharacterHPWidget* nhpWidget;
+
 	UPROPERTY(EditDefaultsOnly, Category = "HPWidgetSettings")
 	class UcharacterHPWidget* normalEnemyHPBar;
 

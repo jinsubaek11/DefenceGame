@@ -35,7 +35,7 @@ ATower::ATower()
 	towerHPui->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	towerHPui->SetRelativeLocationAndRotation(FVector(-4, -4, 238), FRotator(0, 90, 0));
 	towerHPui->SetWidgetSpace(EWidgetSpace::Screen);
-	//towerHPui->SetWidgetClass(widgetFactory);
+	
 
 	ConstructorHelpers::FClassFinder<UUserWidget> hpwidget(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprint/BP_HPWidget'"));
 
@@ -66,7 +66,7 @@ void ATower::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	auto cm = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+	APlayerCameraManager* cm = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
 	//cm->GetCameraLocation();
 
 	//gPlayer = Cast<AGamePlayer>();
@@ -81,15 +81,18 @@ void ATower::Tick(float DeltaTime)
 	towerHPui->SetWorldRotation(newRotation);
 }
 
-void ATower::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ATower::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	//Enemy Axe와 충돌하면
 	//AEnemyAxe* eaxe = Cast<AEnemyAxe>(OtherActor);
 	//if(!eaxe) return;
+	
 	//체력이 떨어진다 tower의 hp - axe의attack score
 
 	//AFatalTeeth* fteeth = Cast<AFatalTeeth>(OtherActor);
 	//if (!fteeth) return;
+
 	//체력이 떨어진다 tower의 hp - teeth의attack score
 
 }
@@ -99,6 +102,6 @@ void ATower::OnTakeTowerDamage(float attack)
 	towerHP -= attack;
 	UE_LOG(LogTemp, Warning, TEXT("ATower::OnTakeTowerDamage %f"), towerHP)
 
-		chpWidget->SetTowerHP(towerHP);
+	chpWidget->SetTowerHP(towerHP);
 }
 
