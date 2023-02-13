@@ -11,7 +11,7 @@ class DEFENCEGAME_API UWarningBossWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-	void PrintWarningBossText(FString method, FString stage);
+	void PrintWarningBossText(FString stage, FString method = "");
 
 private:
 	UPROPERTY(EditDefaultsOnly, meta = (bindwidget))

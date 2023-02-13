@@ -2,9 +2,9 @@
 #include "Components/TextBlock.h"
 
 
-void UWarningBossWidget::PrintWarningBossText(FString method, FString stage)
+void UWarningBossWidget::PrintWarningBossText(FString stage, FString method)
 {
 	
-	methodText->SetText(FText::FromString(method));
 	stageText->SetText(FText::FromString(stage));
+	methodText->SetText(FText::FromString(method));
 }
