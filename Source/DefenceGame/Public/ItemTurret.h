@@ -39,6 +39,7 @@ private:
 	UPROPERTY()
 	TArray<class UMaterialInterface*> originalTowerBaseMaterial;
 
+	float shootCoolTime = 2.f;
 	float currentTime;
 
 public:

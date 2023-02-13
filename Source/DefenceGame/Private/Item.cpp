@@ -2,12 +2,31 @@
 #include "PooledBullet.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/WidgetComponent.h"
+#include "characterHPWidget.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 AItem::AItem()
 {
 	boxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Box Component"));
 	SetRootComponent(boxComponent);
+
+	hpWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Hp Widget Component"));
+	hpWidgetComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	hpWidgetComponent->SetRelativeLocationAndRotation(FVector(0, 0, 130), FRotator(0, 0, 0));
+	hpWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
+
+	ConstructorHelpers::FClassFinder<UcharacterHPWidget> hpWidgetAsset(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprint/WBP_characterHPWidget.WBP_characterHPWidget_C'"));
+
+	if (hpWidgetAsset.Succeeded())
+	{
+		hpWidgetComponent->SetWidgetClass(hpWidgetAsset.Class);
+		hpWidgetComponent->SetRelativeLocationAndRotation(FVector(0, 0, 110), FRotator(0, 0, 0));
+		hpWidgetComponent->SetRelativeScale3D(FVector(0.3f));
+		hpWidgetComponent->SetDrawSize(FVector2D(600, 500));
+	}
 }
 
 void AItem::BeginPlay()
@@ -16,6 +35,26 @@ void AItem::BeginPlay()
 
 	boxComponent->OnComponentBeginOverlap.AddDynamic(this, &AItem::OnBeginOverlap);
 	boxComponent->OnComponentEndOverlap.AddDynamic(this, &AItem::OnEndOverlap);
+
+	hpWidget = Cast<UcharacterHPWidget>(hpWidgetComponent->GetWidget());
+
+	if (hpWidget)
+	{
+		hpWidget->ShowHPBar(hp, maxHp);
+	}
+}
+
+void AItem::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	APlayerCameraManager* cm = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+
+	FRotator newRotation = UKismetMathLibrary::MakeRotFromXZ(
+		cm->GetCameraLocation() - GetActorLocation(), GetActorUpVector()
+	);
+
+	hpWidgetComponent->SetWorldRotation(newRotation);
 }
 
 float AItem::GetCoolTime() const

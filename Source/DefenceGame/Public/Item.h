@@ -7,7 +7,8 @@
 UENUM()
 enum class ItemType
 {
-	OBSTACLE = 1,
+	NONE,
+	OBSTACLE,
 	TURRET
 };
 
@@ -18,6 +19,9 @@ class DEFENCEGAME_API AItem : public AActor
 
 public:
 	AItem();
+
+public:
+	virtual void Tick(float DeltaTime) override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -41,6 +45,11 @@ private:
 	UFUNCTION()
 	void OnEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	
+public:
+	UPROPERTY(EditDefaultsOnly, Category = "HPWidgetSettings")
+	class UWidgetComponent* hpWidgetComponent;
+	UPROPERTY(EditDefaultsOnly, Category = "HPWidgetSettings")
+	class UcharacterHPWidget* hpWidget;
 
 protected:
 	UPROPERTY(EditAnywhere)
@@ -57,5 +66,6 @@ protected:
 
 	ItemType type;
 	int32 hp;
+	int32 maxHp;
 	float coolTime;
 };
