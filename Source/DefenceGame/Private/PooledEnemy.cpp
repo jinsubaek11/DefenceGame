@@ -28,6 +28,20 @@ APooledEnemy::APooledEnemy()
 		planeComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		//planeComponent->bOnlyOwnerSee = true;
 	}
+
+	/*enemyHPui = CreateDefaultSubobject<UWidgetComponent>(TEXT("enemyHPui"));
+	enemyHPui->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);	
+	enemyHPui->SetWidgetSpace(EWidgetSpace::Screen);
+	
+	ConstructorHelpers::FClassFinder<UUserWidget> ehpwidget(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprint/WBP_characterHPWidget.WBP_characterHPWidget'"));
+
+	if (ehpwidget.Succeeded())
+	{
+		enemyHPui->SetWidgetClass(ehpwidget.Class);
+		enemyHPui->SetRelativeScale3D(FVector(0.3f));
+		enemyHPui->SetDrawSize(FVector2D(600, 500));
+	}*/
+
 	ConstructorHelpers::FObjectFinder<UMaterialInterface> iconMat(TEXT("/Script/Engine.Material'/Game/UI/Image/M_Enemy_Icon.M_Enemy_Icon'"));
 	if (iconMat.Succeeded())
 	{
@@ -36,6 +50,14 @@ APooledEnemy::APooledEnemy()
 	}
 	planeComponent->SetupAttachment(RootComponent);
 
+	/*3d Sound*/
+	soundDistance = CreateDefaultSubobject<USoundAttenuation>(TEXT("soundDistance"));
+	ConstructorHelpers::FObjectFinder<USoundAttenuation> soundDist(TEXT("/Script/Engine.SoundAttenuation'/Game/Sound/SoundEffects/WeakEnemy_attenuation.WeakEnemy_attenuation'"));
+	if (soundDist.Succeeded())
+	{
+		soundDistance = (soundDist.Object);
+	}
+	
 	hpWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Hp Widget Component"));
 	hpWidgetComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	hpWidgetComponent->SetRelativeLocationAndRotation(FVector(0, 0, 130), FRotator(0, 0, 0));

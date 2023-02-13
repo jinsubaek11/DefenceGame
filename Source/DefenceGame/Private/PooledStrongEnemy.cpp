@@ -59,6 +59,9 @@ void APooledStrongEnemy::BeginPlay()
 	Super::BeginPlay();
 
 	FActorSpawnParameters params;
+	//strongEnemyBulletPool = GetWorld()->SpawnActor<AStrongEnemyBulletPool>();
+	
+
 	aiController = GetWorld()->SpawnActor<AEnemyAIController>(EnemyAIControllerFactory, params);
 	if (aiController)
 	{
@@ -77,7 +80,7 @@ void APooledStrongEnemy::Attack(AActor* target)
 
 	SetAnimationState(EEnemyAnimationState::ATTACK);
 	axe->Shoot();
-	UGameplayStatics::PlaySoundAtLocation(this, axeHitSound, GetActorLocation());
+	UGameplayStatics::PlaySoundAtLocation(this, axeHitSound, GetActorLocation(), 0.7f, 1, 0, soundDistance);
 }
 
 void APooledStrongEnemy::Reset()

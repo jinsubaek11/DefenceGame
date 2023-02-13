@@ -9,7 +9,7 @@ UCLASS()
 class DEFENCEGAME_API APooledPlayerTurretBullet : public APooledPlayerBullet
 {
 	GENERATED_BODY()
-	
+
 public:
 	APooledPlayerTurretBullet();
 

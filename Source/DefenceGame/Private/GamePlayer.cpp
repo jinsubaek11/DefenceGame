@@ -21,6 +21,7 @@
 #include "DefenceGameMode.h"
 #include "MainUI.h"
 #include "CircularProgressBar.h"
+#include "Sound/SoundAttenuation.h"
 #include "PlayerAnimInstance.h"
 
 
@@ -93,6 +94,8 @@ AGamePlayer::AGamePlayer()
 	{
 		deadSound = (deadingSound.Object);
 	}
+
+	
 }
 
 void AGamePlayer::BeginPlay()
@@ -208,7 +211,7 @@ void AGamePlayer::OnTakeDamage(float damage)
 		SetAnimationState(EPlayerAnimationState::DEAD);
 
 		/*Dead Sound*/
-		UGameplayStatics::PlaySoundAtLocation(this, deadSound, GetActorLocation(), GetActorRotation());
+		UGameplayStatics::PlaySoundAtLocation(this, deadSound, GetActorLocation(), GetActorRotation(),0.8f);
 
 		APlayerController* playerController = GetWorld()->GetFirstPlayerController();
 		if (playerController)
@@ -228,7 +231,7 @@ void AGamePlayer::OnTakeDamage(float damage)
 	}
 
 	/*Hurt Sound*/
-	UGameplayStatics::PlaySoundAtLocation(this, gethurtungSound, GetActorLocation(), GetActorRotation());
+	UGameplayStatics::PlaySoundAtLocation(this, gethurtungSound, GetActorLocation(), GetActorRotation(),0.7f);
 
 	playerUI->SetAnimationState(EPlayerUIAnimationState::HIT);
 	UPlayerUIAnim* playerUIAnim = Cast<UPlayerUIAnim>(playerUI->GetMesh()->GetAnimInstance());

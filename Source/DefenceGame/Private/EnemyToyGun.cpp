@@ -40,10 +40,13 @@ void AEnemyToyGun::BeginPlay()
 	Super::BeginPlay();
 
 	normalEnemyBulletPool = GetWorld()->SpawnActor<ANormalEnemyBulletPool>();
+	//Shoot(normalEnemyBulletPool);
+
 }
 
 void AEnemyToyGun::Shoot(AActor* target)
 {
+	if (!target) return;
 	Super::Shoot();
 
 	FVector spawnPosition = GetActorLocation() + GetActorForwardVector();

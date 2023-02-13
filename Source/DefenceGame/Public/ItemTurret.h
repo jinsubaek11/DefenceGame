@@ -9,7 +9,7 @@ UCLASS()
 class DEFENCEGAME_API AItemTurret : public AItem
 {
 	GENERATED_BODY()
-	
+
 public:
 	AItemTurret();
 
@@ -28,24 +28,24 @@ private:
 
 private:
 	UPROPERTY()
-	class APlayerTurretBulletPool* turretBulletPool;
+		class APlayerTurretBulletPool* turretBulletPool;
 	UPROPERTY(EditAnywhere)
-	class UStaticMeshComponent* towerTurretComponent;
+		class UStaticMeshComponent* towerTurretComponent;
 	UPROPERTY(EditAnywhere)
-	class UStaticMeshComponent* towerBaseComponent;
+		class UStaticMeshComponent* towerBaseComponent;
 
 	UPROPERTY()
-	TArray<class UMaterialInterface*> originalTowerTurretMaterial;
+		TArray<class UMaterialInterface*> originalTowerTurretMaterial;
 	UPROPERTY()
-	TArray<class UMaterialInterface*> originalTowerBaseMaterial;
+		TArray<class UMaterialInterface*> originalTowerBaseMaterial;
 
 	float shootCoolTime = 2.f;
 	float currentTime;
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect Sound")
-	class USoundBase* turretFireSound;
+		class USoundBase* turretFireSound;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect Sound")
-	class USoundBase* turretinstallSound;
+		class USoundBase* turretinstallSound;
 };

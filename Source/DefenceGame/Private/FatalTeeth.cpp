@@ -4,6 +4,7 @@
 #include "Tower.h"
 #include "GamePlayer.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet\KismetSystemLibrary.h"
 
 
 AFatalTeeth::AFatalTeeth()

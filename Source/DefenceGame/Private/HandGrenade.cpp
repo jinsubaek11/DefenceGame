@@ -35,7 +35,7 @@ AHandGrenade::AHandGrenade()
 		meshComponent->SetRelativeScale3D(FVector(0.1));
 	}
 
-	ConstructorHelpers::FObjectFinder<UParticleSystem> particle(TEXT("/Script/Engine.ParticleSystem'/Game/StarterContent/Particles/P_Explosion.P_Explosion'"));
+	ConstructorHelpers::FObjectFinder<UParticleSystem> particle(TEXT("/Script/Engine.ParticleSystem'/Game/Realistic_Starter_VFX_Pack_Vol2/Particles/Explosion/P_Explosion_Big_B.P_Explosion_Big_B'"));
 	if (particle.Succeeded())
 	{
 		explosion = particle.Object;

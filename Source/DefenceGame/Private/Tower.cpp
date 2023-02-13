@@ -36,7 +36,7 @@ ATower::ATower()
 	towerHPui->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	towerHPui->SetRelativeLocationAndRotation(FVector(-4, -4, 238), FRotator(0, 90, 0));
 	towerHPui->SetWidgetSpace(EWidgetSpace::Screen);
-	//towerHPui->SetWidgetClass(widgetFactory);
+	
 
 	ConstructorHelpers::FClassFinder<UUserWidget> hpwidget(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprint/BP_HPWidget'"));
 
@@ -83,7 +83,8 @@ void ATower::Tick(float DeltaTime)
 	}
 }
 
-void ATower::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void ATower::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 }
 

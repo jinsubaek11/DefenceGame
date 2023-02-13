@@ -97,7 +97,7 @@ void AItemTurret::Tick(float DeltaTime)
 			{
 				targetEnemy = Cast<APooledEnemy>(hitActor);
 				distance = GetDistanceTo(targetEnemy);
-			 }
+			}
 		}
 	}
 
@@ -149,7 +149,7 @@ void AItemTurret::Shoot(APooledEnemy* target)
 
 	APooledPlayerTurretBullet* bullet = Cast<APooledPlayerTurretBullet>(
 		turretBulletPool->SpawnPooledObject(location, rotation)
-	);
+		);
 
 	bullet->SetDeactiveTimer(1.5f);
 

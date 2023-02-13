@@ -19,18 +19,12 @@ AEnemyAxe::AEnemyAxe()
 
 	ConstructorHelpers::FObjectFinder<USkeletalMesh> aMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/Weapons/VikingAxe/Hammer_skel.Hammer_skel'"));
 
-	if (aMesh.Succeeded())
-	{
-		axeMeshComp->SetSkeletalMesh(aMesh.Object);
-		axeMeshComp->SetRelativeLocationAndRotation(FVector(-72, 98, -39), FRotator(-24, 79, 0));
-		axeMeshComp->SetRelativeScale3D(FVector(0.7));
-	}
+	
 	if(aMesh.Succeeded())
 	{
 		axeMeshComp->SetSkeletalMesh(aMesh.Object);
 		axeMeshComp->SetupAttachment(RootComponent);
-		//axeMeshComp->SetRelativeLocationAndRotation(FVector(-72, 98, -39), FRotator(-24, 79, 0));
-		axeMeshComp->SetRelativeLocationAndRotation(FVector(-160, 112, -53), FRotator(-24, 79, 0));
+		axeMeshComp->SetRelativeLocationAndRotation(FVector(-72, 98, -39), FRotator(-24, 79, 0));
 		axeMeshComp->SetRelativeScale3D(FVector(0.7));
 	}
 }
@@ -46,8 +40,8 @@ void AEnemyAxe::Shoot()
 {
 }
 
-void AEnemyAxe::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AEnemyAxe::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	AGamePlayer* gPlayer = Cast<AGamePlayer>(OtherActor);
 	

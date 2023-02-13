@@ -62,7 +62,7 @@ APooledWeakEnemy::APooledWeakEnemy()
 
 	/*Effect Sound*/
 	teethAttackSound = CreateDefaultSubobject<USoundBase>(TEXT("rifle Fire Sound"));
-	ConstructorHelpers::FObjectFinder<USoundBase> teethSound(TEXT("/Script/Engine.SoundWave'/Game/Sound/Teeth_Sound1.Teeth_Sound1'"));
+	ConstructorHelpers::FObjectFinder<USoundBase> teethSound(TEXT("/Script/Engine.SoundWave'/Game/Sound/Teeth_Sound1_1.Teeth_Sound1_1'"));
 	if (teethSound.Succeeded())
 	{
 		teethAttackSound = (teethSound.Object);
@@ -82,6 +82,8 @@ void APooledWeakEnemy::BeginPlay()
 
 	//weakEnemyBulletPool = GetWorld()->SpawnActor<AWeakEnemyBulletPool>();
 
+	
+
 	FActorSpawnParameters params;
 	aiController = GetWorld()->SpawnActor<AEnemyAIController>(EnemyAIControllerFactory, params);
 	if (aiController)
@@ -100,8 +102,8 @@ void APooledWeakEnemy::Attack(AActor* target)
 	SetAnimationState(EEnemyAnimationState::ATTACK);
 
 	teeth->Shoot();
-	UGameplayStatics::PlaySoundAtLocation(this, teethAttackSound, GetActorLocation(), GetActorRotation(), 2);
-	
+	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), teethAttackSound, GetActorLocation(), GetActorRotation(), 1.3f, 1, 0, soundDistance);
+
 }
 
 void APooledWeakEnemy::OnTakeWEnemyDamage(int32 damage)

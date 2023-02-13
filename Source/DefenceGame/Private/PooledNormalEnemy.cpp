@@ -46,11 +46,17 @@ APooledNormalEnemy::APooledNormalEnemy()
 	}
 }
 
+void APooledNormalEnemy::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
+
 void APooledNormalEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
 	normalEnemyBulletPool = GetWorld()->SpawnActor<ANormalEnemyBulletPool>();
+	
 	
 	FActorSpawnParameters params;
 	aiController = GetWorld()->SpawnActor<AEnemyAIController>(EnemyAIControllerFactory, params);
@@ -59,16 +65,14 @@ void APooledNormalEnemy::BeginPlay()
 		aiController->Possess(this);
 	}	
 
+
 	enemyAnim = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
 
 	gun = GetWorld()->SpawnActor<AEnemyToyGun>();
 	gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("RightHandSocket"));
+
 }
 
-void APooledNormalEnemy::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
 
 void APooledNormalEnemy::Attack(AActor* target)
 {
@@ -79,7 +83,7 @@ void APooledNormalEnemy::Attack(AActor* target)
 	enemyAnim->PlayShootMontage();
 
 	/*ToyGun Fire Sound*/
-	UGameplayStatics::PlaySoundAtLocation(this, nEnemyFireSound, GetActorLocation());
+	UGameplayStatics::PlaySoundAtLocation(this, nEnemyFireSound, GetActorLocation(), 0.7f, 1, 0, soundDistance);
 }
 
 void APooledNormalEnemy::OnTakeNEnemyDamage(int32 damage)

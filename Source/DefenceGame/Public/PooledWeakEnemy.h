@@ -35,8 +35,13 @@ public:
 	//UPROPERTY(EditDefaultsOnly, Category = "HPWidgetSettings")
 	//class UWidgetComponent* wEnemyHPui;
 
+	UPROPERTY()
+	class UcharacterHPWidget* whpWidget;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect Sound")
 	class USoundBase* teethAttackSound;
+
+
 
 	void OnTakeWEnemyDamage(int32 damage);
 
