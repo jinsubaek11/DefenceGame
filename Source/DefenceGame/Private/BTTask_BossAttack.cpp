@@ -19,7 +19,7 @@ EBTNodeResult::Type UBTTask_BossAttack::ExecuteTask(UBehaviorTreeComponent& Owne
 	AActor* target = Cast<AActor>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(GetSelectedBlackboardKey()));
 	if (target)
 	{
-		boss->Attack(target, boss->GetCurrentAttackType());
+		boss->Attack(target);
 
 		return EBTNodeResult::Succeeded;
 	}

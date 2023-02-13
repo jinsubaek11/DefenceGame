@@ -18,5 +18,5 @@ protected:
 
 private:
 	float chaseRange = 700;
-	float detectRange = 1500.f;
+	float detectRange = 1200.f;
 };

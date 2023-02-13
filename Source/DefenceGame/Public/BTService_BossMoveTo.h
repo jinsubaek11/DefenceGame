@@ -15,7 +15,4 @@ public:
 
 public:
 	void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
-
-private:
-	class APooledBossEnemy* boss;
 };
