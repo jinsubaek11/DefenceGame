@@ -1,5 +1,4 @@
 #include "Tower.h"
-
 #include "EnemyAxe.h"
 #include "FatalTeeth.h"
 #include "Components/BoxComponent.h"
@@ -10,6 +9,8 @@
 #include "Camera/PlayerCameraManager.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "DefenceGameMode.h"
+#include "MainUI.h"
 
 
 ATower::ATower()
@@ -52,14 +53,18 @@ void ATower::BeginPlay()
 
 	boxComponent->OnComponentBeginOverlap.AddDynamic(this, &ATower::OnOverlap);
 
+	gameMode = Cast<ADefenceGameMode>(GetWorld()->GetAuthGameMode());
+	if (gameMode && gameMode->mainUIWidget)
+	{
+		gameMode->mainUIWidget->BoxHP->ShowHealthBar(towerHP, towerMaxHP);
+	}
+
 	chpWidget = Cast<UHPWidget>(towerHPui->GetWidget());
 
 	if (chpWidget)
 	{
-		chpWidget->SetTowerHP(chpWidget->towerMaxHP);
-		//UE_LOG(LogTemp,Warning, TEXT("beginPlay %f"), chpWidget->towerMaxHP)
+		chpWidget->ShowHealthBar(towerHP, towerMaxHP);
 	}
-	
 }
 
 void ATower::Tick(float DeltaTime)
@@ -67,38 +72,33 @@ void ATower::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	auto cm = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
-	//cm->GetCameraLocation();
 
-	//gPlayer = Cast<AGamePlayer>();
+	if (cm)
+	{
+		FRotator newRotation = UKismetMathLibrary::MakeRotFromXZ(
+			cm->GetCameraLocation() - GetActorLocation(), GetActorUpVector()
+		);
 
-	//float dist = gPlayer->GetDistance(cm->GetCameraLocation());
-
-
-	FRotator newRotation = UKismetMathLibrary::MakeRotFromXZ(
-		cm->GetCameraLocation() - GetActorLocation(),
-		GetActorUpVector());
-
-	towerHPui->SetWorldRotation(newRotation);
+		towerHPui->SetWorldRotation(newRotation);
+	}
 }
 
 void ATower::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	//Enemy Axe와 충돌하면
-	//AEnemyAxe* eaxe = Cast<AEnemyAxe>(OtherActor);
-	//if(!eaxe) return;
-	//체력이 떨어진다 tower의 hp - axe의attack score
-
-	//AFatalTeeth* fteeth = Cast<AFatalTeeth>(OtherActor);
-	//if (!fteeth) return;
-	//체력이 떨어진다 tower의 hp - teeth의attack score
-
 }
 
-void ATower::OnTakeTowerDamage(float attack)
+void ATower::OnTakeDamage(float attack)
 {
 	towerHP -= attack;
-	UE_LOG(LogTemp, Warning, TEXT("ATower::OnTakeTowerDamage %f"), towerHP)
 
-		chpWidget->SetTowerHP(towerHP);
+	if (towerHP <= 0)
+	{
+		towerHP = 0;
+
+		gameMode->ShowGameOverScreen();
+	}
+
+	chpWidget->ShowHealthBar(towerHP, towerMaxHP);
+	gameMode->mainUIWidget->BoxHP->ShowHealthBar(towerHP, towerMaxHP);
 }
 
