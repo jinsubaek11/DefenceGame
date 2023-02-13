@@ -18,6 +18,10 @@ protected:
 public:	
 	virtual void Tick(float DeltaTime) override;
 
+public: 
+	void Upgrade();
+	void ResetSpawn();
+
 public:
 	UPROPERTY(EditAnywhere)
 	class UBoxComponent* boxComponent;
@@ -39,9 +43,9 @@ private:
 	float weakEnemySpawnTime;
 
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess="true"))
-	float strongEnemyCoolTime = 22.f;
+	float strongEnemyCoolTime = 23.3f;
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
-	float normalEnemyCoolTime = 12.f;
+	float normalEnemyCoolTime = 17.1f;
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
-	float weakEnemyCoolTime = 5.f;
+	float weakEnemyCoolTime = 10.3f;
 };
