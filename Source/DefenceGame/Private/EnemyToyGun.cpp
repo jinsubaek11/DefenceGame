@@ -28,8 +28,6 @@ AEnemyToyGun::AEnemyToyGun()
 		skeletalMeshComponent->SetRelativeLocationAndRotation(FVector(17, 0, 0), FRotator(90, 0, 180));
 		skeletalMeshComponent->SetRelativeScale3D(FVector(0.25f));
 	}
-
-	
 }
 	
 void AEnemyToyGun::Tick(float DeltaTime)
@@ -47,11 +45,6 @@ void AEnemyToyGun::BeginPlay()
 void AEnemyToyGun::Shoot(AActor* target)
 {
 	Super::Shoot();
-
-	if(bulletCounts <= 0)
-	{
-		return;
-	}
 
 	FVector spawnPosition = GetActorLocation() + GetActorForwardVector();
 	FRotator spawnRotator = (target->GetActorLocation() - GetActorLocation()).Rotation();
