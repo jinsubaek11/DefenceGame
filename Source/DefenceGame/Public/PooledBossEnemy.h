@@ -9,11 +9,7 @@
 UENUM()
 enum class EBossAttackType : uint8
 {
-	SWORD_INWARD_SLASH,
-	SWORD_OUTWARD_SLASH,
-	SWORD_COMBO,
 	SHOOTING_ARROW,
-	//JUMP_ATTACK,
 };
 
 UCLASS()
@@ -34,14 +30,13 @@ public:
 	UFUNCTION()
 	void Shoot();
 
-	void Attack(AActor* target, EBossAttackType attackType);
+	void Attack(AActor* target);
 	EBossAttackType GetCurrentAttackType() const;
 
 	AWeapon* GetCurrentWeapon() const;
 	WeaponType GetCurrentWeaponType() const;
-
 	EBossAnimationState GetAnimationState() const;
-	void SetAnimationState(EBossAnimationState nextState);
+	virtual void SetAnimationState(EBossAnimationState nextState) override;
 	bool GetIsPlayingAnimation() const; 
 	void SetIsPlayingAnimation(bool isPlaying);
 	FRotator GetTargetRotation() const;

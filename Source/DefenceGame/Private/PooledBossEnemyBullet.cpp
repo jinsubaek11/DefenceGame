@@ -5,6 +5,7 @@
 #include "Sword.h"
 #include "Bow.h"
 #include "GamePlayer.h"
+#include "Tower.h"
 #include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystem.h"
 
@@ -14,7 +15,7 @@ APooledBossEnemyBullet::APooledBossEnemyBullet()
 	PrimaryActorTick.bCanEverTick = true;
 
 	speed = 1500;
-	damage = 20;
+	damage = 30;
 
 	boxComponent->SetBoxExtent(FVector(80, 3, 3));
 
@@ -104,7 +105,7 @@ void APooledBossEnemyBullet::DrawExplosionRange()
 
 	if (isHit)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *hitResult.GetActor()->GetName());
+		//UE_LOG(LogTemp, Warning, TEXT("%s"), *hitResult.GetActor()->GetName());
 		explosionLocation = hitResult.Location;
 	}
 
@@ -121,9 +122,12 @@ void APooledBossEnemyBullet::Explode()
 	FVector sweepEnd = GetActorLocation();
 	FCollisionShape sphereCollision = FCollisionShape::MakeSphere(350.f);
 	FCollisionObjectQueryParams objectQueryParams;
-	objectQueryParams.AddObjectTypesToQuery(ECollisionChannel::ECC_Visibility);
+	objectQueryParams.AddObjectTypesToQuery(ECollisionChannel::ECC_GameTraceChannel1);
+	objectQueryParams.AddObjectTypesToQuery(ECollisionChannel::ECC_GameTraceChannel5);
+	objectQueryParams.AddObjectTypesToQuery(ECollisionChannel::ECC_GameTraceChannel7);
+	objectQueryParams.RemoveObjectTypesToQuery(ECollisionChannel::ECC_GameTraceChannel2);
 
-	DrawDebugSphere(GetWorld(), GetActorLocation(), sphereCollision.GetSphereRadius(), 50, FColor::Green, false, 3.f);
+	//DrawDebugSphere(GetWorld(), GetActorLocation(), sphereCollision.GetSphereRadius(), 50, FColor::Green, false, 3.f);
 
 	bool isHit = GetWorld()->SweepMultiByObjectType(hitResults, sweepStart, sweepEnd, FQuat::Identity, objectQueryParams, sphereCollision);
 
@@ -131,12 +135,19 @@ void APooledBossEnemyBullet::Explode()
 	{
 		for (auto hitResult : hitResults)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *hitResult.GetActor()->GetName());
-			//APooledEnemy* enemy = Cast<APooledEnemy>(hitResult.GetActor());
-			//if (enemy)
-			//{
-			//	enemy->OnTakeDamage(att);
-			//}
+			AGamePlayer* player = Cast<AGamePlayer>(hitResult.GetActor());
+
+			if (player)
+			{
+				player->OnTakeDamage(GetDamage());
+			}
+
+			ATower* tower = Cast<ATower>(hitResult.GetActor());
+
+			if (tower)
+			{
+				tower->OnTakeDamage(GetDamage());
+			}
 		}
 	}
 }
