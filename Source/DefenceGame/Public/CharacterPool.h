@@ -16,7 +16,9 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
+	void SetAllDeactivate();
 	class APooledCharacter* SpawnPooledCharacter(FVector spawnPosition);
+	TArray<class APooledCharacter*> GetPool() const;
 	int32 GetPoolSize();
 
 private:
@@ -30,4 +32,6 @@ protected:
 private:
 	TArray<class APooledCharacter*> characterPool;
 	TArray<int32> spawnedPoolIndexes;
+
+	FVector spawnLocation;
 };

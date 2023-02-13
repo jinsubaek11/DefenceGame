@@ -5,20 +5,14 @@
 #include "BossAnimInstance.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttackStart);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeathBoss);
 
 UENUM(BlueprintType)
 enum class EBossAnimationState : uint8
 {
 	IDLE,
 	WALKING,
-	FLYING,
-	JUMP_ATTACK,
 	DEATH,
-	SHEATHING_SWORD,
-	WITHDRAWING_SWORD,
-	SWORD_INWARD_SLASH,
-	SWORD_OUTWARD_SLASH,
-	SWORD_COMBO,
 	SHOOTING_ARROW
 };
 
@@ -37,12 +31,15 @@ private:
 	void AnimNotify_AttackStart();
 	UFUNCTION()
 	void AnimNotify_AttackEnd();
+	UFUNCTION()
+	void AnimNotify_DeathEnd();
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EBossAnimationState animationState;
 	
 	FOnAttackStart OnAttackStart;
+	FOnDeathBoss OnDeath;
 
 private:
 	class APooledBossEnemy* boss;
