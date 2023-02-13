@@ -7,6 +7,7 @@ AItemObstacle::AItemObstacle()
 {
 	type = ItemType::OBSTACLE;	
 	hp = 100.f;
+	maxHp = hp;
 	coolTime = 5.f;
 
 	boxComponent->SetBoxExtent(FVector(20, 180, 100));

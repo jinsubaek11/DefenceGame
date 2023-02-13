@@ -15,7 +15,7 @@ AHandGrenade::AHandGrenade()
 	PrimaryActorTick.bCanEverTick = true;
 
 	weaponType = WeaponType::HAND_GRENADE;
-	maxBulletCounts = 1;
+	maxBulletCounts = 3;
 	bulletCounts = maxBulletCounts;
 	attackRange = 2000.f;
 	att = 100;
@@ -134,7 +134,7 @@ void AHandGrenade::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 	FCollisionObjectQueryParams objectQueryParams;
 	objectQueryParams.AddObjectTypesToQuery(ECollisionChannel::ECC_GameTraceChannel2);
 
-	DrawDebugSphere(GetWorld(), GetActorLocation(), sphereCollision.GetSphereRadius(), 50, FColor::Green, false, 3.f);
+	//DrawDebugSphere(GetWorld(), GetActorLocation(), sphereCollision.GetSphereRadius(), 50, FColor::Green, false, 3.f);
 
 	bool isHit = GetWorld()->SweepMultiByObjectType(hitResults, sweepStart, sweepEnd, FQuat::Identity, objectQueryParams, sphereCollision);
 
@@ -154,6 +154,17 @@ void AHandGrenade::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 	isShootStart = false;
 	isExploded = true;
 	SetActive(false);
+
+	if (player && bulletCounts > 0)
+	{
+		AttachToComponent(player->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("RifleSocket"));
+		SetActorLocation(player->GetMesh()->GetSocketLocation(TEXT("RifleSocket")));
+	
+		if (player->GetCurrentWeaponType() == WeaponType::HAND_GRENADE)
+		{
+			SetActive(true);
+		}
+	}
 }
 
 
@@ -243,13 +254,13 @@ void AHandGrenade::ClearSpline()
 
 void AHandGrenade::ReLoad()
 {
-	if (isShootStart) return;
+	//if (isShootStart) return;
 
-	Super::ReLoad();
+	//Super::ReLoad();
 
-	AttachToComponent(player->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("RifleSocket"));
-	SetActorLocation(player->GetMesh()->GetSocketLocation(TEXT("RifleSocket")));
-	SetActive(true);
+	//AttachToComponent(player->GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("RifleSocket"));
+	//SetActorLocation(player->GetMesh()->GetSocketLocation(TEXT("RifleSocket")));
+	//SetActive(true);
 }
 
 bool AHandGrenade::GetIsExploded()

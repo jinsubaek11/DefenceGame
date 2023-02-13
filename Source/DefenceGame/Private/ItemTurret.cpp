@@ -13,6 +13,7 @@ AItemTurret::AItemTurret()
 
 	type = ItemType::TURRET;
 	hp = 50.f;
+	maxHp = hp;
 	coolTime = 10.f;
 
 	boxComponent->SetBoxExtent(FVector(30, 30, 55));
@@ -79,7 +80,7 @@ void AItemTurret::Tick(float DeltaTime)
 	FCollisionObjectQueryParams objectQueryParams;
 	objectQueryParams.AddObjectTypesToQuery(ECollisionChannel::ECC_GameTraceChannel2);
 
-	DrawDebugSphere(GetWorld(), GetActorLocation(), sphereCollision.GetSphereRadius(), 50, FColor::Green, false);
+	//DrawDebugSphere(GetWorld(), GetActorLocation(), sphereCollision.GetSphereRadius(), 50, FColor::Green, false);
 
 	bool isHit = GetWorld()->SweepMultiByObjectType(hitResults, sweepStart, sweepEnd, FQuat::Identity, objectQueryParams, sphereCollision);
 
@@ -102,9 +103,8 @@ void AItemTurret::Tick(float DeltaTime)
 		}
 	}
 
-	if (targetEnemy && currentTime >= coolTime)
+	if (targetEnemy && currentTime >= shootCoolTime)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Shoot"));
 		Shoot(targetEnemy);
 		currentTime = 0;
 	}

@@ -26,13 +26,22 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 public:
-	void OnTakeDamage(float damage);
+	UFUNCTION()
+	void OnActionSwitchWeapon(int32 weaponIndex);
+	void OnActionReleased();
+
+	UFUNCTION()
+	void Attack();
 	void SetAttackAnimation(WeaponType weaponType);
 	void SetAttackEnable(bool value);
-	void SetAttackMode(bool isAttackMode);
+	void SetAttackMode(bool isAttackMode);	
 	void SetIsShoot(bool value);
 	void SetAnimationState(EPlayerAnimationState state);
 	EPlayerAnimationState GetAnimationState();
+	
+	WeaponType GetCurrentWeaponType() const;
+
+	void OnTakeDamage(float damage);
 
 private:
 	void OnAxisLookUp(float value);
@@ -45,8 +54,7 @@ private:
 
 	UFUNCTION()
 	void OnActionUseItemMode(int32 itemIndex);
-	UFUNCTION()
-	void OnActionSwitchWeapon(int32 weaponIndex);
+
 
 	void CheckEnableItemPosition(class AItem& item);
 	void ClearItem();
@@ -76,6 +84,7 @@ public:
 private:
 	TArray<class AItem*> items;
 	class AItem* newItem;
+	FTimerHandle sequenceShootTimer;
 	FTimerHandle animationTimer;
 	FVector direction;
 	float hp = 100.f;

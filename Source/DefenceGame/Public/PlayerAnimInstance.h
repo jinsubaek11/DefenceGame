@@ -4,6 +4,8 @@
 #include "Animation/AnimInstance.h"
 #include "PlayerAnimInstance.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnShoot);
+
 UENUM(BlueprintType)
 enum class EPlayerAnimationState : uint8
 {
@@ -45,6 +47,8 @@ public:
 	float direction;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool isMovingOnGround;
+
+	FOnShoot OnShoot;
 
 private:
 	class AGamePlayer* player;

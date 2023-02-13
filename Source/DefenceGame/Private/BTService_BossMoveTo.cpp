@@ -14,22 +14,8 @@ void UBTService_BossMoveTo::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
 
-	if (!boss)
-	{
-		boss = Cast<APooledBossEnemy>(OwnerComp.GetAIOwner()->GetPawn());
-	}
-
+	APooledBossEnemy* boss = Cast<APooledBossEnemy>(OwnerComp.GetAIOwner()->GetPawn());
 	if (!boss) return;
-
-
-	if (boss->GetCurrentWeaponType() == WeaponType::BOW)
-	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(TEXT("UseBow"), true);
-	}
-	else
-	{
-		OwnerComp.GetBlackboardComponent()->ClearValue(TEXT("UseBow"));
-	}
 
 	boss->SetAnimationState(EBossAnimationState::WALKING);
 }

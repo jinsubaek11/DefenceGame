@@ -11,6 +11,7 @@ void ACharacterPool::BeginPlay()
 {
 	Super::BeginPlay();
 
+	spawnLocation = FVector(0, 0, -1000);
 	UWorld* world = GetWorld();
 
 	if (world)
@@ -18,7 +19,7 @@ void ACharacterPool::BeginPlay()
 		for (uint16 i = 0; i < poolSize; ++i)
 		{
 			APooledCharacter* character = world->SpawnActor<APooledCharacter>(
-				classType, FVector(0, 0, 1000), FRotator().ZeroRotator
+				classType, spawnLocation, FRotator().ZeroRotator
 			);
 
 			if (character)
@@ -47,7 +48,7 @@ APooledCharacter* ACharacterPool::SpawnPooledCharacter(FVector spawnPosition)
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("%s MAX"), *classType->GetName());
+	//UE_LOG(LogTemp, Warning, TEXT("%s MAX"), *classType->GetName());
 
 	//if (characterPool.Num() > 0 && spawnedPoolIndexes.Num() > 0)
 	//{
@@ -74,10 +75,28 @@ APooledCharacter* ACharacterPool::SpawnPooledCharacter(FVector spawnPosition)
 void ACharacterPool::OnPooledCharacterDespawn(APooledCharacter* pooledCharacter)
 {
 	spawnedPoolIndexes.Remove(pooledCharacter->GetIndex());
-	pooledCharacter->SetActorLocation(GetActorLocation());
+	pooledCharacter->SetActorLocation(spawnLocation);
+
+	UE_LOG(LogTemp, Warning, TEXT("OnPooledCharacterDespawn"));
+}
+
+TArray<class APooledCharacter*> ACharacterPool::GetPool() const
+{
+	return characterPool;
 }
 
 int32 ACharacterPool::GetPoolSize()
 {
 	return characterPool.Num();
+}
+
+void ACharacterPool::SetAllDeactivate()
+{
+	for (APooledCharacter* character : characterPool)
+	{
+		if (!character) return;
+
+		character->SetActive(false);
+		character->ResetState();
+	}
 }

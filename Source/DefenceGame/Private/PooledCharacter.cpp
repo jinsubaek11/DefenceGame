@@ -26,7 +26,6 @@ void APooledCharacter::SetActive(bool value)
 
 	if (!isActive)
 	{
-		Reset();
 		OnPooledCharacterDespawn.Broadcast(this);
 	}
 }

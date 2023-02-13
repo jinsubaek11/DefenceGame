@@ -29,21 +29,21 @@ APooledWeakEnemy::APooledWeakEnemy()
 	teethBox->SetupAttachment(GetMesh(), TEXT("TeethSocket"));
 	teethBox->SetRelativeLocation(FVector(0, 52, 156));
 
-	/*HP widget*/
-	wEnemyHPui = CreateDefaultSubobject<UWidgetComponent>(TEXT("weakEnemyHPui"));
-	wEnemyHPui->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	wEnemyHPui->SetRelativeLocationAndRotation(FVector(0, 0, 110), FRotator(0, 0, 0));
-	wEnemyHPui->SetWidgetSpace(EWidgetSpace::World);
+	///*HP widget*/
+	//wEnemyHPui = CreateDefaultSubobject<UWidgetComponent>(TEXT("weakEnemyHPui"));
+	//wEnemyHPui->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	//wEnemyHPui->SetRelativeLocationAndRotation(FVector(0, 0, 110), FRotator(0, 0, 0));
+	//wEnemyHPui->SetWidgetSpace(EWidgetSpace::World);
 
-	ConstructorHelpers::FClassFinder<UUserWidget> weakEnemyhpwidget(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprint/WBP_characterHPWidget.WBP_characterHPWidget_C'"));
+	//ConstructorHelpers::FClassFinder<UUserWidget> weakEnemyhpwidget(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprint/WBP_characterHPWidget.WBP_characterHPWidget_C'"));
 
-	if (weakEnemyhpwidget.Succeeded())
-	{
-		wEnemyHPui->SetWidgetClass(weakEnemyhpwidget.Class);
-		wEnemyHPui->SetRelativeLocation(FVector(0, 0, 100));
-		wEnemyHPui->SetRelativeScale3D(FVector(0.3f));
-		wEnemyHPui->SetDrawSize(FVector2D(600, 500));
-	}
+	//if (weakEnemyhpwidget.Succeeded())
+	//{
+	//	wEnemyHPui->SetWidgetClass(weakEnemyhpwidget.Class);
+	//	wEnemyHPui->SetRelativeLocation(FVector(0, 0, 100));
+	//	wEnemyHPui->SetRelativeScale3D(FVector(0.3f));
+	//	wEnemyHPui->SetDrawSize(FVector2D(600, 500));
+	//}
 
 	ConstructorHelpers::FClassFinder<AEnemyAIController> bpAIControllerClass(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/EnemyAI/BP_WeakEnemyAIController.BP_WeakEnemyAIController_C'"));
 	if (bpAIControllerClass.Succeeded())
@@ -111,9 +111,9 @@ void APooledWeakEnemy::Attack(AActor* target)
 
 void APooledWeakEnemy::OnTakeWEnemyDamage(int32 damage)
 {
-	HP -= damage;
-	weakEnemyHPBar->SetcharacterHP(HP);
-	UE_LOG(LogTemp, Error, TEXT("Normal Enemy On Take Damage %f"), HP)
+	//HP -= damage;
+	//weakEnemyHPBar->SetcharacterHP(HP);
+	//UE_LOG(LogTemp, Error, TEXT("Normal Enemy On Take Damage %f"), HP)
 }
 
 void APooledWeakEnemy::Reset()

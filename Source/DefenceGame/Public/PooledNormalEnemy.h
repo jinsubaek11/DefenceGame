@@ -38,14 +38,11 @@ private:
 	
 
 public:
-	UPROPERTY(EditDefaultsOnly, Category = "HPWidgetSettings")
-	class UWidgetComponent* nEnemyHPui;
+	//UPROPERTY(EditDefaultsOnly, Category = "HPWidgetSettings")
+	//class UWidgetComponent* nEnemyHPui;
 
-	UPROPERTY()
-	class UcharacterHPWidget* nhpWidget;
-
-	UPROPERTY(EditDefaultsOnly, Category = "HPWidgetSettings")
-	class UcharacterHPWidget* normalEnemyHPBar;
+	//UPROPERTY(EditDefaultsOnly, Category = "HPWidgetSettings")
+	//class UcharacterHPWidget* normalEnemyHPBar;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect Sound")
 	class USoundBase* nEnemyFireSound;

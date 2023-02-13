@@ -29,11 +29,11 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	class UBoxComponent* teethBox;
 
-	UPROPERTY(EditDefaultsOnly, Category = "HPWidgetSettings")
-	class UcharacterHPWidget* weakEnemyHPBar;
+	//UPROPERTY(EditDefaultsOnly, Category = "HPWidgetSettings")
+	//class UcharacterHPWidget* weakEnemyHPBar;
 
-	UPROPERTY(EditDefaultsOnly, Category = "HPWidgetSettings")
-	class UWidgetComponent* wEnemyHPui;
+	//UPROPERTY(EditDefaultsOnly, Category = "HPWidgetSettings")
+	//class UWidgetComponent* wEnemyHPui;
 
 	UPROPERTY()
 	class UcharacterHPWidget* whpWidget;

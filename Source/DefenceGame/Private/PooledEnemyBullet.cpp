@@ -22,7 +22,6 @@ void APooledEnemyBullet::BeginPlay()
 void APooledEnemyBullet::OnHit(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	//UE_LOG(LogTemp, Warning, TEXT("APooledEnemyBullet::OnHit"));
 	SpawnEffect(GetActorLocation());
 
 	AGamePlayer* player = Cast<AGamePlayer>(OtherActor);
@@ -45,21 +44,11 @@ void APooledEnemyBullet::OnHit(UPrimitiveComponent* OverlappedComponent, AActor*
 	ATower* tower = Cast<ATower>(OtherActor);
 	if (IsValid(tower))
 	{
-		tower->OnTakeTowerDamage(GetDamage());
+		tower->OnTakeDamage(GetDamage());
 		OnHitSpecificBullet(tower, SweepResult);
 
 		SetActive(false);
 	}
-
-	if (tower != nullptr)
-	{
-		//Bullet Tower hp
-		UE_LOG(LogTemp, Warning, TEXT("tower get bullet"));
-
-		tower->chpWidget->OnTakeDamage(GetDamage());
-	}
-	
-	
 }
 
 void APooledEnemyBullet::SpawnEffect(FVector location)

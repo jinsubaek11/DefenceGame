@@ -7,8 +7,12 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "BrainComponent.h"
 #include "EnemyAnimInstance.h"
-#include "characterHPWidget.h"
+#include "BossAnimInstance.h"
+#include "Weapon.h"
 #include "Components/WidgetComponent.h"
+#include "characterHPWidget.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 APooledEnemy::APooledEnemy()
@@ -53,6 +57,21 @@ APooledEnemy::APooledEnemy()
 	{
 		soundDistance = (soundDist.Object);
 	}
+	
+	hpWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("Hp Widget Component"));
+	hpWidgetComponent->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	hpWidgetComponent->SetRelativeLocationAndRotation(FVector(0, 0, 130), FRotator(0, 0, 0));
+	hpWidgetComponent->SetWidgetSpace(EWidgetSpace::World);
+
+	ConstructorHelpers::FClassFinder<UcharacterHPWidget> hpWidgetAsset(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprint/WBP_characterHPWidget.WBP_characterHPWidget_C'"));
+
+	if (hpWidgetAsset.Succeeded())
+	{
+		hpWidgetComponent->SetWidgetClass(hpWidgetAsset.Class);
+		hpWidgetComponent->SetRelativeLocationAndRotation(FVector(0, 0, 110), FRotator(0, 0, 0));
+		hpWidgetComponent->SetRelativeScale3D(FVector(0.3f));
+		hpWidgetComponent->SetDrawSize(FVector2D(600, 500));
+	}
 }
 
 void APooledEnemy::BeginPlay()
@@ -64,15 +83,33 @@ void APooledEnemy::BeginPlay()
 	{
 		enemyAnimInstance->OnDeath.AddDynamic(this, &APooledEnemy::OnDeath);
 	}
-	/*if (!enemyHPwidget) return;
-	enemyHPwidget = Cast<UcharacterHPWidget>(enemyHPui->GetWidget());
-	enemyHPwidget->SetcharacterHP(enemyHPwidget->charMaxHP);*/
+
+	UBossAnimInstance* bossAnimInstance = Cast<UBossAnimInstance>(GetMesh()->GetAnimInstance());
+	if (bossAnimInstance)
+	{
+		bossAnimInstance->OnDeath.AddDynamic(this, &APooledEnemy::OnDeath);
+	}
+
+
+	hpWidget = Cast<UcharacterHPWidget>(hpWidgetComponent->GetWidget());
+
+	if (hpWidget)
+	{
+		hpWidget->ShowHPBar(hp, maxHp);
+	}
 }
 
 void APooledEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	APlayerCameraManager* cm = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
+
+	FRotator newRotation = UKismetMathLibrary::MakeRotFromXZ(
+		cm->GetCameraLocation() - GetActorLocation(), GetActorUpVector()
+	);
+
+	hpWidgetComponent->SetWorldRotation(newRotation);
 }
 
 void APooledEnemy::Attack(AActor* target)
@@ -84,22 +121,24 @@ void APooledEnemy::OnTakeDamage(int32 damage)
 {
 	hp -= damage;
 
-	if (hp < 0)
+	if (hp <= 0)
 	{
-		if (aiController)
+		hp = 0;
+		if (!aiController) return;
+
+		aiController->BrainComponent->StopLogic(TEXT("Dead"));
+
+		if (type == EEnemyType::ENEMY)
 		{
-			aiController->BrainComponent->StopLogic(TEXT("Dead"));
+			SetAnimationState(EEnemyAnimationState::DEAD);
 		}
-		SetAnimationState(EEnemyAnimationState::DEAD);
-		
-		FTimerHandle timer;
-		FTimerDelegate timerDelegate;
-		timerDelegate.BindLambda([this] {
-			SetActive(false);
-		});
-		GetWorldTimerManager().SetTimer(timer, timerDelegate, 2.f, false);
+		else
+		{
+			SetAnimationState(EBossAnimationState::DEATH);
+		}
 	}
-	//enemyHPwidget->SetcharacterHP(hp);
+
+	hpWidget->ShowHPBar(hp, maxHp);
 }
 
 void APooledEnemy::SetAnimationState(EEnemyAnimationState animState)
@@ -112,18 +151,29 @@ EEnemyAnimationState APooledEnemy::GetAnimationState()
 	return animationState;
 }
 
-void APooledEnemy::Reset()
+void APooledEnemy::ResetState()
 {
-
+	SetEnemyState(maxHp);
+	hpWidget->ShowHPBar(hp, maxHp);
+	aiController->BrainComponent->RestartLogic();
 }
 
 void APooledEnemy::SetEnemyState(float health)
 {
 	hp = health;
+	maxHp = health;
+}
+
+void APooledEnemy::Upgrade()
+{
+	SetEnemyState(maxHp += 10);
 }
 
 void APooledEnemy::OnDeath()
 {
 	UE_LOG(LogTemp, Warning, TEXT("OnDeath"));
+	SetActorEnableCollision(false);
 	SetActive(false);
+	ResetState();
 }
+

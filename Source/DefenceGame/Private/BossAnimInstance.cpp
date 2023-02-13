@@ -30,16 +30,19 @@ void UBossAnimInstance::AnimNotify_AttackStart()
 {
 	if (!boss) return;
 	
-	UE_LOG(LogTemp, Warning, TEXT("Boss Attack Start"));
-
 	OnAttackStart.Broadcast();
 }
 
 void UBossAnimInstance::AnimNotify_AttackEnd()
 {
 	if (!boss) return;
-
-	UE_LOG(LogTemp, Warning, TEXT("Boss Attack End"));
 	
 	boss->SetIsPlayingAnimation(false);
 }
+
+void UBossAnimInstance::AnimNotify_DeathEnd()
+{
+	UE_LOG(LogTemp, Warning, TEXT("DeathEnd"));
+	OnDeath.Broadcast();
+}
+

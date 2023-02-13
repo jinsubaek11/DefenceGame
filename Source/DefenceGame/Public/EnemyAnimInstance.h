@@ -4,7 +4,7 @@
 #include "Animation/AnimInstance.h"
 #include "EnemyAnimInstance.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeathEnemy);
 
 UENUM(BlueprintType)
 enum class EEnemyAnimationState : uint8
@@ -34,7 +34,7 @@ public:
 	void PlayShootMontage();
 
 public:
-	FOnDeath OnDeath;
+	FOnDeathEnemy OnDeath;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EEnemyAnimationState animationState;

@@ -23,7 +23,6 @@ ABow::ABow()
 	{
 		meshComponent->SetStaticMesh(bowMesh.Object);
 		meshComponent->SetRelativeLocationAndRotation(FVector(0, -10, -110), FRotator(0, 90, 0));
-		//meshComponent->SetRelativeScale3D(FVector(1.5));
 	}
 	meshComponent->SetupAttachment(RootComponent);
 }
@@ -32,7 +31,6 @@ void ABow::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//SetActorLocationAndRotation(FVector(21, 3, 36), FRotator(-12, 200, -48));
 	boss = Cast<APooledBossEnemy>(UGameplayStatics::GetActorOfClass(GetWorld(), APooledBossEnemy::StaticClass()));
 	bossEnemyBulletPool = GetWorld()->SpawnActor<ABossEnemyBulletPool>();
 }
@@ -58,7 +56,9 @@ void ABow::Shoot()
 void ABow::SingleShoot()
 {
 	APooledBossEnemyBullet* arrow = Cast<APooledBossEnemyBullet>(
-		bossEnemyBulletPool->SpawnPooledObject(GetActorLocation() + FVector(0, 0, 80), boss->GetTargetRotation()));
+		bossEnemyBulletPool->SpawnPooledObject(GetActorLocation() + FVector(0, 0, 80), boss->GetTargetRotation())
+	);
+	
 	arrow->SetDestroyRange(GetActorLocation());
 	arrow->DrawExplosionRange();
 }

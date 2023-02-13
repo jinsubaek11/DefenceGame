@@ -52,7 +52,8 @@ void UPlayerAnimInstance::AnimNotify_ShootStart()
 {
 	if (!player) return;
 
-	player->SetAttackEnable(true);
+	OnShoot.Broadcast();
+	//player->SetAttackEnable(true);
 }
 
 void UPlayerAnimInstance::AnimNotify_ShootEnd()

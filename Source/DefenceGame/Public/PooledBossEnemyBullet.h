@@ -17,7 +17,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	void SetDestroyRange(FVector startPosition, float range = 1300.f);
+	void SetDestroyRange(FVector startPosition, float range = 1200.f);
 	void DrawExplosionRange();
 
 private:
@@ -33,5 +33,5 @@ private:
 
 	FVector currentPosition;
 	FVector spawnPosition;
-	float autoDestroyRange = 1300.f;
+	float autoDestroyRange = 1200.f;
 };

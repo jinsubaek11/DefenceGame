@@ -7,6 +7,7 @@
 #include "WeakEnemyPool.h"
 #include "PooledEnemy.h"
 #include "EnemyAIController.h"
+#include "PooledEnemy.h"
 
 
 AEnemySpawner::AEnemySpawner()
@@ -44,23 +45,60 @@ void AEnemySpawner::Tick(float DeltaTime)
 
 	if (strongEnemySpawnTime >= strongEnemyCoolTime)
 	{
-		strongEnemyPool->SpawnPooledCharacter(GetActorLocation());
+		strongEnemyPool->SpawnPooledCharacter(GetActorLocation() + GetActorForwardVector() * 100);
 		strongEnemySpawnTime = 0;
 		//UE_LOG(LogTemp, Warning, TEXT("strong enemy spawned"));
 	}
 
 	if (normalEnemySpawnTime >= normalEnemyCoolTime)
 	{
-		normalEnemyPool->SpawnPooledCharacter(GetActorLocation());
+		normalEnemyPool->SpawnPooledCharacter(GetActorLocation() + GetActorForwardVector() * 100);
 		normalEnemySpawnTime = 0;
 		//UE_LOG(LogTemp, Warning, TEXT("normal enemy spawned"));
 	}
 
 	if (weakEnemySpawnTime >= weakEnemyCoolTime)
 	{
-		weakEnemyPool->SpawnPooledCharacter(GetActorLocation());
+		weakEnemyPool->SpawnPooledCharacter(GetActorLocation() + GetActorForwardVector() * 100);
 		weakEnemySpawnTime = 0;
 		//UE_LOG(LogTemp, Warning, TEXT("weak enemy spawned"));
 	}
 }
 
+void AEnemySpawner::ResetSpawn()
+{
+	strongEnemyPool->SetAllDeactivate();
+	normalEnemyPool->SetAllDeactivate();
+	weakEnemyPool->SetAllDeactivate();
+
+	strongEnemySpawnTime = 0;
+	normalEnemySpawnTime = 0;
+	weakEnemySpawnTime = 0;
+}
+
+void AEnemySpawner::Upgrade()
+{
+	for (APooledCharacter* pooledCharacter : strongEnemyPool->GetPool())
+	{
+		APooledEnemy* enemy = Cast<APooledEnemy>(pooledCharacter);
+		if (!enemy) return;
+
+		enemy->Upgrade();
+	}
+
+	for (APooledCharacter* pooledCharacter : normalEnemyPool->GetPool())
+	{
+		APooledEnemy* enemy = Cast<APooledEnemy>(pooledCharacter);
+		if (!enemy) return;
+
+		enemy->Upgrade();
+	}
+
+	for (APooledCharacter* pooledCharacter : weakEnemyPool->GetPool())
+	{
+		APooledEnemy* enemy = Cast<APooledEnemy>(pooledCharacter);
+		if (!enemy) return;
+
+		enemy->Upgrade();
+	}
+}

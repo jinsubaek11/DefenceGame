@@ -22,6 +22,7 @@
 #include "MainUI.h"
 #include "CircularProgressBar.h"
 #include "Sound/SoundAttenuation.h"
+#include "PlayerAnimInstance.h"
 
 
 AGamePlayer::AGamePlayer()
@@ -101,6 +102,12 @@ void AGamePlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
+	UPlayerAnimInstance* playerAnim = Cast<UPlayerAnimInstance>(GetMesh()->GetAnimInstance());
+	if (playerAnim)
+	{
+		playerAnim->OnShoot.AddDynamic(this, &AGamePlayer::Attack);
+	}
+
 	playerUI = Cast<AGamePlayerUI>(UGameplayStatics::GetActorOfClass(GetWorld(), AGamePlayerUI::StaticClass()));
 	if (playerUI)
 	{
@@ -132,9 +139,16 @@ void AGamePlayer::Tick(float DeltaTime)
 		if (currentItemType == ItemType::OBSTACLE)
 		{
 			gameMode->mainUIWidget->PrintItemRemainingTime(
-				obstacleRemainingTime, itemCoolTime
+				obstacleRemainingTime, 5
 			);
 		}
+	}
+
+	//if (isItemMode && currentItemType == ItemType::OBSTACLE && obstacleRemainingTime <= 0)
+	if (isItemMode && obstacleRemainingTime <= 0)
+	{
+		gameMode->mainUIWidget->ClearItemRemainingTime();
+		//currentItemType = ItemType::NONE;
 	}
 
 	if (turretRemainingTime > 0)
@@ -144,53 +158,22 @@ void AGamePlayer::Tick(float DeltaTime)
 		if (currentItemType == ItemType::TURRET)
 		{
 			gameMode->mainUIWidget->PrintItemRemainingTime(
-				turretRemainingTime, itemCoolTime
+				turretRemainingTime, 10
 			);
 		}
 	}
 
+	//if (isItemMode && currentItemType == ItemType::TURRET && turretRemainingTime <= 0)
+	if (isItemMode && turretRemainingTime <= 0)
+	{
+		gameMode->mainUIWidget->ClearItemRemainingTime();
+		//currentItemType = ItemType::NONE;
+	}
 
 	if (isItemMode && newItem)
 	{
 		CheckEnableItemPosition(*newItem);
 		return;
-	}
-
-	if (isItemMode) return;
-	if (!isShoot) return;
-	if (!currentWeapon) return;
-
-	if (currentWeapon->GetWeaponType() == WeaponType::RIFLE)
-	{
-		currentWeapon->Shoot();
-		if (gameMode->mainUIWidget)
-		{
-			gameMode->mainUIWidget->PrintBulletCount(
-				currentWeapon->GetBulletCounts(), currentWeapon->GetMaxBulletCounts()
-			);
-		}
-		isShoot = false;
-
-		FTimerDelegate timerDelegate;
-		timerDelegate.BindLambda([this] {
-			SetAnimationState(EPlayerAnimationState::MOVE);
-			GetWorldTimerManager().ClearTimer(animationTimer);
-		});
-		GetWorldTimerManager().SetTimer(animationTimer, timerDelegate, 0.25f, false);
-
-		return;
-	}
-
-	if (isAttackEnable)
-	{
-		currentWeapon->Shoot();
-		if (gameMode->mainUIWidget)
-		{
-			gameMode->mainUIWidget->PrintBulletCount(
-				currentWeapon->GetBulletCounts(), currentWeapon->GetMaxBulletCounts()
-			);
-		}
-		isAttackEnable = false;
 	}
 }
 
@@ -204,6 +187,7 @@ void AGamePlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("MoveRight", this, &AGamePlayer::OnAxisMoveRight);
 	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionJump);
 	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionClick);
+	PlayerInputComponent->BindAction("Fire", EInputEvent::IE_Released, this, &AGamePlayer::OnActionReleased);
 	PlayerInputComponent->BindAction<FInputSwitchWeapon>("UseRifle", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionSwitchWeapon, 1);
 	PlayerInputComponent->BindAction<FInputSwitchWeapon>("UseBazooka", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionSwitchWeapon, 2);
 	PlayerInputComponent->BindAction<FInputSwitchWeapon>("UseHandGrenade", EInputEvent::IE_Pressed, this, &AGamePlayer::OnActionSwitchWeapon, 3);
@@ -256,6 +240,20 @@ void AGamePlayer::OnTakeDamage(float damage)
 		int rand = FMath::RandRange(1, 2);
 		FName sectionName = FName(FString("Hit") + FString::FormatAsNumber(rand));
 		playerUIAnim->PlayHitAnimation(sectionName);
+	}
+}
+
+void AGamePlayer::Attack()
+{
+	if (!(currentWeapon && currentWeapon->HasRemainBullet())) return;
+
+	currentWeapon->Shoot();
+
+	if (gameMode->mainUIWidget)
+	{
+		gameMode->mainUIWidget->PrintBulletCount(
+			currentWeapon->GetBulletCounts(), currentWeapon->GetMaxBulletCounts()
+		);
 	}
 }
 
@@ -379,6 +377,11 @@ void AGamePlayer::OnActionClick()
 
 			newItem->SetPositionSucceed(true);
 			items.Add(newItem);
+
+			gameMode->mainUIWidget->PrintItemRemainingTime(
+				newItem->GetCoolTime(), newItem->GetCoolTime()
+			);
+
 			newItem = nullptr;
 			isItemMode = false;
 			currentWeapon = rifle;
@@ -389,16 +392,48 @@ void AGamePlayer::OnActionClick()
 
 	if (currentWeapon && currentWeapon->HasRemainBullet())
 	{
+		if (currentWeapon->GetWeaponType() == WeaponType::HAND_GRENADE)
+		{
+			AHandGrenade* castCurrentWeapon = Cast<AHandGrenade>(currentWeapon);
+			if (castCurrentWeapon->GetIsShootStart()) return;
+		}
+
+		if (currentWeapon->GetWeaponType() == WeaponType::RIFLE)
+		{
+			Attack();
+			GetWorldTimerManager().SetTimer(sequenceShootTimer, this, &AGamePlayer::Attack, 0.1, true);
+		}
+
 		SetAttackAnimation(currentWeapon->GetWeaponType());
+	}
+}
+
+void AGamePlayer::OnActionReleased()
+{
+	if (isItemMode) return;
+
+	if (currentWeapon)
+	{
+		if (currentWeapon->GetWeaponType() == WeaponType::RIFLE)
+		{
+			GetWorldTimerManager().ClearTimer(sequenceShootTimer);
+			isShoot = false;
+
+			FTimerDelegate timerDelegate;
+			timerDelegate.BindLambda([this] {
+				SetAnimationState(EPlayerAnimationState::MOVE);
+				GetWorldTimerManager().ClearTimer(animationTimer);
+				});
+			GetWorldTimerManager().SetTimer(animationTimer, timerDelegate, 0.25f, false);
+		}
 	}
 }
 
 void AGamePlayer::OnActionUseItemMode(int32 itemIndex)
 {
-	ClearItem();
+	if (gameMode->HasHandicap()) return;
 
-	//newObstacle = GetWorld()->SpawnActor<AItemObstacle>(GetActorLocation() + GetActorForwardVector() * 300, GetActorRotation());
-	//currentWeapon->SetActive(false);
+	ClearItem();
 	SetAttackMode(false);
 
 	FVector itemLocation = GetActorLocation() + GetActorForwardVector() * 300;
@@ -422,10 +457,6 @@ void AGamePlayer::OnActionUseItemMode(int32 itemIndex)
 		gameMode->mainUIWidget->SetCurrentItemImage(gameMode, currentItemType);
 
 		//if (obstacleRemainingTime > 0 || turretRemainingTime > 0) return;
-
-		gameMode->mainUIWidget->PrintItemRemainingTime(
-			newItem->GetCoolTime(), newItem->GetCoolTime()
-		);
 	}
 }
 
@@ -440,29 +471,24 @@ void AGamePlayer::OnActionJump()
 
 void AGamePlayer::OnActionSwitchWeapon(int32 weaponIndex)
 {
-	if (isShoot) return;
-	UE_LOG(LogTemp, Warning, TEXT("OnActionSwitchWeapon"));
-	
+	if (isShoot || gameMode->HasHandicap()) return;
+
 	if (currentWeapon)
 	{
-		if (currentWeapon->GetWeaponType() == (WeaponType)weaponIndex) return;
-
 		if (currentWeapon->GetWeaponType() == WeaponType::HAND_GRENADE)
 		{
 			AHandGrenade* castCurrentWeapon = Cast<AHandGrenade>(currentWeapon);
-			if (castCurrentWeapon->GetIsExploded() || !castCurrentWeapon->GetIsShootStart())
+			if (!castCurrentWeapon->GetIsShootStart())
 			{
 				currentWeapon->SetActive(false);
 			}
-
-			castCurrentWeapon = nullptr;
 		}
 		else
 		{
 			currentWeapon->SetActive(false);
-
 		}
 	}
+	
 	SetAttackMode(true);
 
 	switch ((WeaponType)weaponIndex)
@@ -485,17 +511,16 @@ void AGamePlayer::OnActionSwitchWeapon(int32 weaponIndex)
 		gameMode->mainUIWidget->PrintBulletCount(
 			currentWeapon->GetBulletCounts(), currentWeapon->GetMaxBulletCounts()
 		);
+		gameMode->mainUIWidget->ClearItemRemainingTime();
 	}
 
-	if (currentWeapon->GetWeaponType() == WeaponType::HAND_GRENADE)
-	{
-		AHandGrenade* castCurrentWeapon = Cast<AHandGrenade>(currentWeapon);
-		if (castCurrentWeapon->GetIsExploded()) return;
-	}
+	//if (currentWeapon->GetWeaponType() == WeaponType::HAND_GRENADE)
+	//{
+	//	AHandGrenade* castCurrentWeapon = Cast<AHandGrenade>(currentWeapon);
+	//	if (castCurrentWeapon->GetIsExploded()) return;
+	//}
 	
 	currentWeapon->SetActive(true);
-
-
 }
 
 void AGamePlayer::OnActionReLoad()
@@ -540,3 +565,9 @@ void AGamePlayer::ClearItem()
 		newItem = nullptr;
 	};
 }
+
+WeaponType AGamePlayer::GetCurrentWeaponType() const
+{
+	return currentWeapon->GetWeaponType();
+}
+

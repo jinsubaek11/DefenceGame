@@ -4,7 +4,8 @@
 #include "DefenceGameMode.h"
 #include "Components/VerticalBox.h"
 #include "Components/Overlay.h"
-
+#include "Components/ProgressBar.h"
+#include "HPWidget.h"
 
 void UMainUI::NativeConstruct()
 {
@@ -16,6 +17,10 @@ void UMainUI::NativeConstruct()
 	}
 
 	ItemBox->SetVisibility(ESlateVisibility::Hidden);
+	ClearItemRemainingTime();
+
+	BoxHP->SetRenderScale(FVector2D(1.5, 0.8));
+	BoxHP->towerHPNum->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UMainUI::PrintBulletCount(int32 bulletCount, int32 maxBulletCount)
@@ -26,15 +31,24 @@ void UMainUI::PrintBulletCount(int32 bulletCount, int32 maxBulletCount)
 
 void UMainUI::PrintItemRemainingTime(float remainingTime, float coolTime)
 {
-	//dynamicBackgroundMat->SetMat
+	if (!ItemBox->IsVisible()) return;
+
 	dynamicBackgroundMat->SetScalarParameterValue(TEXT("Percent"), remainingTime / coolTime);
 	RemainingTime->SetText(FText::AsNumber((int)remainingTime));
+}
+
+void UMainUI::ClearItemRemainingTime()
+{
+	dynamicBackgroundMat->SetScalarParameterValue(TEXT("Percent"), 0.f);
+	RemainingTime->SetText(FText::GetEmpty());
 }
 
 void UMainUI::SetCurrentWeaponImage(ADefenceGameMode* gameMode, WeaponType type)
 {
 	WeaponBox->SetVisibility(ESlateVisibility::Visible);
 	ItemBox->SetVisibility(ESlateVisibility::Hidden);
+
+	UE_LOG(LogTemp, Warning, TEXT("%d"), (int)type);
 
 	switch (type)
 	{
