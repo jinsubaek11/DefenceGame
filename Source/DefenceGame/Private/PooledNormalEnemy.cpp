@@ -70,9 +70,7 @@ void APooledNormalEnemy::BeginPlay()
 
 	gun = GetWorld()->SpawnActor<AEnemyToyGun>();
 	gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("RightHandSocket"));
-	
-	if (!nhpWidget) return;
-	nhpWidget->SetcharacterHP(nhpWidget->charMaxHP);
+
 }
 
 

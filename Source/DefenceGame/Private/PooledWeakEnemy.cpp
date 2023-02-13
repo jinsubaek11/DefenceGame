@@ -93,9 +93,6 @@ void APooledWeakEnemy::BeginPlay()
 
 	teeth = GetWorld()->SpawnActor<AFatalTeeth>();
 	teeth->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("TeethSocket"));
-
-	if (!whpWidget) return;
-	whpWidget->SetcharacterHP(whpWidget->charMaxHP);
 }
 
 void APooledWeakEnemy::Attack(AActor* target)

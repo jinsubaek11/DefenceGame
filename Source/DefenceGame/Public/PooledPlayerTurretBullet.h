@@ -20,6 +20,6 @@ public:
 	UPROPERTY()
 	class UParticleSystem* turretparticle;
 
-	class 
+	//class 
 
 };

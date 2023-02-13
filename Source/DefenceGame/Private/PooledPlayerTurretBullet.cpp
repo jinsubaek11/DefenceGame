@@ -38,7 +38,7 @@ void APooledPlayerTurretBullet::OnHitSpecificBullet(AActor* OtherActor, const FH
 	{
 		enemy->OnTakeDamage(GetDamage());
 		/*Attatch Particles 일단 빌드만 시키게 임시로 이상한데다 붙임*/
-		UGameplayStatics::SpawnEmitterAttached(turretFlash, towerTurretComponent);
+		//UGameplayStatics::SpawnEmitterAttached(turretFlash, towerTurretComponent);
 		SetActive(false);
 	}
 

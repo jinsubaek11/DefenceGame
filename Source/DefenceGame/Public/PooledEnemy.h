@@ -56,6 +56,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "HPWidgetSettings")
 	class UcharacterHPWidget* hpWidget;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Effect Sound")
+	class USoundAttenuation* soundDistance;
+
 protected:
 	UPROPERTY(EditAnywhere, Category = MonsterProperty)
 	int32 hp;

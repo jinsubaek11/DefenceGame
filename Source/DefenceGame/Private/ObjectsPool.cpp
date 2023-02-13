@@ -37,6 +37,8 @@ void AObjectsPool::BeginPlay()
 
 APooledObject* AObjectsPool::SpawnPooledObject(FVector spawnPosition, FRotator spawnRotator)
 {
+	//if (!objectPool) return nullptr;
+
 	for (APooledObject* object : objectPool)
 	{
 		if (object && !object->IsActive())
