@@ -25,22 +25,6 @@ APooledStrongEnemy::APooledStrongEnemy()
 		meshComponent->SetRelativeScale3D(FVector(2));
 	}
 
-	/*HP widget*/
-	strongEnemyHPui = CreateDefaultSubobject<UWidgetComponent>(TEXT("strongEnemyHPui"));
-	strongEnemyHPui->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	strongEnemyHPui->SetRelativeLocationAndRotation(FVector(0, 0, 70), FRotator(0, 0, 0));
-	strongEnemyHPui->SetWidgetSpace(EWidgetSpace::World);
-
-	ConstructorHelpers::FClassFinder<UUserWidget> strongEnemyhpwidget(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprint/WBP_characterHPWidget.WBP_characterHPWidget_C'"));
-
-	if (strongEnemyhpwidget.Succeeded())
-	{
-		strongEnemyHPui->SetWidgetClass(strongEnemyhpwidget.Class);
-		strongEnemyHPui->SetRelativeLocation(FVector(0, 0, 60));
-		strongEnemyHPui->SetRelativeScale3D(FVector(0.3f));
-		strongEnemyHPui->SetDrawSize(FVector2D(600, 500));
-	}
-
 	ConstructorHelpers::FClassFinder<AEnemyAIController> bpAIControllerClass(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/EnemyAI/BP_StrongEnemyAIController.BP_StrongEnemyAIController_C'"));
 	if (bpAIControllerClass.Succeeded())
 	{
@@ -68,21 +52,11 @@ APooledStrongEnemy::APooledStrongEnemy()
 void APooledStrongEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	APlayerCameraManager* cm = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
-
-	FRotator newRotation = UKismetMathLibrary::MakeRotFromXZ(
-		cm->GetCameraLocation() - GetActorLocation(),
-		GetActorUpVector());
-
-	strongEnemyHPui->SetWorldRotation(newRotation);
 }
 
 void APooledStrongEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-
-	//strongEnemyBulletPool = GetWorld()->SpawnActor<AStrongEnemyBulletPool>();
 
 	FActorSpawnParameters params;
 	aiController = GetWorld()->SpawnActor<AEnemyAIController>(EnemyAIControllerFactory, params);
@@ -93,9 +67,8 @@ void APooledStrongEnemy::BeginPlay()
 
 	axe = GetWorld()->SpawnActor<AEnemyAxe>();
 	axe->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("RightHandaxeSocket"));
-
-	if (!shpWidget) return;
-	shpWidget->ShowHPBar(HP);
+	axe->AddActorLocalOffset(FVector(97, 9, 13));
+	axe->AddActorLocalRotation(FRotator(0, 16, 11));
 }
 
 void APooledStrongEnemy::Attack(AActor* target)
@@ -114,12 +87,12 @@ void APooledStrongEnemy::Reset()
 
 void APooledStrongEnemy::OnTakeSEnemyDamage(float attack)
 {
-	if (!shpWidget) return;
+	//if (!shpWidget) return;
 
-	HP -= attack;
-	UE_LOG(LogTemp, Warning, TEXT("APooledStrongEnemy_____________Damage %f"), HP)
+	//HP -= attack;
+	//UE_LOG(LogTemp, Warning, TEXT("APooledStrongEnemy_____________Damage %f"), HP)
 
-		shpWidget->SetcharacterHP(HP);
+	//	shpWidget->SetcharacterHP(HP);
 }
 
 //void APooledStrongEnemy::OnTakeSEnemyDamagePlayer(int32 damage)

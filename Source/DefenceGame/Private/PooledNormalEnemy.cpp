@@ -4,8 +4,6 @@
 #include "PooledNormalEnemyBullet.h"
 #include "EnemyAIController.h"
 #include "EnemyToyGun.h"
-#include "Components/WidgetComponent.h"
-#include "characterHPWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -22,22 +20,6 @@ APooledNormalEnemy::APooledNormalEnemy()
 		meshComponent->SetSkeletalMesh(mesh.Object);
 		meshComponent->SetRelativeLocationAndRotation(FVector(0, 0, -120), FRotator(0, -90, 0));
 		meshComponent->SetRelativeScale3D(FVector(2));
-	}
-
-	/*HP widget*/
-	nEnemyHPui = CreateDefaultSubobject<UWidgetComponent>(TEXT("normalEnemyHPui"));
-	nEnemyHPui->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	nEnemyHPui->SetRelativeLocationAndRotation(FVector(0, 0, 130), FRotator(0, 0, 0));
-	nEnemyHPui->SetWidgetSpace(EWidgetSpace::World);
-
-	ConstructorHelpers::FClassFinder<UUserWidget> normalEnemyhpwidget(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprint/WBP_characterHPWidget.WBP_characterHPWidget_C'"));
-
-	if (normalEnemyhpwidget.Succeeded())
-	{
-		nEnemyHPui->SetWidgetClass(normalEnemyhpwidget.Class);
-		nEnemyHPui->SetRelativeLocationAndRotation(FVector(0, 0, 110), FRotator(0, 0, 0));
-		nEnemyHPui->SetRelativeScale3D(FVector(0.3f));
-		nEnemyHPui->SetDrawSize(FVector2D(600, 500));
 	}
 
 	ConstructorHelpers::FClassFinder<AEnemyAIController> bpAIControllerClass(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/EnemyAI/BP_NormalEnemyAIController.BP_NormalEnemyAIController_C'"));
@@ -86,20 +68,12 @@ void APooledNormalEnemy::BeginPlay()
 void APooledNormalEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	gun->Shoot(normalEnemyBulletPool);
-	APlayerCameraManager* cm = UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0);
-
-	FRotator newRotation = UKismetMathLibrary::MakeRotFromXZ(
-		cm->GetCameraLocation() - GetActorLocation(),
-		GetActorUpVector());
-
-	nEnemyHPui->SetWorldRotation(newRotation);
 }
 
 void APooledNormalEnemy::Attack(AActor* target)
 {
 	Super::Attack(target);
+	//UE_LOG(LogTemp, Warning, TEXT("APooledNormalEnemy Attack"));
 
 	gun->Shoot(target);
 	enemyAnim->PlayShootMontage();
@@ -110,9 +84,9 @@ void APooledNormalEnemy::Attack(AActor* target)
 
 void APooledNormalEnemy::OnTakeNEnemyDamage(int32 damage)
 {
-	HP -= damage;
-	normalEnemyHPBar->SetcharacterHP(HP);
-	UE_LOG(LogTemp, Error, TEXT("Normal Enemy On Take Damage %f"), HP)
+	//HP -= damage;
+	//normalEnemyHPBar->SetcharacterHP(HP);
+	//UE_LOG(LogTemp, Error, TEXT("Normal Enemy On Take Damage %f"), HP)
 }
 
 void APooledNormalEnemy::Reset()

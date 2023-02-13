@@ -33,13 +33,13 @@ private:
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-		class UBoxComponent* axeBox;
+	class UBoxComponent* axeBox;
 
-	UPROPERTY()
-		class UcharacterHPWidget* shpWidget;
+	//UPROPERTY()
+	//	class UcharacterHPWidget* shpWidget;
 
-	UPROPERTY(EditDefaultsOnly, Category = "HPWidgetSettings")
-		class UWidgetComponent* strongEnemyHPui;
+	//UPROPERTY(EditDefaultsOnly, Category = "HPWidgetSettings")
+	//	class UWidgetComponent* strongEnemyHPui;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Effect Sound")
 	class USoundBase* axeHitSound;
