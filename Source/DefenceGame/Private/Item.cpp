@@ -23,7 +23,7 @@ AItem::AItem()
 	if (hpWidgetAsset.Succeeded())
 	{
 		hpWidgetComponent->SetWidgetClass(hpWidgetAsset.Class);
-		hpWidgetComponent->SetRelativeLocationAndRotation(FVector(0, 0, 110), FRotator(0, 0, 0));
+		hpWidgetComponent->SetRelativeLocationAndRotation(FVector(0, 0, 110), FRotator(0, 180, 0));
 		hpWidgetComponent->SetRelativeScale3D(FVector(0.3f));
 		hpWidgetComponent->SetDrawSize(FVector2D(600, 500));
 	}
@@ -113,8 +113,11 @@ void AItem::OnTakeDamage(int32 damage)
 
 	if (hp <= 0)
 	{
+		hp = 0;
 		Destroy();
 	}
+
+	hpWidget->ShowHPBar(hp, maxHp);
 }
 
 void AItem::OnBeginOverlapItem(AActor* actor)
