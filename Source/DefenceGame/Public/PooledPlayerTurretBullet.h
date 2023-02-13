@@ -9,17 +9,10 @@ UCLASS()
 class DEFENCEGAME_API APooledPlayerTurretBullet : public APooledPlayerBullet
 {
 	GENERATED_BODY()
-	
+
 public:
 	APooledPlayerTurretBullet();
 
 protected:
 	virtual void OnHitSpecificBullet(AActor* OtherActor, const FHitResult& SweepResult) override;
-
-public:
-	UPROPERTY()
-	class UParticleSystem* turretparticle;
-
-	//class 
-
 };

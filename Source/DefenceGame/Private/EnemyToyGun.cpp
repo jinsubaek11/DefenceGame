@@ -39,8 +39,8 @@ void AEnemyToyGun::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//normalEnemyBulletPool = GetWorld()->SpawnActor<ANormalEnemyBulletPool>();
-	Shoot(normalEnemyBulletPool);
+	normalEnemyBulletPool = GetWorld()->SpawnActor<ANormalEnemyBulletPool>();
+	//Shoot(normalEnemyBulletPool);
 
 }
 
