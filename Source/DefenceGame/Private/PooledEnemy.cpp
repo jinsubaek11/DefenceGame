@@ -127,6 +127,7 @@ void APooledEnemy::OnTakeDamage(int32 damage)
 		if (!aiController) return;
 
 		aiController->BrainComponent->StopLogic(TEXT("Dead"));
+		SetActorEnableCollision(false);
 
 		if (type == EEnemyType::ENEMY)
 		{
