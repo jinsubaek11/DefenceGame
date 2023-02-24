@@ -56,6 +56,7 @@ void ADefenceGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(false);
 	GetWorldTimerManager().SetTimer(stageTimer, this, &ADefenceGameMode::PrintStageRemainingTime, 1.f, true);
 
 	mainUIWidget = Cast<UMainUI>(CreateWidget(GetWorld(), mainUI));
