@@ -70,8 +70,8 @@ void APooledStrongEnemy::BeginPlay()
 
 	axe = GetWorld()->SpawnActor<AEnemyAxe>();
 	axe->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("RightHandaxeSocket"));
-	axe->AddActorLocalOffset(FVector(97, 9, 13));
-	axe->AddActorLocalRotation(FRotator(0, 16, 11));
+	//axe->AddActorLocalOffset(FVector(97, 9, 13));
+	//axe->AddActorLocalRotation(FRotator(0, 16, 11));
 }
 
 void APooledStrongEnemy::Attack(AActor* target)
