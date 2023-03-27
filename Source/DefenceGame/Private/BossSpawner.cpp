@@ -19,7 +19,7 @@ void ABossSpawner::BeginPlay()
 
 void ABossSpawner::SpawnBoss()
 {
-	bossEnemyPool->SpawnPooledCharacter(GetActorLocation() + GetActorForwardVector() * 100);
+	bossEnemyPool->SpawnPooledCharacter(GetActorLocation() + GetActorForwardVector() * 500);
 }
 
 void ABossSpawner::ResetSpawn()

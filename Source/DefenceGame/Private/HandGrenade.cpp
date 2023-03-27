@@ -114,7 +114,7 @@ void AHandGrenade::Shoot()
 	Super::Shoot();
 
 	isShootStart = true;
-	UGameplayStatics::PlaySoundAtLocation(GetWorld(), handGrenadeSound, GetActorLocation(), GetActorRotation(), 1, 1.5f, 2);
+	UGameplayStatics::PlaySoundAtLocation(GetWorld(), handGrenadeSound, GetActorLocation(), GetActorRotation(), 1, 1.5f, 3);
 	isExploded = false;
 }
 

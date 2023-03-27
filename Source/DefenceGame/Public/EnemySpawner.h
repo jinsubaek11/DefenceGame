@@ -43,9 +43,9 @@ private:
 	float weakEnemySpawnTime;
 
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess="true"))
-	float strongEnemyCoolTime = 23.3f;
+	float strongEnemyCoolTime = 31.3f;
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
-	float normalEnemyCoolTime = 17.1f;
+	float normalEnemyCoolTime = 23.1f;
 	UPROPERTY(EditAnywhere, meta = (AllowPrivateAccess = "true"))
-	float weakEnemyCoolTime = 10.3f;
+	float weakEnemyCoolTime = 15.3f;
 };

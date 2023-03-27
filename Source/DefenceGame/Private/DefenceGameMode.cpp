@@ -173,7 +173,7 @@ void ADefenceGameMode::PrintStageRemainingTime()
 		return;
 	}
 
-	if (stage > 1 && remainingTime == 60)
+	if (stage > 1 && remainingTime == 30)
 	//if (stage > 1 && remainingTime == 5)
 	{
 		ShowWarningBossScreen(stageTexts[stage - 1], stageMethodTexts[stage - 1]);
@@ -203,7 +203,7 @@ void ADefenceGameMode::UpgradeStage()
 	bossHandicap = false;
 	stage++;
 	ShowStageScreen(stageTexts[stage - 1]);
-	remainingTime = 90;
+	remainingTime = 60;
 	//remainingTime = 10;
 	GetWorldTimerManager().SetTimer(stageTimer, this, &ADefenceGameMode::PrintStageRemainingTime, 1.f, true);
 }
